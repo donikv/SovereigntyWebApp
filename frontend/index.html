@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Sovereignty Evaluation</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <header>
+        <h1>Digital Sovereignty Evaluation Tool</h1>
+        <p class="subtitle">Evaluate the sovereignty level of digital technologies</p>
+      </header>
+
+      <form @submit.prevent="calculateScore" class="evaluation-form">
+        <!-- Basic Information -->
+        <section class="form-section">
+          <h2>Technology Information</h2>
+          
+          <div class="form-group">
+            <label for="technologyName">Technology Name *</label>
+            <input 
+              type="text" 
+              id="technologyName" 
+              v-model="formData.technologyName" 
+              placeholder="e.g., Cloud Storage Service, Messaging Platform"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea 
+              id="description" 
+              v-model="formData.description" 
+              rows="3"
+              placeholder="Brief description of the technology and its use case"
+            ></textarea>
+          </div>
+        </section>
+
+        <!-- Technical Criteria -->
+        <section class="form-section">
+          <h2>Technical Criteria</h2>
+          
+          <div class="form-group">
+            <label for="dataStorage">Data Storage Location *</label>
+            <select id="dataStorage" v-model="formData.criteria.dataStorage" required>
+              <option value="">Select...</option>
+              <option value="local">Local/On-premise</option>
+              <option value="eu">European Union</option>
+              <option value="foreign">Foreign (non-EU)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="dataProcessing">Data Processing Location *</label>
+            <select id="dataProcessing" v-model="formData.criteria.dataProcessing" required>
+              <option value="">Select...</option>
+              <option value="local">Local/On-premise</option>
+              <option value="eu">European Union</option>
+              <option value="foreign">Foreign (non-EU)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="openSource">Open Source *</label>
+            <select id="openSource" v-model="formData.criteria.openSource" required>
+              <option value="">Select...</option>
+              <option value="full">Fully Open Source</option>
+              <option value="partial">Partially Open Source</option>
+              <option value="closed">Closed Source</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="interoperability">Interoperability *</label>
+            <select id="interoperability" v-model="formData.criteria.interoperability" required>
+              <option value="">Select...</option>
+              <option value="high">High (Open Standards)</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low (Proprietary)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="encryption">Encryption *</label>
+            <select id="encryption" v-model="formData.criteria.encryption" required>
+              <option value="">Select...</option>
+              <option value="e2e">End-to-End</option>
+              <option value="transit">In Transit Only</option>
+              <option value="none">None/Weak</option>
+            </select>
+          </div>
+        </section>
+
+        <!-- Legal/Organizational Criteria -->
+        <section class="form-section">
+          <h2>Legal & Organizational Criteria</h2>
+          
+          <div class="form-group">
+            <label for="providerLocation">Provider Location *</label>
+            <select id="providerLocation" v-model="formData.criteria.providerLocation" required>
+              <option value="">Select...</option>
+              <option value="national">National</option>
+              <option value="eu">European Union</option>
+              <option value="foreign">Foreign (non-EU)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="dataGovernance">Data Governance (GDPR) *</label>
+            <select id="dataGovernance" v-model="formData.criteria.dataGovernance" required>
+              <option value="">Select...</option>
+              <option value="gdpr_full">GDPR Compliant (Full)</option>
+              <option value="gdpr_partial">GDPR Compliant (Partial)</option>
+              <option value="non_compliant">Non-Compliant</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="contractualControl">Contractual Control *</label>
+            <select id="contractualControl" v-model="formData.criteria.contractualControl" required>
+              <option value="">Select...</option>
+              <option value="full">Full Control</option>
+              <option value="shared">Shared Control</option>
+              <option value="limited">Limited Control</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="auditability">Auditability *</label>
+            <select id="auditability" v-model="formData.criteria.auditability" required>
+              <option value="">Select...</option>
+              <option value="full">Full Transparency</option>
+              <option value="partial">Partial Transparency</option>
+              <option value="opaque">Opaque</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="certifications">Security Certifications *</label>
+            <select id="certifications" v-model="formData.criteria.certifications" required>
+              <option value="">Select...</option>
+              <option value="multiple">Multiple EU Certifications</option>
+              <option value="some">Some Certifications</option>
+              <option value="none">No Certifications</option>
+            </select>
+          </div>
+        </section>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" :disabled="loading">
+            {{ loading ? 'Calculating...' : 'Calculate Score' }}
+          </button>
+          <button type="button" class="btn btn-secondary" @click="resetForm">
+            Reset
+          </button>
+        </div>
+      </form>
+
+      <!-- Results Section -->
+      <section v-if="results" class="results-section">
+        <h2>Evaluation Results: {{ results.technologyName }}</h2>
+        
+        <div class="score-summary">
+          <div class="score-card main-score">
+            <h3>Overall Sovereignty Score</h3>
+            <div class="score-value">{{ results.percentageScore }}%</div>
+            <div class="score-rating" :class="getRatingClass(results.percentageScore)">
+              {{ results.rating }}
+            </div>
+            <div class="score-detail">{{ results.totalScore }} / {{ results.maxScore }} points</div>
+          </div>
+
+          <div class="score-card">
+            <h3>Technical Criteria</h3>
+            <div class="score-value small">{{ results.technical.percentage }}%</div>
+            <div class="score-detail">{{ results.technical.score }} / {{ results.technical.maxScore }} points</div>
+          </div>
+
+          <div class="score-card">
+            <h3>Legal & Organizational</h3>
+            <div class="score-value small">{{ results.legal.percentage }}%</div>
+            <div class="score-detail">{{ results.legal.score }} / {{ results.legal.maxScore }} points</div>
+          </div>
+        </div>
+
+        <div class="details-section">
+          <h3>Technical Criteria Details</h3>
+          <div class="criteria-details">
+            <div v-for="(detail, key) in results.technical.details" :key="key" class="detail-item">
+              <span class="detail-name">{{ detail.name }}:</span>
+              <span class="detail-value">{{ detail.selection }} ({{ detail.score }} points)</span>
+            </div>
+          </div>
+
+          <h3>Legal & Organizational Criteria Details</h3>
+          <div class="criteria-details">
+            <div v-for="(detail, key) in results.legal.details" :key="key" class="detail-item">
+              <span class="detail-name">{{ detail.name }}:</span>
+              <span class="detail-value">{{ detail.selection }} ({{ detail.score }} points)</span>
+            </div>
+          </div>
+        </div>
+
+        <p v-if="results.description" class="description"><strong>Description:</strong> {{ results.description }}</p>
+      </section>
+
+      <div v-if="error" class="error-message">
+        {{ error }}
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
