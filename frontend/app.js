@@ -18,7 +18,22 @@ createApp({
           dataGovernance: '',
           contractualControl: '',
           auditability: '',
-          certifications: ''
+          certifications: '',
+          // SLC Criteria
+          slc1: '',
+          slc2: '',
+          slc3: '',
+          slc5: '',
+          slc33: '',
+          slc34: '',
+          slc11: '',
+          slc12: '',
+          slc13: '',
+          slc16: '',
+          slc17: '',
+          slc23: '',
+          slc24: '',
+          slc25: ''
         }
       },
       results: null,
@@ -76,7 +91,21 @@ createApp({
           dataGovernance: '',
           contractualControl: '',
           auditability: '',
-          certifications: ''
+          certifications: '',
+          slc1: '',
+          slc2: '',
+          slc3: '',
+          slc5: '',
+          slc33: '',
+          slc34: '',
+          slc11: '',
+          slc12: '',
+          slc13: '',
+          slc16: '',
+          slc17: '',
+          slc23: '',
+          slc24: '',
+          slc25: ''
         }
       };
       this.results = null;

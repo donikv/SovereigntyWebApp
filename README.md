@@ -4,9 +4,10 @@ A web application for evaluating the sovereignty level of digital technologies b
 
 ## Overview
 
-This application calculates a sovereignty score based on evaluation criteria from Tables 1 and 2:
-- **Technical Criteria**: Data storage/processing location, open source status, interoperability, encryption
-- **Legal/Organizational Criteria**: Provider location, data governance (GDPR), contractual control, auditability, certifications
+This application calculates a sovereignty score based on evaluation criteria:
+- **Technical Criteria** (5 criteria): Data storage/processing location, open source status, interoperability, encryption
+- **Legal/Organizational Criteria** (5 criteria): Provider location, data governance (GDPR), contractual control, auditability, certifications
+- **SLC Criteria** (14 criteria): Software ownership, country of origin, licenses, update frequency, community, compliance, funding, development processes, AI model retraining, dependencies, explainability, and more
 
 ## Tech Stack
 
@@ -53,23 +54,15 @@ SoveregnityWebApp/
 
 1. Enter the **Technology Name** (e.g., "Cloud Storage Service")
 2. Add an optional **Description**
-3. Select values for all **Technical Criteria**:
-   - Data Storage Location
-   - Data Processing Location
-   - Open Source status
-   - Interoperability
-   - Encryption
-4. Select values for all **Legal & Organizational Criteria**:
-   - Provider Location
-   - Data Governance (GDPR compliance)
-   - Contractual Control
-   - Auditability
-   - Security Certifications
-5. Click **Calculate Score**
-6. View the results showing:
+3. Select values for all **Technical Criteria** (5 fields)
+4. Select values for all **Legal & Organizational Criteria** (5 fields)
+5. Select values for all **SLC Criteria** (14 fields including software ownership, licenses, community size, compliance, funding, interoperability, development processes, AI model retraining, dependencies, and explainability)
+6. Click **Calculate Score**
+7. View the results showing:
    - Overall sovereignty score (percentage)
    - Technical criteria score breakdown
    - Legal/organizational criteria score breakdown
+   - SLC criteria score breakdown
    - Sovereignty rating (Excellent, High, Moderate, Low, Very Low)
 
 ## Scoring System
@@ -88,6 +81,22 @@ Each criterion is scored from 1-3:
 - **Contractual Control**: Full (3), Shared (2), Limited (1)
 - **Auditability**: Full Transparency (3), Partial (2), Opaque (1)
 - **Certifications**: Multiple EU (3), Some (2), None (1)
+
+### SLC Criteria (Software, Licensing & Compliance)
+- **SLC1 - Software Ownership**: NGO (3), GO (2), PO (1)
+- **SLC2 - Software Country of Origin**: White-list (10), Grey-list (5), Black-list (1)
+- **SLC3 - Software License**: Public Domain (5), Permissive (4), LGPL (3), Copyleft (2), Proprietary (1)
+- **SLC5 - Update Frequency**: 0-12 months (direct score, lower is better)
+- **SLC33 - Data Country of Origin**: White-list (10), Grey-list (5), Black-list (1)
+- **SLC34 - Data License**: Public Domain (5), Permissive (4), LGPL (3), Copyleft (2), Proprietary (1)
+- **SLC11 - Community Size**: >100k (4), >10k (3), >1k (2), <1k (1)
+- **SLC12 - Regulatory Compliance**: Comprehensive maintained (5), Comprehensive (4), Partial maintained (3), Partial (2), None (1)
+- **SLC13 - Funding**: No funding needed (4), Unaligned funding (3), Aligned funding (2), No funding (1)
+- **SLC16 - Interoperability**: Enterprise (5), Domain (4), Functional (3), Connected (2), Isolated (1)
+- **SLC17 - Development Processes**: All known (4), Most known (3), Most unknown (2), All unknown (1)
+- **SLC23 - AI Model Retraining**: Internal (3), Retrained (2), External (1)
+- **SLC24 - Dependencies**: 1 (4), 2-4 (3), 5-9 (2), ≥10 (1)
+- **SLC25 - Explainability**: White/Grey-box (3), External explainability (2), Consistent (1), Not explainable (0)
 
 ### Sovereignty Rating
 - **90-100%**: Excellent Sovereignty
@@ -116,7 +125,21 @@ Calculate the sovereignty score for a technology.
     "dataGovernance": "gdpr_full",
     "contractualControl": "full",
     "auditability": "full",
-    "certifications": "multiple"
+    "certifications": "multiple",
+    "slc1": "ngo",
+    "slc2": "whitelist",
+    "slc3": "public_domain",
+    "slc5": 3,
+    "slc33": "whitelist",
+    "slc34": "permissive",
+    "slc11": "huge",
+    "slc12": "comprehensive_maintained",
+    "slc13": "no_funding",
+    "slc16": "enterprise",
+    "slc17": "all_known",
+    "slc23": "internal",
+    "slc24": "one",
+    "slc25": "whitebox"
   }
 }
 ```
@@ -138,6 +161,12 @@ Calculate the sovereignty score for a technology.
   "legal": {
     "score": 15,
     "maxScore": 15,
+    "percentage": 100,
+    "details": { /* ... */ }
+  },
+  "slc": {
+    "score": 70,
+    "maxScore": 70,
     "percentage": 100,
     "details": { /* ... */ }
   },

@@ -152,6 +152,169 @@
           </div>
         </section>
 
+        <!-- SLC Criteria - Software, Licensing, and Compliance -->
+        <section class="form-section">
+          <h2>SLC Criteria - Software, Licensing & Compliance</h2>
+          
+          <div class="form-group">
+            <label for="slc1">SLC1: Software Ownership *</label>
+            <select id="slc1" v-model="formData.criteria.slc1" required>
+              <option value="">Select...</option>
+              <option value="ngo">Non-Governmental Organization (NGO)</option>
+              <option value="go">Governmental Organization (GO)</option>
+              <option value="po">Private Organization (PO)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="slc2">SLC2: Software Country of Origin *</label>
+            <select id="slc2" v-model="formData.criteria.slc2" required>
+              <option value="">Select...</option>
+              <option value="whitelist">White-list Country</option>
+              <option value="greylist">Grey-list Country</option>
+              <option value="blacklist">Black-list Country</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="slc3">SLC3: Software License *</label>
+            <select id="slc3" v-model="formData.criteria.slc3" required>
+              <option value="">Select...</option>
+              <option value="public_domain">Public Domain</option>
+              <option value="permissive">Permissive (MIT, Apache, BSD)</option>
+              <option value="lgpl">LGPL/Intermediate</option>
+              <option value="copyleft">Copyleft (GPL)</option>
+              <option value="proprietary">Commercial/Proprietary</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="slc5">SLC5: Update Frequency (months between updates) *</label>
+            <input 
+              type="number" 
+              id="slc5" 
+              v-model.number="formData.criteria.slc5" 
+              min="0" 
+              max="12" 
+              step="1"
+              placeholder="0-12 months"
+              required
+            >
+            <small class="help-text">Lower is better. Max 12 months.</small>
+          </div>
+
+          <div class="form-group">
+            <label for="slc33">SLC33: Data Country of Origin *</label>
+            <select id="slc33" v-model="formData.criteria.slc33" required>
+              <option value="">Select...</option>
+              <option value="whitelist">White-list Country</option>
+              <option value="greylist">Grey-list Country</option>
+              <option value="blacklist">Black-list Country</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="slc34">SLC34: Data License *</label>
+            <select id="slc34" v-model="formData.criteria.slc34" required>
+              <option value="">Select...</option>
+              <option value="public_domain">Public Domain</option>
+              <option value="permissive">Permissive</option>
+              <option value="lgpl">LGPL/Intermediate</option>
+              <option value="copyleft">Copyleft</option>
+              <option value="proprietary">Commercial/Proprietary</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="slc11">SLC11: Community and Ecosystem *</label>
+            <select id="slc11" v-model="formData.criteria.slc11" required>
+              <option value="">Select...</option>
+              <option value="huge">&gt;100k contributors (Widespread)</option>
+              <option value="large">&gt;10k contributors (Industry-supported)</option>
+              <option value="medium">&gt;1k contributors (Research/University)</option>
+              <option value="small">&lt;1k contributors (Private project)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="slc12">SLC12: Regulatory and Legal Compliance *</label>
+            <select id="slc12" v-model="formData.criteria.slc12" required>
+              <option value="">Select...</option>
+              <option value="comprehensive_maintained">Comprehensive analysis (maintained)</option>
+              <option value="comprehensive">Comprehensive analysis (not maintained)</option>
+              <option value="partial_maintained">Partial analysis (maintained)</option>
+              <option value="partial">Partial analysis (not maintained)</option>
+              <option value="none">No compliance analysis</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="slc13">SLC13: Funding and Sustainability *</label>
+            <select id="slc13" v-model="formData.criteria.slc13" required>
+              <option value="">Select...</option>
+              <option value="no_funding">No funding needed</option>
+              <option value="unaligned">Has unaligned funding</option>
+              <option value="aligned">Has company-aligned funding</option>
+              <option value="none">No funding (but needed)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="slc16">SLC16: Interoperability *</label>
+            <select id="slc16" v-model="formData.criteria.slc16" required>
+              <option value="">Select...</option>
+              <option value="enterprise">Enterprise/Universal</option>
+              <option value="domain">Domain/Integrated</option>
+              <option value="functional">Functional/Distributed</option>
+              <option value="connected">Connected/Peer-to-Peer</option>
+              <option value="isolated">Isolated/Manual</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="slc17">SLC17: Development Processes *</label>
+            <select id="slc17" v-model="formData.criteria.slc17" required>
+              <option value="">Select...</option>
+              <option value="all_known">All processes known</option>
+              <option value="most_known">Most processes known</option>
+              <option value="most_unknown">Most processes unknown</option>
+              <option value="all_unknown">All processes unknown</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="slc23">SLC23: AI Model Retraining *</label>
+            <select id="slc23" v-model="formData.criteria.slc23" required>
+              <option value="">Select...</option>
+              <option value="internal">Completely internally trained</option>
+              <option value="retrained">Retrained pre-trained model</option>
+              <option value="external">Externally trained model</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="slc24">SLC24: External APIs and Services *</label>
+            <select id="slc24" v-model="formData.criteria.slc24" required>
+              <option value="">Select...</option>
+              <option value="one">1 dependency</option>
+              <option value="few">2-4 dependencies</option>
+              <option value="some">5-9 dependencies</option>
+              <option value="many">≥10 dependencies</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="slc25">SLC25: Explainability *</label>
+            <select id="slc25" v-model="formData.criteria.slc25" required>
+              <option value="">Select...</option>
+              <option value="whitebox">White/Grey-box (explainable)</option>
+              <option value="blackbox_external">Black-box (externally explainable)</option>
+              <option value="blackbox_consistent">Black-box (consistent output)</option>
+              <option value="blackbox_opaque">Black-box (not explainable)</option>
+            </select>
+          </div>
+        </section>
+
         <div class="form-actions">
           <button type="submit" class="btn btn-primary" :disabled="loading">
             {{ loading ? 'Calculating...' : 'Calculate Score' }}
@@ -187,6 +350,12 @@
             <div class="score-value small">{{ results.legal.percentage }}%</div>
             <div class="score-detail">{{ results.legal.score }} / {{ results.legal.maxScore }} points</div>
           </div>
+
+          <div class="score-card">
+            <h3>SLC Criteria</h3>
+            <div class="score-value small">{{ results.slc.percentage }}%</div>
+            <div class="score-detail">{{ results.slc.score }} / {{ results.slc.maxScore }} points</div>
+          </div>
         </div>
 
         <div class="details-section">
@@ -201,6 +370,14 @@
           <h3>Legal & Organizational Criteria Details</h3>
           <div class="criteria-details">
             <div v-for="(detail, key) in results.legal.details" :key="key" class="detail-item">
+              <span class="detail-name">{{ detail.name }}:</span>
+              <span class="detail-value">{{ detail.selection }} ({{ detail.score }} points)</span>
+            </div>
+          </div>
+
+          <h3>SLC Criteria Details</h3>
+          <div class="criteria-details">
+            <div v-for="(detail, key) in results.slc.details" :key="key" class="detail-item">
               <span class="detail-name">{{ detail.name }}:</span>
               <span class="detail-value">{{ detail.selection }} ({{ detail.score }} points)</span>
             </div>
