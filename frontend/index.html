@@ -262,18 +262,18 @@
         <div class="score-summary">
           <div class="score-card main-score">
             <h3>Overall Sovereignty Score</h3>
-            <div class="score-value">{{ results.sovereignty && results.sovereignty.shallCount + results.sovereignty.shouldCount > 0 ? results.sovereignty.overallScore : results.percentageScore + '%' }}</div>
-            <div v-if="!(results.sovereignty && results.sovereignty.shallCount + results.sovereignty.shouldCount > 0)" class="score-rating" :class="getRatingClass(results.percentageScore)">
+            <div class="score-value">{{ results.sovereignty.overallScore + '%' }}</div>
+            <!-- <div v-if="!(results.sovereignty && results.sovereignty.shallCount + results.sovereignty.shouldCount > 0)" class="score-rating" :class="getRatingClass(results.percentageScore)">
               {{ results.rating }}
             </div>
-            <div v-if="!(results.sovereignty && results.sovereignty.shallCount + results.sovereignty.shouldCount > 0)" class="score-detail">{{ results.totalScore }} / {{ results.maxScore }} points</div>
+            <div v-if="!(results.sovereignty && results.sovereignty.shallCount + results.sovereignty.shouldCount > 0)" class="score-detail">{{ results.totalScore }} / {{ results.maxScore }} points</div> -->
           </div>
 
-          <div class="score-card">
+          <!-- <div class="score-card">
             <h3>SLC Criteria</h3>
             <div class="score-value small">{{ results.slc.percentage }}%</div>
             <div class="score-detail">{{ results.slc.score }} / {{ results.slc.maxScore }} points</div>
-          </div>
+          </div> -->
 
           <div v-if="results.sovereignty && results.sovereignty.shallCount + results.sovereignty.shouldCount > 0" class="score-card sovereignty-card">
             <h3>Sovereignty Assessment</h3>
@@ -286,19 +286,6 @@
         </div>
 
         <div class="details-section">
-          <h3>SLC Criteria Details</h3>
-          <div class="criteria-details">
-            <div v-for="(detail, key) in results.slc.details" :key="key" class="detail-item">
-              <span class="detail-name">{{ detail.name }}:</span>
-              <span class="detail-value">
-                {{ detail.selection }} 
-                <span class="detail-scores">
-                  (Raw: {{ detail.score }} | Normalized: {{ Math.round(detail.normalizedScore * 100) }}%)
-                </span>
-              </span>
-            </div>
-          </div>
-
           <div v-if="results.sovereignty && Object.keys(results.sovereignty.characteristics).length > 0">
             <h3>Sovereignty Characteristics Assessment</h3>
             <div class="sovereignty-details">
@@ -318,6 +305,19 @@
                   </ul>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <h3>SLC Criteria Details</h3>
+          <div class="criteria-details">
+            <div v-for="(detail, key) in results.slc.details" :key="key" class="detail-item">
+              <span class="detail-name">{{ detail.name }}:</span>
+              <span class="detail-value">
+                {{ detail.selection }} 
+                <span class="detail-scores">
+                  (Raw: {{ detail.score }} | Normalized: {{ Math.round(detail.normalizedScore * 100) }}%)
+                </span>
+              </span>
             </div>
           </div>
         </div>

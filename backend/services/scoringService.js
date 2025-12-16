@@ -314,7 +314,7 @@ function calculateScore(criteria, selectedSC = {}) {
     slcMaxScore += maxScore;
 
     // Map to sovereignty characteristics using normalized score
-    if (slcToScMapping[key] && normalizedScore > 0) {
+    if (slcToScMapping[key]) {
       slcToScMapping[key].forEach(scKey => {
         if (scScores[scKey]) {
           scScores[scKey].contributingCriteria.push({
@@ -350,7 +350,7 @@ function calculateScore(criteria, selectedSC = {}) {
       shouldScore = 1; // SHOULD component is 1 when SC is marked as SHALL
     } else if (scData.type === 'should') {
       shallScore = 1; // SHALL component is 1 when SC is marked as SHOULD
-      shouldScore = Math.max(scData.shouldCount > 0 ? scData.shouldScore : 0, 0.05);
+      shouldScore = Math.max(scData.shouldCount > 0 ? scData.shouldScore / scData.shouldCount: 0, 0.05);
     }
 
     // Product of SHALL and SHOULD for this SC
