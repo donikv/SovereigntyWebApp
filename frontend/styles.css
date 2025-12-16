@@ -6,7 +6,7 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #003366 0%, #004d99 100%);
   min-height: 100vh;
   padding: 20px;
   color: #333;
@@ -25,11 +25,11 @@ header {
   text-align: center;
   margin-bottom: 40px;
   padding-bottom: 20px;
-  border-bottom: 3px solid #667eea;
+  border-bottom: 3px solid #003366;
 }
 
 h1 {
-  color: #667eea;
+  color: #003366;
   font-size: 2.5em;
   margin-bottom: 10px;
 }
@@ -40,7 +40,7 @@ h1 {
 }
 
 h2 {
-  color: #764ba2;
+  color: #003366;
   font-size: 1.5em;
   margin-bottom: 20px;
   display: flex;
@@ -57,7 +57,7 @@ h2 {
 }
 
 h3 {
-  color: #667eea;
+  color: #004d99;
   font-size: 1.2em;
   margin-top: 20px;
   margin-bottom: 15px;
@@ -74,7 +74,7 @@ h3 {
 
 .btn-secondary {
   padding: 0.6rem 1.2rem;
-  background: #6c757d;
+  background: #ff6b35;
   color: white;
   border: none;
   border-radius: 6px;
@@ -85,7 +85,7 @@ h3 {
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: #5a6268;
+  background: #e85a28;
 }
 
 .btn-secondary:disabled {
@@ -117,7 +117,7 @@ h3 {
   gap: 6px;
   font-weight: 500;
   font-size: 0.9em;
-  color: #667eea;
+  color: #004d99;
   cursor: pointer;
 }
 
@@ -188,13 +188,13 @@ textarea {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #003366 0%, #004d99 100%);
   color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 5px 15px rgba(0, 77, 153, 0.4);
 }
 
 .btn-primary:disabled {
@@ -213,7 +213,7 @@ textarea {
 
 .btn-toggle {
   padding: 8px 16px;
-  background: #667eea;
+  background: #004d99;
   color: white;
   border: none;
   border-radius: 4px;
@@ -223,7 +223,7 @@ textarea {
 }
 
 .btn-toggle:hover {
-  background: #5568d3;
+  background: #003366;
 }
 
 /* Sovereignty Characteristics Selector */
@@ -243,11 +243,11 @@ textarea {
 }
 
 .sc-item:hover {
-  border-color: #667eea;
+  border-color: #004d99;
 }
 
 .sc-header {
-  color: #667eea;
+  color: #003366;
   margin-bottom: 8px;
   font-size: 0.95em;
 }
@@ -278,25 +278,25 @@ textarea {
 }
 
 .btn-sc:hover {
-  border-color: #667eea;
-  color: #667eea;
+  border-color: #004d99;
+  color: #004d99;
 }
 
 .btn-sc.active.shall {
-  background: #dc3545;
-  border-color: #dc3545;
+  background: #003366;
+  border-color: #003366;
   color: white;
 }
 
 .btn-sc.active.should {
-  background: #28a745;
-  border-color: #28a745;
+  background: #0066cc;
+  border-color: #0066cc;
   color: white;
 }
 
 /* Sovereignty Results */
 .sovereignty-card {
-  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  background: linear-gradient(135deg, #003366 0%, #004d99 100%);
   color: white;
 }
 
@@ -315,7 +315,7 @@ textarea {
   padding: 15px;
   border-radius: 8px;
   margin-bottom: 15px;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid #003366;
 }
 
 .sov-header {
@@ -327,7 +327,7 @@ textarea {
 }
 
 .sov-code {
-  background: #667eea;
+  background: #003366;
   color: white;
   padding: 4px 8px;
   border-radius: 4px;
@@ -350,18 +350,18 @@ textarea {
 }
 
 .sov-badge.shall {
-  background: #dc3545;
+  background: #003366;
   color: white;
 }
 
 .sov-badge.should {
-  background: #28a745;
+  background: #0066cc;
   color: white;
 }
 
 .sov-score {
   font-weight: bold;
-  color: #667eea;
+  color: #004d99;
   font-size: 1.1em;
 }
 
@@ -384,7 +384,7 @@ textarea {
   padding: 30px;
   background: #f0f4ff;
   border-radius: 8px;
-  border: 2px solid #667eea;
+  border: 2px solid #004d99;
 }
 
 .score-summary {
@@ -404,7 +404,7 @@ textarea {
 
 .score-card.main-score {
   grid-column: 1 / -1;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #003366 0%, #004d99 100%);
   color: white;
 }
 
@@ -420,7 +420,7 @@ textarea {
 .score-value {
   font-size: 3em;
   font-weight: bold;
-  color: #667eea;
+  color: #004d99;
   margin: 15px 0;
 }
 
@@ -442,7 +442,7 @@ textarea {
 }
 
 .rating-excellent {
-  background: rgba(40, 167, 69, 0.2);
+  background: rgba(0, 102, 204, 0.2);
   color: white;
 }
 
@@ -452,7 +452,7 @@ textarea {
 }
 
 .rating-moderate {
-  background: rgba(255, 193, 7, 0.2);
+  background: rgba(255, 107, 53, 0.2);
   color: white;
 }
 
@@ -497,7 +497,7 @@ textarea {
   margin-bottom: 8px;
   background: white;
   border-radius: 4px;
-  border-left: 3px solid #667eea;
+  border-left: 3px solid #004d99;
 }
 
 .detail-name {
@@ -506,7 +506,7 @@ textarea {
 }
 
 .detail-value {
-  color: #667eea;
+  color: #004d99;
   font-weight: 500;
 }
 
@@ -531,6 +531,24 @@ textarea {
   color: #721c24;
   border: 1px solid #f5c6cb;
   border-radius: 6px;
+}
+
+footer {
+  text-align: center;
+  margin-top: 40px;
+  padding: 20px;
+  color: white;
+  font-size: 0.9em;
+}
+
+footer a {
+  color: #ff6b35;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+footer a:hover {
+  text-decoration: underline;
 }
 
 @media (max-width: 768px) {
