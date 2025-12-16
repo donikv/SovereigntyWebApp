@@ -123,12 +123,22 @@ const slcCriteria = {
     }
   },
   slc5: {
-    name: 'SLC5: Update Frequency (months)',
+    name: 'SLC5: Update Frequency',
     weight: 1,
-    type: 'number',
-    min: 0,
-    max: 12,
-    description: 'Average months between updates (0-12, rounded)'
+    options: {
+      '12+': { label: '12 months or more', score: 12 },
+      '11': { label: '11 months', score: 11 },
+      '10': { label: '10 months', score: 10 },
+      '9': { label: '9 months', score: 9 },
+      '8': { label: '8 months', score: 8 },
+      '7': { label: '7 months', score: 7 },
+      '6': { label: '6 months', score: 6 },
+      '5': { label: '5 months', score: 5 },
+      '4': { label: '4 months', score: 4 },
+      '3': { label: '3 months', score: 3 },
+      '2': { label: '2 months', score: 2 },
+      '1': { label: '1 month or less', score: 1 }
+    }
   },
   slc33: {
     name: 'SLC33: Data Country of Origin',
@@ -270,23 +280,7 @@ function calculateScore(criteria, selectedSC = {}) {
     let minScore = 0;
     let normalizedScore = 0;
     
-    // Handle numeric input for SLC5
-    if (criterion.type === 'number' && userSelection !== undefined && userSelection !== '') {
-      const numValue = Math.min(Math.max(parseFloat(userSelection), criterion.min), criterion.max);
-      score = numValue * criterion.weight;
-      minScore = criterion.min * criterion.weight;
-      maxScore = criterion.max * criterion.weight;
-      
-      // Normalize: (score - min) / (max - min)
-      normalizedScore = maxScore > minScore ? (score - minScore) / (maxScore - minScore) : 0;
-      
-      slcDetails[key] = {
-        name: criterion.name,
-        selection: `${numValue} months`,
-        score: score,
-        normalizedScore: normalizedScore
-      };
-    } else if (userSelection && criterion.options && criterion.options[userSelection]) {
+    if (userSelection && criterion.options && criterion.options[userSelection]) {
       score = criterion.options[userSelection].score * criterion.weight;
       
       // Find min and max scores for this criterion

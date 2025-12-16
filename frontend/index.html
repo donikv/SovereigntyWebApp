@@ -119,18 +119,22 @@
           </div>
 
           <div class="form-group">
-            <label for="slc5">SLC5: Update Frequency (months between updates) *</label>
-            <input 
-              type="number" 
-              id="slc5" 
-              v-model.number="formData.criteria.slc5" 
-              min="0" 
-              max="12" 
-              step="1"
-              placeholder="0-12 months"
-              required
-            >
-            <small class="help-text">Lower is better. Max 12 months.</small>
+            <label for="slc5">SLC5: Update Frequency *</label>
+            <select id="slc5" v-model="formData.criteria.slc5" required>
+              <option value="">Select...</option>
+              <option value="1">1 month or less</option>
+              <option value="2">2 months</option>
+              <option value="3">3 months</option>
+              <option value="4">4 months</option>
+              <option value="5">5 months</option>
+              <option value="6">6 months</option>
+              <option value="7">7 months</option>
+              <option value="8">8 months</option>
+              <option value="9">9 months</option>
+              <option value="10">10 months</option>
+              <option value="11">11 months</option>
+              <option value="12+">12 months or more</option>
+            </select>
           </div>
 
           <div class="form-group">
