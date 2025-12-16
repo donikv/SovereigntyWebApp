@@ -354,7 +354,7 @@ function calculateScore(criteria, selectedSC = {}) {
       totalShallScore *= finalScore;
       shallCount++;
     } else if (scData.type === 'should') {
-      const avgScore = scData.shouldCount > 0 ? scData.shouldScore / scData.shouldCount : 0;
+      const avgScore = Math.max(scData.shouldCount > 0 ? scData.shouldScore : 0, 0.05);
       finalScore = avgScore;
       percentage = avgScore * 100;
       totalShouldScore += avgScore;
