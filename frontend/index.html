@@ -104,7 +104,13 @@
           <h2>SLC Criteria - Software, Licensing & Compliance</h2>
           
           <div class="form-group">
-            <label for="slc1">SLC1: Software Ownership *</label>
+            <div class="slc-header">
+              <label for="slc1">SLC1: Software Ownership *</label>
+              <label class="mitigation-label">
+                <input type="checkbox" v-model="formData.mitigations.slc1">
+                <span>Mitigation</span>
+              </label>
+            </div>
             <select id="slc1" v-model="formData.criteria.slc1" required>
               <option value="">Select...</option>
               <option value="ngo">Non-Governmental Organization (NGO)</option>
@@ -114,7 +120,13 @@
           </div>
 
           <div class="form-group">
-            <label for="slc2">SLC2: Software Country of Origin *</label>
+            <div class="slc-header">
+              <label for="slc2">SLC2: Software Country of Origin *</label>
+              <label class="mitigation-label">
+                <input type="checkbox" v-model="formData.mitigations.slc2">
+                <span>Mitigation</span>
+              </label>
+            </div>
             <select id="slc2" v-model="formData.criteria.slc2" required>
               <option value="">Select...</option>
               <option value="whitelist">White-list Country</option>
@@ -124,7 +136,13 @@
           </div>
 
           <div class="form-group">
-            <label for="slc3">SLC3: Software License *</label>
+            <div class="slc-header">
+              <label for="slc3">SLC3: Software License *</label>
+              <label class="mitigation-label">
+                <input type="checkbox" v-model="formData.mitigations.slc3">
+                <span>Mitigation</span>
+              </label>
+            </div>
             <select id="slc3" v-model="formData.criteria.slc3" required>
               <option value="">Select...</option>
               <option value="public_domain">Public Domain</option>
@@ -136,7 +154,13 @@
           </div>
 
           <div class="form-group">
-            <label for="slc5">SLC5: Update Frequency *</label>
+            <div class="slc-header">
+              <label for="slc5">SLC5: Update Frequency *</label>
+              <label class="mitigation-label">
+                <input type="checkbox" v-model="formData.mitigations.slc5">
+                <span>Mitigation</span>
+              </label>
+            </div>
             <select id="slc5" v-model="formData.criteria.slc5" required>
               <option value="">Select...</option>
               <option value="1">1 month or less</option>
@@ -155,7 +179,13 @@
           </div>
 
           <div class="form-group">
-            <label for="slc33">SLC33: Data Country of Origin *</label>
+            <div class="slc-header">
+              <label for="slc33">SLC33: Data Country of Origin *</label>
+              <label class="mitigation-label">
+                <input type="checkbox" v-model="formData.mitigations.slc33">
+                <span>Mitigation</span>
+              </label>
+            </div>
             <select id="slc33" v-model="formData.criteria.slc33" required>
               <option value="">Select...</option>
               <option value="whitelist">White-list Country</option>
@@ -165,7 +195,13 @@
           </div>
 
           <div class="form-group">
-            <label for="slc34">SLC34: Data License *</label>
+            <div class="slc-header">
+              <label for="slc34">SLC34: Data License *</label>
+              <label class="mitigation-label">
+                <input type="checkbox" v-model="formData.mitigations.slc34">
+                <span>Mitigation</span>
+              </label>
+            </div>
             <select id="slc34" v-model="formData.criteria.slc34" required>
               <option value="">Select...</option>
               <option value="public_domain">Public Domain</option>
@@ -177,7 +213,13 @@
           </div>
 
           <div class="form-group">
-            <label for="slc11">SLC11: Community and Ecosystem *</label>
+            <div class="slc-header">
+              <label for="slc11">SLC11: Community and Ecosystem *</label>
+              <label class="mitigation-label">
+                <input type="checkbox" v-model="formData.mitigations.slc11">
+                <span>Mitigation</span>
+              </label>
+            </div>
             <select id="slc11" v-model="formData.criteria.slc11" required>
               <option value="">Select...</option>
               <option value="huge">&gt;100k contributors (Widespread)</option>
@@ -188,7 +230,13 @@
           </div>
 
           <div class="form-group">
-            <label for="slc12">SLC12: Regulatory and Legal Compliance *</label>
+            <div class="slc-header">
+              <label for="slc12">SLC12: Regulatory and Legal Compliance *</label>
+              <label class="mitigation-label">
+                <input type="checkbox" v-model="formData.mitigations.slc12">
+                <span>Mitigation</span>
+              </label>
+            </div>
             <select id="slc12" v-model="formData.criteria.slc12" required>
               <option value="">Select...</option>
               <option value="comprehensive_maintained">Comprehensive analysis (maintained)</option>
@@ -200,7 +248,13 @@
           </div>
 
           <div class="form-group">
-            <label for="slc13">SLC13: Funding and Sustainability *</label>
+            <div class="slc-header">
+              <label for="slc13">SLC13: Funding and Sustainability *</label>
+              <label class="mitigation-label">
+                <input type="checkbox" v-model="formData.mitigations.slc13">
+                <span>Mitigation</span>
+              </label>
+            </div>
             <select id="slc13" v-model="formData.criteria.slc13" required>
               <option value="">Select...</option>
               <option value="no_funding">No funding needed</option>
@@ -211,7 +265,13 @@
           </div>
 
           <div class="form-group">
-            <label for="slc16">SLC16: Interoperability *</label>
+            <div class="slc-header">
+              <label for="slc16">SLC16: Interoperability *</label>
+              <label class="mitigation-label">
+                <input type="checkbox" v-model="formData.mitigations.slc16">
+                <span>Mitigation</span>
+              </label>
+            </div>
             <select id="slc16" v-model="formData.criteria.slc16" required>
               <option value="">Select...</option>
               <option value="enterprise">Enterprise/Universal</option>
@@ -223,7 +283,13 @@
           </div>
 
           <div class="form-group">
-            <label for="slc17">SLC17: Development Processes *</label>
+            <div class="slc-header">
+              <label for="slc17">SLC17: Development Processes *</label>
+              <label class="mitigation-label">
+                <input type="checkbox" v-model="formData.mitigations.slc17">
+                <span>Mitigation</span>
+              </label>
+            </div>
             <select id="slc17" v-model="formData.criteria.slc17" required>
               <option value="">Select...</option>
               <option value="all_known">All processes known</option>
@@ -234,7 +300,13 @@
           </div>
 
           <div class="form-group">
-            <label for="slc23">SLC23: AI Model Retraining *</label>
+            <div class="slc-header">
+              <label for="slc23">SLC23: AI Model Retraining *</label>
+              <label class="mitigation-label">
+                <input type="checkbox" v-model="formData.mitigations.slc23">
+                <span>Mitigation</span>
+              </label>
+            </div>
             <select id="slc23" v-model="formData.criteria.slc23" required>
               <option value="">Select...</option>
               <option value="internal">Completely internally trained</option>
@@ -244,7 +316,13 @@
           </div>
 
           <div class="form-group">
-            <label for="slc24">SLC24: External APIs and Services *</label>
+            <div class="slc-header">
+              <label for="slc24">SLC24: External APIs and Services *</label>
+              <label class="mitigation-label">
+                <input type="checkbox" v-model="formData.mitigations.slc24">
+                <span>Mitigation</span>
+              </label>
+            </div>
             <select id="slc24" v-model="formData.criteria.slc24" required>
               <option value="">Select...</option>
               <option value="one">1 dependency</option>
@@ -255,7 +333,13 @@
           </div>
 
           <div class="form-group">
-            <label for="slc25">SLC25: Explainability *</label>
+            <div class="slc-header">
+              <label for="slc25">SLC25: Explainability *</label>
+              <label class="mitigation-label">
+                <input type="checkbox" v-model="formData.mitigations.slc25">
+                <span>Mitigation</span>
+              </label>
+            </div>
             <select id="slc25" v-model="formData.criteria.slc25" required>
               <option value="">Select...</option>
               <option value="whitebox">White/Grey-box (explainable)</option>

@@ -23,6 +23,23 @@ createApp({
           slc24: '',
           slc25: ''
         },
+        mitigations: {
+          // Mitigation flags for each SLC
+          slc1: false,
+          slc2: false,
+          slc3: false,
+          slc5: false,
+          slc33: false,
+          slc34: false,
+          slc11: false,
+          slc12: false,
+          slc13: false,
+          slc16: false,
+          slc17: false,
+          slc23: false,
+          slc24: false,
+          slc25: false
+        },
         selectedSC: {
           // Sovereignty Characteristics (empty = not selected, 'shall' or 'should')
         }
@@ -104,6 +121,22 @@ createApp({
           slc24: '',
           slc25: ''
         },
+        mitigations: {
+          slc1: false,
+          slc2: false,
+          slc3: false,
+          slc5: false,
+          slc33: false,
+          slc34: false,
+          slc11: false,
+          slc12: false,
+          slc13: false,
+          slc16: false,
+          slc17: false,
+          slc23: false,
+          slc24: false,
+          slc25: false
+        },
         selectedSC: {}
       };
       this.results = null;
@@ -141,6 +174,7 @@ createApp({
         technologyName: this.formData.technologyName,
         description: this.formData.description,
         criteria: this.formData.criteria,
+        mitigations: this.formData.mitigations,
         exportDate: new Date().toISOString(),
         version: '1.0'
       };
@@ -173,6 +207,9 @@ createApp({
           this.formData.technologyName = importedData.technologyName || '';
           this.formData.description = importedData.description || '';
           this.formData.criteria = { ...this.formData.criteria, ...importedData.criteria };
+          if (importedData.mitigations) {
+            this.formData.mitigations = { ...this.formData.mitigations, ...importedData.mitigations };
+          }
           
           // Reset file input
           event.target.value = '';

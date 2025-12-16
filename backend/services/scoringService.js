@@ -247,9 +247,10 @@ const slcCriteria = {
  * Calculate the sovereignty score based on criteria selections
  * @param {Object} criteria - User selections for each criterion
  * @param {Object} selectedSC - Selected sovereignty characteristics with shall/should designation
+ * @param {Object} mitigations - Mitigation flags for each SLC
  * @returns {Object} - Score breakdown and total
  */
-function calculateScore(criteria, selectedSC = {}) {
+function calculateScore(criteria, selectedSC = {}, mitigations = {}) {
   let slcScore = 0;
   let slcMaxScore = 0;
   
@@ -264,10 +265,12 @@ function calculateScore(criteria, selectedSC = {}) {
         code: sovereigntyCharacteristics[scKey].code,
         type: selectedSC[scKey], // 'shall' or 'should'
         contributingCriteria: [],
-        shallScore: 1, // Product for SHALL (starts at 1)
-        shouldScore: 0, // Sum for SHOULD (starts at 0)
+        shallScore: 1, // Product for SHALL without mitigations (starts at 1)
+        shouldScore: 0, // Sum for SHOULD or mitigated SLCs (starts at 0)
         shouldCount: 0,
-        shallCount: 0
+        shallCount: 0,
+        mitigatedScore: 0, // Sum for mitigated SLCs in SHALL
+        mitigatedCount: 0
       };
     }
   });
@@ -309,6 +312,8 @@ function calculateScore(criteria, selectedSC = {}) {
 
     // Map to sovereignty characteristics using normalized score
     if (slcToScMapping[key]) {
+      const hasMitigation = mitigations[key] === true;
+      
       slcToScMapping[key].forEach(scKey => {
         if (scScores[scKey]) {
           scScores[scKey].contributingCriteria.push({
@@ -316,12 +321,20 @@ function calculateScore(criteria, selectedSC = {}) {
             name: criterion.name,
             score: score,
             maxScore: maxScore,
-            normalizedScore: normalizedScore
+            normalizedScore: normalizedScore,
+            hasMitigation: hasMitigation
           });
           
           if (scScores[scKey].type === 'shall') {
-            scScores[scKey].shallScore *= normalizedScore;
-            scScores[scKey].shallCount++;
+            if (hasMitigation) {
+              // Mitigated SLCs in SHALL use sum (like SHOULD)
+              scScores[scKey].mitigatedScore += normalizedScore;
+              scScores[scKey].mitigatedCount++;
+            } else {
+              // Non-mitigated SLCs use product
+              scScores[scKey].shallScore *= normalizedScore;
+              scScores[scKey].shallCount++;
+            }
           } else if (scScores[scKey].type === 'should') {
             scScores[scKey].shouldScore += normalizedScore;
             scScores[scKey].shouldCount++;
@@ -340,7 +353,16 @@ function calculateScore(criteria, selectedSC = {}) {
     let shouldScore = 1;
 
     if (scData.type === 'shall') {
-      shallScore = scData.shallScore;
+      // For SHALL: product of non-mitigated × average of mitigated
+      let nonMitigatedProduct = scData.shallScore; // Already a product
+      let mitigatedAverage = 1;
+      
+      if (scData.mitigatedCount > 0) {
+        mitigatedAverage = Math.max(scData.mitigatedScore / scData.mitigatedCount, 0.05);
+      }
+      
+      // Final SHALL score is product of both components
+      shallScore = nonMitigatedProduct * mitigatedAverage;
       shouldScore = 1; // SHOULD component is 1 when SC is marked as SHALL
     } else if (scData.type === 'should') {
       shallScore = 1; // SHALL component is 1 when SC is marked as SHOULD
@@ -359,7 +381,9 @@ function calculateScore(criteria, selectedSC = {}) {
       shouldScore: Math.round(shouldScore * 1000) / 1000,
       score: Math.round(scProduct * 1000) / 1000,
       percentage: Math.round(scProduct * 100 * 10) / 10,
-      contributingCriteria: scData.contributingCriteria
+      contributingCriteria: scData.contributingCriteria,
+      mitigatedCount: scData.mitigatedCount || 0,
+      nonMitigatedCount: scData.shallCount || 0
     };
   });
 

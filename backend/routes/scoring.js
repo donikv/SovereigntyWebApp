@@ -5,13 +5,13 @@ const { calculateScore } = require('../services/scoringService');
 // POST endpoint to calculate sovereignty score
 router.post('/calculate-score', (req, res) => {
   try {
-    const { technologyName, description, criteria, selectedSC } = req.body;
+    const { technologyName, description, criteria, selectedSC, mitigations } = req.body;
     
     if (!criteria) {
       return res.status(400).json({ error: 'Criteria data is required' });
     }
 
-    const result = calculateScore(criteria, selectedSC || {});
+    const result = calculateScore(criteria, selectedSC || {}, mitigations || {});
     
     res.json({
       technologyName,
