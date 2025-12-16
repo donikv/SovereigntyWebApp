@@ -1,7 +1,95 @@
 /**
  * Scoring Service
  * SLC Criteria - Software, Licensing, and Compliance
+ * Sovereignty Characteristics (SC) - Strategic Framework
  */
+
+// Sovereignty Characteristics (SC)
+const sovereigntyCharacteristics = {
+  sc1: {
+    code: 'SC1',
+    name: 'Autonomy',
+    description: 'Military AI systems ought to have a degree of autonomous decision-making while still being subject to human supervision.'
+  },
+  sc2: {
+    code: 'SC2',
+    name: 'Technological Independence',
+    description: 'Self-sufficiency in developing and maintaining military AI to avoid dependency on external entities.'
+  },
+  sc3: {
+    code: 'SC3',
+    name: 'Security and Digital Integrity',
+    description: 'Protect AI systems and digital infrastructure against cyber threats.'
+  },
+  sc4: {
+    code: 'SC4',
+    name: 'Legal and Ethical Frameworks',
+    description: 'Compliance with European, National, and/or International laws, including ethical norms and human rights.'
+  },
+  sc5: {
+    code: 'SC5',
+    name: 'International Compliance and Dependencies Awareness',
+    description: 'Minimize external dependencies and maintain control over necessary ones.'
+  },
+  sc6: {
+    code: 'SC6',
+    name: 'Control over Import and Export',
+    description: 'Regulate the trade of military AI technologies to prevent undesirable proliferation.'
+  },
+  sc7: {
+    code: 'SC7',
+    name: 'Resilience',
+    description: 'Systems should be robust and recover swiftly from disruptions.'
+  },
+  sc8: {
+    code: 'SC8',
+    name: 'Indispensability and Dispensability',
+    description: 'Promote indispensable capabilities to allies while maintaining dispensability in sourcing.'
+  },
+  sc9: {
+    code: 'SC9',
+    name: 'Protection',
+    description: 'AI behavior should never negatively impact critical infrastructure, democratic principles, and cultural identity.'
+  },
+  sc10: {
+    code: 'SC10',
+    name: 'Openness and Interoperability',
+    description: 'Compatibility with various systems enabling a dynamic defense ecosystem.'
+  },
+  sc11: {
+    code: 'SC11',
+    name: 'Infrastructure Sovereignty',
+    description: 'Control over essential AI development and deployment infrastructure and data.'
+  },
+  sc12: {
+    code: 'SC12',
+    name: 'Economic and Workforce Considerations',
+    description: 'Economically viable development with investment in education and training.'
+  },
+  sc13: {
+    code: 'SC13',
+    name: 'Accountability',
+    description: 'Clear accountability mechanisms for AI actions with transparency.'
+  }
+};
+
+// Mapping of SLC criteria to Sovereignty Characteristics
+const slcToScMapping = {
+  slc1: ['sc1', 'sc2', 'sc3', 'sc8', 'sc9', 'sc11', 'sc12'],
+  slc2: ['sc1', 'sc2', 'sc3', 'sc8', 'sc9', 'sc11', 'sc12'],
+  slc3: ['sc1', 'sc4', 'sc5'],
+  slc5: ['sc1', 'sc3', 'sc12'],
+  slc33: ['sc1', 'sc3', 'sc8', 'sc9', 'sc11'],
+  slc34: ['sc1', 'sc8'],
+  slc11: ['sc1', 'sc2', 'sc3', 'sc8'],
+  slc12: ['sc1', 'sc4', 'sc5', 'sc13'],
+  slc13: ['sc1', 'sc8', 'sc12'],
+  slc16: ['sc1', 'sc8', 'sc10'],
+  slc17: ['sc1', 'sc6', 'sc7', 'sc8', 'sc9'],
+  slc23: ['sc1', 'sc7', 'sc8'],
+  slc24: ['sc1', 'sc8', 'sc9', 'sc11', 'sc13'],
+  slc25: ['sc1', 'sc9', 'sc13']
+};
 
 // SLC Criteria - Software, Licensing, and Compliance
 const slcCriteria = {
@@ -148,46 +236,147 @@ const slcCriteria = {
 /**
  * Calculate the sovereignty score based on criteria selections
  * @param {Object} criteria - User selections for each criterion
+ * @param {Object} selectedSC - Selected sovereignty characteristics with shall/should designation
  * @returns {Object} - Score breakdown and total
  */
-function calculateScore(criteria) {
+function calculateScore(criteria, selectedSC = {}) {
   let slcScore = 0;
   let slcMaxScore = 0;
   
   const slcDetails = {};
+  const scScores = {};
+
+  // Initialize SC scores
+  Object.keys(sovereigntyCharacteristics).forEach(scKey => {
+    if (selectedSC[scKey]) {
+      scScores[scKey] = {
+        name: sovereigntyCharacteristics[scKey].name,
+        code: sovereigntyCharacteristics[scKey].code,
+        type: selectedSC[scKey], // 'shall' or 'should'
+        contributingCriteria: [],
+        shallScore: 1, // Product for SHALL (starts at 1)
+        shouldScore: 0, // Sum for SHOULD (starts at 0)
+        shouldCount: 0,
+        shallCount: 0
+      };
+    }
+  });
 
   // Calculate SLC criteria score
   for (const [key, criterion] of Object.entries(slcCriteria)) {
     const userSelection = criteria[key];
+    let score = 0;
+    let maxScore = 0;
+    let minScore = 0;
+    let normalizedScore = 0;
     
     // Handle numeric input for SLC5
     if (criterion.type === 'number' && userSelection !== undefined && userSelection !== '') {
       const numValue = Math.min(Math.max(parseFloat(userSelection), criterion.min), criterion.max);
-      const score = numValue * criterion.weight;
-      slcScore += score;
+      score = numValue * criterion.weight;
+      minScore = criterion.min * criterion.weight;
+      maxScore = criterion.max * criterion.weight;
+      
+      // Normalize: (score - min) / (max - min)
+      normalizedScore = maxScore > minScore ? (score - minScore) / (maxScore - minScore) : 0;
+      
       slcDetails[key] = {
         name: criterion.name,
         selection: `${numValue} months`,
-        score: score
+        score: score,
+        normalizedScore: normalizedScore
       };
-      slcMaxScore += criterion.max * criterion.weight;
     } else if (userSelection && criterion.options && criterion.options[userSelection]) {
-      const score = criterion.options[userSelection].score * criterion.weight;
-      slcScore += score;
+      score = criterion.options[userSelection].score * criterion.weight;
+      
+      // Find min and max scores for this criterion
+      const optionScores = Object.values(criterion.options).map(opt => opt.score * criterion.weight);
+      minScore = Math.min(...optionScores);
+      maxScore = Math.max(...optionScores);
+      
+      // Normalize: (score - min) / (max - min)
+      normalizedScore = maxScore > minScore ? (score - minScore) / (maxScore - minScore) : 0;
+      
       slcDetails[key] = {
         name: criterion.name,
         selection: criterion.options[userSelection].label,
-        score: score
+        score: score,
+        normalizedScore: normalizedScore
       };
-      // Find max score for this criterion
-      const maxOptionScore = Math.max(...Object.values(criterion.options).map(opt => opt.score));
-      slcMaxScore += maxOptionScore * criterion.weight;
     } else if (criterion.options) {
       // Add to max score even if not selected
-      const maxOptionScore = Math.max(...Object.values(criterion.options).map(opt => opt.score));
-      slcMaxScore += maxOptionScore * criterion.weight;
+      const optionScores = Object.values(criterion.options).map(opt => opt.score * criterion.weight);
+      minScore = Math.min(...optionScores);
+      maxScore = Math.max(...optionScores);
+    }
+
+    slcScore += score;
+    slcMaxScore += maxScore;
+
+    // Map to sovereignty characteristics using normalized score
+    if (slcToScMapping[key] && normalizedScore > 0) {
+      slcToScMapping[key].forEach(scKey => {
+        if (scScores[scKey]) {
+          scScores[scKey].contributingCriteria.push({
+            slc: key,
+            name: criterion.name,
+            score: score,
+            maxScore: maxScore,
+            normalizedScore: normalizedScore
+          });
+          
+          if (scScores[scKey].type === 'shall') {
+            scScores[scKey].shallScore *= normalizedScore;
+            scScores[scKey].shallCount++;
+          } else if (scScores[scKey].type === 'should') {
+            scScores[scKey].shouldScore += normalizedScore;
+            scScores[scKey].shouldCount++;
+          }
+        }
+      });
     }
   }
+
+  // Calculate final SC scores
+  const scResults = {};
+  let totalShallScore = 1;
+  let totalShouldScore = 0;
+  let shouldCount = 0;
+  let shallCount = 0;
+
+  Object.entries(scScores).forEach(([scKey, scData]) => {
+    let finalScore = 0;
+    let percentage = 0;
+
+    if (scData.type === 'shall') {
+      finalScore = scData.shallScore;
+      percentage = scData.shallCount > 0 ? (finalScore * 100) : 0;
+      totalShallScore *= finalScore;
+      shallCount++;
+    } else if (scData.type === 'should') {
+      const avgScore = scData.shouldCount > 0 ? scData.shouldScore / scData.shouldCount : 0;
+      finalScore = avgScore;
+      percentage = avgScore * 100;
+      totalShouldScore += avgScore;
+      shouldCount++;
+    }
+
+    scResults[scKey] = {
+      name: scData.name,
+      code: scData.code,
+      type: scData.type,
+      score: Math.round(finalScore * 1000) / 1000,
+      percentage: Math.round(percentage * 10) / 10,
+      contributingCriteria: scData.contributingCriteria
+    };
+  });
+
+  // Calculate overall sovereignty score
+  // SHALL criteria use product (all must be satisfied)
+  // SHOULD criteria use average (desirable but not mandatory)
+  const avgShouldScore = shouldCount > 0 ? totalShouldScore / shouldCount : 1;
+  const overallSovScore = totalShallScore * avgShouldScore;
+  const overallPercentage = overallSovScore * 100;
 
   const totalScore = slcScore;
   const maxScore = slcMaxScore;
@@ -203,7 +392,16 @@ function calculateScore(criteria) {
       percentage: slcMaxScore > 0 ? Math.round((slcScore / slcMaxScore) * 1000) / 10 : 0,
       details: slcDetails
     },
-    rating: getSovereigntyRating(percentageScore)
+    sovereignty: {
+      overallScore: Math.round(overallSovScore * 1000) / 1000,
+      overallPercentage: Math.round(overallPercentage * 10) / 10,
+      shallScore: Math.round(totalShallScore * 1000) / 1000,
+      shouldScore: shouldCount > 0 ? Math.round(avgShouldScore * 1000) / 1000 : 0,
+      characteristics: scResults,
+      shallCount,
+      shouldCount
+    },
+    rating: getSovereigntyRating(Object.keys(selectedSC).length > 0 ? overallPercentage : percentageScore)
   };
 }
 
@@ -223,12 +421,16 @@ function getSovereigntyRating(percentage) {
  */
 function getCriteriaDefinitions() {
   return {
-    slc: slcCriteria
+    slc: slcCriteria,
+    sc: sovereigntyCharacteristics,
+    mapping: slcToScMapping
   };
 }
 
 module.exports = {
   calculateScore,
   getCriteriaDefinitions,
-  slcCriteria
+  slcCriteria,
+  sovereigntyCharacteristics,
+  slcToScMapping
 };

@@ -42,6 +42,46 @@
           </div>
         </section>
 
+        <!-- Sovereignty Characteristics Selection -->
+        <section class="form-section">
+          <h2>
+            Sovereignty Characteristics (Optional)
+            <button type="button" class="btn-toggle" @click="showSCSelector = !showSCSelector">
+              {{ showSCSelector ? 'Hide' : 'Show' }} ({{ getSelectedSCCount() }} selected)
+            </button>
+          </h2>
+          <p class="section-description">
+            Select which sovereignty characteristics to evaluate. Mark each as <strong>SHALL</strong> (mandatory - uses product calculation) or <strong>SHOULD</strong> (desirable - uses average calculation).
+          </p>
+          
+          <div v-show="showSCSelector" class="sc-grid">
+            <div v-for="(sc, key) in sovereigntyCharacteristics" :key="key" class="sc-item">
+              <div class="sc-header">
+                <strong>{{ sc.code }}: {{ sc.name }}</strong>
+              </div>
+              <p class="sc-description">{{ sc.description }}</p>
+              <div class="sc-buttons">
+                <button 
+                  type="button" 
+                  class="btn-sc"
+                  :class="{ 'active shall': isSCSelected(key, 'shall') }"
+                  @click="toggleSC(key, 'shall')"
+                >
+                  SHALL
+                </button>
+                <button 
+                  type="button" 
+                  class="btn-sc"
+                  :class="{ 'active should': isSCSelected(key, 'should') }"
+                  @click="toggleSC(key, 'should')"
+                >
+                  SHOULD
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- SLC Criteria - Software, Licensing, and Compliance -->
         <section class="form-section">
           <h2>SLC Criteria - Software, Licensing & Compliance</h2>
@@ -222,17 +262,26 @@
         <div class="score-summary">
           <div class="score-card main-score">
             <h3>Overall Sovereignty Score</h3>
-            <div class="score-value">{{ results.percentageScore }}%</div>
-            <div class="score-rating" :class="getRatingClass(results.percentageScore)">
+            <div class="score-value">{{ results.sovereignty && results.sovereignty.shallCount + results.sovereignty.shouldCount > 0 ? results.sovereignty.overallScore : results.percentageScore + '%' }}</div>
+            <div v-if="!(results.sovereignty && results.sovereignty.shallCount + results.sovereignty.shouldCount > 0)" class="score-rating" :class="getRatingClass(results.percentageScore)">
               {{ results.rating }}
             </div>
-            <div class="score-detail">{{ results.totalScore }} / {{ results.maxScore }} points</div>
+            <div v-if="!(results.sovereignty && results.sovereignty.shallCount + results.sovereignty.shouldCount > 0)" class="score-detail">{{ results.totalScore }} / {{ results.maxScore }} points</div>
           </div>
 
           <div class="score-card">
             <h3>SLC Criteria</h3>
             <div class="score-value small">{{ results.slc.percentage }}%</div>
             <div class="score-detail">{{ results.slc.score }} / {{ results.slc.maxScore }} points</div>
+          </div>
+
+          <div v-if="results.sovereignty && results.sovereignty.shallCount + results.sovereignty.shouldCount > 0" class="score-card sovereignty-card">
+            <h3>Sovereignty Assessment</h3>
+            <div class="score-value small">{{ results.sovereignty.overallPercentage }}%</div>
+            <div class="score-detail">
+              SHALL: {{ results.sovereignty.shallScore }} ({{ results.sovereignty.shallCount }})
+              | SHOULD: {{ results.sovereignty.shouldScore }} ({{ results.sovereignty.shouldCount }})
+            </div>
           </div>
         </div>
 
@@ -241,7 +290,34 @@
           <div class="criteria-details">
             <div v-for="(detail, key) in results.slc.details" :key="key" class="detail-item">
               <span class="detail-name">{{ detail.name }}:</span>
-              <span class="detail-value">{{ detail.selection }} ({{ detail.score }} points)</span>
+              <span class="detail-value">
+                {{ detail.selection }} 
+                <span class="detail-scores">
+                  (Raw: {{ detail.score }} | Normalized: {{ Math.round(detail.normalizedScore * 100) }}%)
+                </span>
+              </span>
+            </div>
+          </div>
+
+          <div v-if="results.sovereignty && Object.keys(results.sovereignty.characteristics).length > 0">
+            <h3>Sovereignty Characteristics Assessment</h3>
+            <div class="sovereignty-details">
+              <div v-for="(sc, key) in results.sovereignty.characteristics" :key="key" class="sovereignty-item">
+                <div class="sov-header">
+                  <span class="sov-code">{{ sc.code }}</span>
+                  <span class="sov-name">{{ sc.name }}</span>
+                  <span class="sov-badge" :class="sc.type">{{ sc.type.toUpperCase() }}</span>
+                  <span class="sov-score">{{ sc.percentage }}%</span>
+                </div>
+                <div class="sov-contributing">
+                  <strong>Contributing SLC Criteria:</strong>
+                  <ul>
+                    <li v-for="(contrib, idx) in sc.contributingCriteria" :key="idx">
+                      {{ contrib.name }}: {{ Math.round(contrib.normalizedScore * 100) }}%
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>

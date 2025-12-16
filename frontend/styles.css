@@ -43,6 +43,17 @@ h2 {
   color: #764ba2;
   font-size: 1.5em;
   margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.section-description {
+  color: #666;
+  margin-bottom: 20px;
+  line-height: 1.6;
+  font-size: 0.95em;
 }
 
 h3 {
@@ -142,6 +153,174 @@ textarea {
 
 .btn-secondary:hover {
   background: #5a6268;
+}
+
+.btn-toggle {
+  padding: 8px 16px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-toggle:hover {
+  background: #5568d3;
+}
+
+/* Sovereignty Characteristics Selector */
+.sc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.sc-item {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  border: 2px solid #e0e0e0;
+  transition: border-color 0.3s;
+}
+
+.sc-item:hover {
+  border-color: #667eea;
+}
+
+.sc-header {
+  color: #667eea;
+  margin-bottom: 8px;
+  font-size: 0.95em;
+}
+
+.sc-description {
+  color: #666;
+  font-size: 0.85em;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.sc-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-sc {
+  flex: 1;
+  padding: 8px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  color: #666;
+  font-weight: 600;
+  font-size: 0.85em;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-sc:hover {
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.btn-sc.active.shall {
+  background: #dc3545;
+  border-color: #dc3545;
+  color: white;
+}
+
+.btn-sc.active.should {
+  background: #28a745;
+  border-color: #28a745;
+  color: white;
+}
+
+/* Sovereignty Results */
+.sovereignty-card {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  color: white;
+}
+
+.sovereignty-card h3,
+.sovereignty-card .score-value,
+.sovereignty-card .score-detail {
+  color: white;
+}
+
+.sovereignty-details {
+  margin-top: 15px;
+}
+
+.sovereignty-item {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  border-left: 4px solid #667eea;
+}
+
+.sov-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.sov-code {
+  background: #667eea;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 0.85em;
+}
+
+.sov-name {
+  font-weight: 600;
+  color: #333;
+  flex: 1;
+}
+
+.sov-badge {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.75em;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.sov-badge.shall {
+  background: #dc3545;
+  color: white;
+}
+
+.sov-badge.should {
+  background: #28a745;
+  color: white;
+}
+
+.sov-score {
+  font-weight: bold;
+  color: #667eea;
+  font-size: 1.1em;
+}
+
+.sov-contributing {
+  color: #666;
+  font-size: 0.9em;
+}
+
+.sov-contributing ul {
+  margin-top: 5px;
+  margin-left: 20px;
+}
+
+.sov-contributing li {
+  margin-bottom: 3px;
 }
 
 .results-section {
@@ -273,6 +452,12 @@ textarea {
 .detail-value {
   color: #667eea;
   font-weight: 500;
+}
+
+.detail-scores {
+  font-size: 0.9em;
+  color: #888;
+  font-weight: normal;
 }
 
 .description {

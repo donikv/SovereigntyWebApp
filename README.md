@@ -4,8 +4,13 @@ A web application for evaluating the sovereignty level of digital technologies b
 
 ## Overview
 
-This application calculates a sovereignty score based on SLC (Software, Licensing & Compliance) evaluation criteria:
+This application calculates a sovereignty score based on:
 - **SLC Criteria** (14 criteria): Software ownership, country of origin, licenses, update frequency, community, compliance, funding, interoperability, development processes, AI model retraining, dependencies, and explainability
+- **Sovereignty Characteristics** (13 characteristics - optional): Strategic framework including autonomy, technological independence, security, legal frameworks, compliance, control, resilience, protection, interoperability, infrastructure, economic considerations, and accountability
+
+The scoring system supports two types of sovereignty characteristic requirements:
+- **SHALL** (mandatory): Calculated using product - all must be satisfied
+- **SHOULD** (desirable): Calculated using average - recommended but not mandatory
 
 ## Tech Stack
 
@@ -52,14 +57,43 @@ SoveregnityWebApp/
 
 1. Enter the **Technology Name** (e.g., "AI Model", "Software Platform")
 2. Add an optional **Description**
-3. Select values for all **SLC Criteria** (14 fields including software ownership, licenses, community size, compliance, funding, interoperability, development processes, AI model retraining, dependencies, and explainability)
-4. Click **Calculate Score**
-5. View the results showing:
+3. **(Optional)** Select **Sovereignty Characteristics** to evaluate:
+   - Click "Show" to display all 13 sovereignty characteristics
+   - For each characteristic, mark it as **SHALL** (mandatory) or **SHOULD** (desirable)
+   - SHALL criteria use product calculation (all must be satisfied)
+   - SHOULD criteria use average calculation (recommended but flexible)
+4. Fill in all **SLC Criteria** (14 fields)
+5. Click **Calculate Score**
+6. View the results showing:
    - Overall sovereignty score (percentage)
-   - SLC criteria score breakdown with detailed results
+   - SLC criteria score breakdown
+   - Sovereignty characteristics assessment (if selected)
+   - Detailed breakdown of how each SLC criterion contributes to sovereignty characteristics
    - Sovereignty rating (Excellent, High, Moderate, Low, Very Low)
 
 ## Scoring System
+
+### Sovereignty Characteristics (Optional Strategic Framework)
+Users can select which of the 13 sovereignty characteristics to evaluate:
+
+1. **SC1: Autonomy** - Autonomous decision-making with human supervision
+2. **SC2: Technological Independence** - Self-sufficiency in AI development
+3. **SC3: Security and Digital Integrity** - Protection against cyber threats
+4. **SC4: Legal and Ethical Frameworks** - Compliance with laws and ethical norms
+5. **SC5: International Compliance** - Minimize external dependencies
+6. **SC6: Control over Import/Export** - Regulate AI technology trade
+7. **SC7: Resilience** - Robust and swift recovery from disruptions
+8. **SC8: Indispensability** - Promote indispensable capabilities to allies
+9. **SC9: Protection** - No negative impact on critical infrastructure
+10. **SC10: Openness and Interoperability** - System compatibility
+11. **SC11: Infrastructure Sovereignty** - Control over AI infrastructure
+12. **SC12: Economic Considerations** - Economically viable development
+13. **SC13: Accountability** - Clear accountability mechanisms
+
+**Scoring Method:**
+- **SHALL requirements** (mandatory): Score = Product of all normalized SLC scores contributing to this SC
+- **SHOULD requirements** (desirable): Score = Average of all normalized SLC scores contributing to this SC
+- **Overall Sovereignty Score** = (Product of all SHALL scores) × (Average of all SHOULD scores)
 
 ### SLC Criteria (Software, Licensing & Compliance)
 - **SLC1 - Software Ownership**: NGO (3), GO (2), PO (1)
@@ -109,6 +143,12 @@ Calculate the sovereignty score for a technology.
     "slc23": "internal",
     "slc24": "one",
     "slc25": "whitebox"
+  },
+  "selectedSC": {
+    "sc1": "should",
+    "sc2": "shall",
+    "sc4": "shall",
+    "sc11": "should"
   }
 }
 ```
@@ -126,6 +166,25 @@ Calculate the sovereignty score for a technology.
     "maxScore": 70,
     "percentage": 100,
     "details": { /* ... */ }
+  },
+  "sovereignty": {
+    "overallScore": 0.95,
+    "overallPercentage": 95,
+    "shallScore": 0.97,
+    "shouldScore": 0.98,
+    "characteristics": {
+      "sc1": {
+        "name": "Autonomy",
+        "code": "SC1",
+        "type": "should",
+        "score": 0.98,
+        "percentage": 98,
+        "contributingCriteria": [ /* ... */ ]
+      }
+      /* ... */
+    },
+    "shallCount": 2,
+    "shouldCount": 2
   },
   "rating": "Excellent Sovereignty"
 }
