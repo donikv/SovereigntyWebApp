@@ -339,43 +339,40 @@ function calculateScore(criteria, selectedSC = {}) {
 
   // Calculate final SC scores
   const scResults = {};
-  let totalShallScore = 1;
-  let totalShouldScore = 0;
-  let shouldCount = 0;
-  let shallCount = 0;
+  const scProducts = []; // Store product of SHALL and SHOULD for each SC
 
   Object.entries(scScores).forEach(([scKey, scData]) => {
-    let finalScore = 0;
-    let percentage = 0;
+    let shallScore = 1;
+    let shouldScore = 1;
 
     if (scData.type === 'shall') {
-      finalScore = scData.shallScore;
-      percentage = scData.shallCount > 0 ? (finalScore * 100) : 0;
-      totalShallScore *= finalScore;
-      shallCount++;
+      shallScore = scData.shallScore;
+      shouldScore = 1; // SHOULD component is 1 when SC is marked as SHALL
     } else if (scData.type === 'should') {
-      const avgScore = Math.max(scData.shouldCount > 0 ? scData.shouldScore : 0, 0.05);
-      finalScore = avgScore;
-      percentage = avgScore * 100;
-      totalShouldScore += avgScore;
-      shouldCount++;
+      shallScore = 1; // SHALL component is 1 when SC is marked as SHOULD
+      shouldScore = Math.max(scData.shouldCount > 0 ? scData.shouldScore : 0, 0.05);
     }
+
+    // Product of SHALL and SHOULD for this SC
+    const scProduct = shallScore * shouldScore;
+    scProducts.push(scProduct);
 
     scResults[scKey] = {
       name: scData.name,
       code: scData.code,
       type: scData.type,
-      score: Math.round(finalScore * 1000) / 1000,
-      percentage: Math.round(percentage * 10) / 10,
+      shallScore: Math.round(shallScore * 1000) / 1000,
+      shouldScore: Math.round(shouldScore * 1000) / 1000,
+      score: Math.round(scProduct * 1000) / 1000,
+      percentage: Math.round(scProduct * 100 * 10) / 10,
       contributingCriteria: scData.contributingCriteria
     };
   });
 
-  // Calculate overall sovereignty score
-  // SHALL criteria use product (all must be satisfied)
-  // SHOULD criteria use average (desirable but not mandatory)
-  const avgShouldScore = shouldCount > 0 ? totalShouldScore / shouldCount : 1;
-  const overallSovScore = totalShallScore * avgShouldScore;
+  // Calculate overall sovereignty score as product of all SC products
+  const overallSovScore = scProducts.length > 0
+    ? scProducts.reduce((product, scProduct) => product * scProduct, 1)
+    : 0;
   const overallPercentage = overallSovScore * 100;
 
   const totalScore = slcScore;
@@ -395,11 +392,8 @@ function calculateScore(criteria, selectedSC = {}) {
     sovereignty: {
       overallScore: Math.round(overallSovScore * 1000) / 1000,
       overallPercentage: Math.round(overallPercentage * 10) / 10,
-      shallScore: Math.round(totalShallScore * 1000) / 1000,
-      shouldScore: shouldCount > 0 ? Math.round(avgShouldScore * 1000) / 1000 : 0,
       characteristics: scResults,
-      shallCount,
-      shouldCount
+      selectedCount: Object.keys(selectedSC || {}).length
     },
     rating: getSovereigntyRating(Object.keys(selectedSC).length > 0 ? overallPercentage : percentageScore)
   };
