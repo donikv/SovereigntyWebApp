@@ -7,18 +7,6 @@ createApp({
         technologyName: '',
         description: '',
         criteria: {
-          // Technical Criteria
-          dataStorage: '',
-          dataProcessing: '',
-          openSource: '',
-          interoperability: '',
-          encryption: '',
-          // Legal/Organizational Criteria
-          providerLocation: '',
-          dataGovernance: '',
-          contractualControl: '',
-          auditability: '',
-          certifications: '',
           // SLC Criteria
           slc1: '',
           slc2: '',
@@ -82,16 +70,6 @@ createApp({
         technologyName: '',
         description: '',
         criteria: {
-          dataStorage: '',
-          dataProcessing: '',
-          openSource: '',
-          interoperability: '',
-          encryption: '',
-          providerLocation: '',
-          dataGovernance: '',
-          contractualControl: '',
-          auditability: '',
-          certifications: '',
           slc1: '',
           slc2: '',
           slc3: '',
