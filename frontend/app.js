@@ -134,6 +134,62 @@ createApp({
       if (percentage >= 60) return 'rating-moderate';
       if (percentage >= 40) return 'rating-low';
       return 'rating-very-low';
+    },
+    
+    exportData() {
+      const exportData = {
+        technologyName: this.formData.technologyName,
+        description: this.formData.description,
+        criteria: this.formData.criteria,
+        exportDate: new Date().toISOString(),
+        version: '1.0'
+      };
+      
+      const dataStr = JSON.stringify(exportData, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${this.formData.technologyName.replace(/[^a-z0-9]/gi, '_').toLowerCase() || 'evaluation'}_${new Date().toISOString().split('T')[0]}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+    },
+    
+    importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const importedData = JSON.parse(e.target.result);
+          
+          // Validate required fields
+          if (!importedData.criteria) {
+            throw new Error('Invalid file format: missing criteria');
+          }
+          
+          // Import data
+          this.formData.technologyName = importedData.technologyName || '';
+          this.formData.description = importedData.description || '';
+          this.formData.criteria = { ...this.formData.criteria, ...importedData.criteria };
+          
+          // Reset file input
+          event.target.value = '';
+          
+          // Show success message
+          alert('Data imported successfully!');
+        } catch (err) {
+          this.error = 'Error importing file: ' + err.message;
+          console.error('Import error:', err);
+          event.target.value = '';
+        }
+      };
+      reader.readAsText(file);
+    },
+    
+    triggerImport() {
+      this.$refs.fileInput.click();
     }
   },
   computed: {

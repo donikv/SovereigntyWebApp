@@ -16,6 +16,23 @@
       </header>
 
       <form @submit.prevent="calculateScore" class="evaluation-form">
+        <!-- Import/Export Controls -->
+        <div class="import-export-controls">
+          <button type="button" class="btn-secondary" @click="exportData" :disabled="!formData.technologyName">
+            📥 Export Data
+          </button>
+          <button type="button" class="btn-secondary" @click="triggerImport">
+            📤 Import Data
+          </button>
+          <input 
+            type="file" 
+            ref="fileInput" 
+            @change="importData" 
+            accept=".json" 
+            style="display: none;"
+          >
+        </div>
+
         <!-- Basic Information -->
         <section class="form-section">
           <h2>Technology Information</h2>
@@ -266,7 +283,7 @@
         <div class="score-summary">
           <div class="score-card main-score">
             <h3>Overall Sovereignty Score</h3>
-            <div class="score-value">{{ results.sovereignty.overallScore + '%' }}</div>
+            <div class="score-value">{{ results.sovereignty.overallScore * 100 + '%' }}</div>
             <!-- <div v-if="!(results.sovereignty && results.sovereignty.shallCount + results.sovereignty.shouldCount > 0)" class="score-rating" :class="getRatingClass(results.percentageScore)">
               {{ results.rating }}
             </div>
