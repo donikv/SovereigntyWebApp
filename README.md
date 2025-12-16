@@ -1,16 +1,41 @@
 # Digital Sovereignty Evaluation Web App
 
-A web application for evaluating the sovereignty level of digital technologies based on technical and legal criteria.
+A web application for evaluating the sovereignty level of digital technologies for military AI systems based on Software, Licensing, and Compliance (SLC) criteria with optional strategic sovereignty characteristics assessment.
 
 ## Overview
 
-This application calculates a sovereignty score based on:
+This application calculates sovereignty scores for technologies based on:
 - **SLC Criteria** (14 criteria): Software ownership, country of origin, licenses, update frequency, community, compliance, funding, interoperability, development processes, AI model retraining, dependencies, and explainability
 - **Sovereignty Characteristics** (13 characteristics - optional): Strategic framework including autonomy, technological independence, security, legal frameworks, compliance, control, resilience, protection, interoperability, infrastructure, economic considerations, and accountability
+- **Mitigation Support**: Each SLC criterion can be marked as mitigated, affecting how it contributes to SHALL requirements
 
-The scoring system supports two types of sovereignty characteristic requirements:
-- **SHALL** (mandatory): Calculated using product - all must be satisfied
-- **SHOULD** (desirable): Calculated using average - recommended but not mandatory
+### Key Features
+
+- **Normalized Scoring**: All SLC criteria are normalized to 0-1 range for fair comparison
+- **Flexible Assessment**: Optional sovereignty characteristics with SHALL/SHOULD designation
+- **Mitigation Framework**: Support for risk mitigation strategies
+- **Import/Export**: Save and load evaluations as JSON files
+
+## Scoring Methodology
+
+### SHALL vs SHOULD Requirements
+
+When evaluating sovereignty characteristics, you can mark each as:
+- **SHALL** (mandatory): Non-negotiable requirements
+  - Non-mitigated SLCs: Calculated using **product** (multiply scores)
+  - Mitigated SLCs: Calculated using **average** (sum/count)
+  - Final SHALL score = (Product of non-mitigated) × (Average of mitigated)
+- **SHOULD** (desirable): Recommended but flexible requirements
+  - All SLCs: Calculated using **average** regardless of mitigation
+
+### Mitigation Impact
+
+Mitigations represent risk management strategies:
+- Check "Mitigation" for any SLC where compensating controls exist
+- For **SHALL** characteristics: Mitigated SLCs are treated more leniently (averaged instead of multiplied)
+- For **SHOULD** characteristics: Mitigations don't change the calculation (always averaged)
+- Overall SC score = SHALL score × SHOULD score
+- Final sovereignty score = Product of all selected SC scores
 
 ## Tech Stack
 
@@ -55,21 +80,35 @@ SoveregnityWebApp/
 
 ## Usage
 
-1. Enter the **Technology Name** (e.g., "AI Model", "Software Platform")
-2. Add an optional **Description**
-3. **(Optional)** Select **Sovereignty Characteristics** to evaluate:
+1. **Enter Technology Information**
+   - Technology Name (required)
+   - Description (optional)
+
+2. **Import/Export Data** (optional)
+   - 📥 **Export Data**: Save current evaluation as JSON file
+   - 📤 **Import Data**: Load previously saved evaluation
+
+3. **Select Sovereignty Characteristics** (optional)
    - Click "Show" to display all 13 sovereignty characteristics
-   - For each characteristic, mark it as **SHALL** (mandatory) or **SHOULD** (desirable)
-   - SHALL criteria use product calculation (all must be satisfied)
-   - SHOULD criteria use average calculation (recommended but flexible)
-4. Fill in all **SLC Criteria** (14 fields)
-5. Click **Calculate Score**
-6. View the results showing:
-   - Overall sovereignty score (percentage)
-   - SLC criteria score breakdown
-   - Sovereignty characteristics assessment (if selected)
-   - Detailed breakdown of how each SLC criterion contributes to sovereignty characteristics
-   - Sovereignty rating (Excellent, High, Moderate, Low, Very Low)
+   - For each characteristic you want to evaluate:
+     - Click **SHALL** for mandatory requirements
+     - Click **SHOULD** for desirable requirements
+   - Click the same button again to deselect
+
+4. **Fill in SLC Criteria** (required)
+   - Complete all 14 SLC criteria dropdowns
+   - Check **Mitigation** checkbox for any criterion where risk mitigation exists
+
+5. **Calculate Score**
+   - Click "Calculate Score" button
+   - View results including:
+     - Overall sovereignty score (0-1 numerical value when SCs selected, percentage otherwise)
+     - SLC criteria breakdown with raw and normalized scores
+     - Sovereignty characteristics assessment with contributing criteria
+     - Mitigation indicators showing which criteria have mitigations applied
+
+6. **Reset Form**
+   - Click "Reset" to clear all inputs and start fresh
 
 ## Scoring System
 
@@ -91,15 +130,43 @@ Users can select which of the 13 sovereignty characteristics to evaluate:
 13. **SC13: Accountability** - Clear accountability mechanisms
 
 **Scoring Method:**
-- **SHALL requirements** (mandatory): Score = Product of all normalized SLC scores contributing to this SC
-- **SHOULD requirements** (desirable): Score = Average of all normalized SLC scores contributing to this SC
-- **Overall Sovereignty Score** = (Product of all SHALL scores) × (Average of all SHOULD scores)
+- Each SLC criterion score is normalized to 0-1 range
+- **SHALL requirements** with mitigations:
+  - Non-mitigated SLCs: Product (multiply all scores)
+  - Mitigated SLCs: Average (sum/count)
+  - Final SHALL score = (Product of non-mitigated) × (Average of mitigated)
+- **SHALL requirements** without mitigations: Product of all normalized SLC scores
+- **SHOULD requirements**: Average of all normalized SLC scores (regardless of mitigation)
+- **Per-SC Score** = SHALL component × SHOULD component
+- **Overall Sovereignty Score** = Product of all selected SC scores
+
+### SLC-to-SC Mapping
+
+Each SLC criterion contributes to one or more sovereignty characteristics:
+
+- **SLC1** (Software Ownership) → SC1, SC2, SC3, SC8, SC9, SC11, SC12
+- **SLC2** (Software Country) → SC1, SC2, SC3, SC8, SC9, SC11, SC12
+- **SLC3** (Software License) → SC1, SC4, SC5
+- **SLC5** (Update Frequency) → SC1, SC3, SC12
+- **SLC33** (Data Country) → SC1, SC3, SC8, SC9, SC11
+- **SLC34** (Data License) → SC1, SC8
+- **SLC11** (Community) → SC1, SC2, SC3, SC8
+- **SLC12** (Compliance) → SC1, SC4, SC5, SC13
+- **SLC13** (Funding) → SC1, SC8, SC12
+- **SLC16** (Interoperability) → SC1, SC8, SC10
+- **SLC17** (Development) → SC1, SC6, SC7, SC8, SC9
+- **SLC23** (AI Retraining) → SC1, SC7, SC8
+- **SLC24** (APIs/Services) → SC1, SC8, SC9, SC11, SC13
+- **SLC25** (Explainability) → SC1, SC9, SC13
 
 ### SLC Criteria (Software, Licensing & Compliance)
+
+All criteria scores are **normalized to 0-1 range** for fair comparison:
+
 - **SLC1 - Software Ownership**: NGO (3), GO (2), PO (1)
 - **SLC2 - Software Country of Origin**: White-list (10), Grey-list (5), Black-list (1)
 - **SLC3 - Software License**: Public Domain (5), Permissive (4), LGPL (3), Copyleft (2), Proprietary (1)
-- **SLC5 - Update Frequency**: 0-12 months (direct score, lower is better)
+- **SLC5 - Update Frequency**: 1 month (1) to 12+ months (12) - dropdown selection
 - **SLC33 - Data Country of Origin**: White-list (10), Grey-list (5), Black-list (1)
 - **SLC34 - Data License**: Public Domain (5), Permissive (4), LGPL (3), Copyleft (2), Proprietary (1)
 - **SLC11 - Community Size**: >100k (4), >10k (3), >1k (2), <1k (1)
@@ -110,6 +177,8 @@ Users can select which of the 13 sovereignty characteristics to evaluate:
 - **SLC23 - AI Model Retraining**: Internal (3), Retrained (2), External (1)
 - **SLC24 - Dependencies**: 1 (4), 2-4 (3), 5-9 (2), ≥10 (1)
 - **SLC25 - Explainability**: White/Grey-box (3), External explainability (2), Consistent (1), Not explainable (0)
+
+**Note**: Normalization formula: `(score - min) / (max - min)` ensures all criteria contribute fairly regardless of their original score range.
 
 ### Sovereignty Rating
 - **90-100%**: Excellent Sovereignty
@@ -132,7 +201,7 @@ Calculate the sovereignty score for a technology.
     "slc1": "ngo",
     "slc2": "whitelist",
     "slc3": "public_domain",
-    "slc5": 3,
+    "slc5": "3",
     "slc33": "whitelist",
     "slc34": "permissive",
     "slc11": "huge",
@@ -143,6 +212,22 @@ Calculate the sovereignty score for a technology.
     "slc23": "internal",
     "slc24": "one",
     "slc25": "whitebox"
+  },
+  "mitigations": {
+    "slc1": false,
+    "slc2": false,
+    "slc3": true,
+    "slc5": false,
+    "slc33": false,
+    "slc34": false,
+    "slc11": false,
+    "slc12": false,
+    "slc13": false,
+    "slc16": false,
+    "slc17": true,
+    "slc23": false,
+    "slc24": false,
+    "slc25": false
   },
   "selectedSC": {
     "sc1": "should",
@@ -165,26 +250,45 @@ Calculate the sovereignty score for a technology.
     "score": 70,
     "maxScore": 70,
     "percentage": 100,
-    "details": { /* ... */ }
+    "details": {
+      "slc1": {
+        "name": "SLC1: Software Ownership",
+        "selection": "Non-Governmental Organization (NGO)",
+        "score": 3,
+        "normalizedScore": 1
+      }
+      /* ... other SLC details ... */
+    }
   },
   "sovereignty": {
     "overallScore": 0.95,
     "overallPercentage": 95,
-    "shallScore": 0.97,
-    "shouldScore": 0.98,
     "characteristics": {
       "sc1": {
         "name": "Autonomy",
         "code": "SC1",
         "type": "should",
+        "shallScore": 1,
+        "shouldScore": 0.98,
         "score": 0.98,
         "percentage": 98,
-        "contributingCriteria": [ /* ... */ ]
+        "contributingCriteria": [
+          {
+            "slc": "slc1",
+            "name": "SLC1: Software Ownership",
+            "score": 3,
+            "maxScore": 3,
+            "normalizedScore": 1,
+            "hasMitigation": false
+          }
+          /* ... other contributing criteria ... */
+        ],
+        "mitigatedCount": 1,
+        "nonMitigatedCount": 6
       }
-      /* ... */
+      /* ... other SC details ... */
     },
-    "shallCount": 2,
-    "shouldCount": 2
+    "selectedCount": 4
   },
   "rating": "Excellent Sovereignty"
 }
@@ -193,10 +297,13 @@ Calculate the sovereignty score for a technology.
 ## Future Enhancements
 
 - **Database Integration**: Store and retrieve evaluation results
-- **User Authentication**: Allow users to save their evaluations
+- **User Authentication**: Allow users to save and manage their evaluations
 - **Historical Tracking**: Compare evaluations over time
-- **Export Reports**: Generate PDF reports of evaluations
-- **Comparative Analysis**: Compare multiple technologies side-by-side
+- **Export Reports**: Generate PDF reports with charts and visualizations
+- **Comparative Analysis**: Side-by-side comparison of multiple technologies
+- **Custom Weighting**: Allow users to adjust importance of different criteria
+- **Mitigation Documentation**: Add text descriptions for each mitigation strategy
+
 
 ## Dependencies
 
@@ -206,3 +313,4 @@ Calculate the sovereignty score for a technology.
 ## License
 
 MIT
+

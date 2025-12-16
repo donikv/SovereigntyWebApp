@@ -40,6 +40,23 @@ createApp({
           slc24: false,
           slc25: false
         },
+        thresholds: {
+          // Threshold values for each SLC (for SHALL scoring)
+          slc1: '',
+          slc2: '',
+          slc3: '',
+          slc5: '',
+          slc33: '',
+          slc34: '',
+          slc11: '',
+          slc12: '',
+          slc13: '',
+          slc16: '',
+          slc17: '',
+          slc23: '',
+          slc24: '',
+          slc25: ''
+        },
         selectedSC: {
           // Sovereignty Characteristics (empty = not selected, 'shall' or 'should')
         }
@@ -137,6 +154,22 @@ createApp({
           slc24: false,
           slc25: false
         },
+        thresholds: {
+          slc1: '',
+          slc2: '',
+          slc3: '',
+          slc5: '',
+          slc33: '',
+          slc34: '',
+          slc11: '',
+          slc12: '',
+          slc13: '',
+          slc16: '',
+          slc17: '',
+          slc23: '',
+          slc24: '',
+          slc25: ''
+        },
         selectedSC: {}
       };
       this.results = null;
@@ -175,6 +208,7 @@ createApp({
         description: this.formData.description,
         criteria: this.formData.criteria,
         mitigations: this.formData.mitigations,
+        thresholds: this.formData.thresholds,
         exportDate: new Date().toISOString(),
         version: '1.0'
       };
@@ -209,6 +243,9 @@ createApp({
           this.formData.criteria = { ...this.formData.criteria, ...importedData.criteria };
           if (importedData.mitigations) {
             this.formData.mitigations = { ...this.formData.mitigations, ...importedData.mitigations };
+          }
+          if (importedData.thresholds) {
+            this.formData.thresholds = { ...this.formData.thresholds, ...importedData.thresholds };
           }
           
           // Reset file input

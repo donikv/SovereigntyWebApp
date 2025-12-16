@@ -248,9 +248,10 @@ const slcCriteria = {
  * @param {Object} criteria - User selections for each criterion
  * @param {Object} selectedSC - Selected sovereignty characteristics with shall/should designation
  * @param {Object} mitigations - Mitigation flags for each SLC
+ * @param {Object} thresholds - Threshold values for each SLC (for SHALL scoring)
  * @returns {Object} - Score breakdown and total
  */
-function calculateScore(criteria, selectedSC = {}, mitigations = {}) {
+function calculateScore(criteria, selectedSC = {}, mitigations = {}, thresholds = {}) {
   let slcScore = 0;
   let slcMaxScore = 0;
   
@@ -313,6 +314,16 @@ function calculateScore(criteria, selectedSC = {}, mitigations = {}) {
     // Map to sovereignty characteristics using normalized score
     if (slcToScMapping[key]) {
       const hasMitigation = mitigations[key] === true;
+      const thresholdValue = thresholds[key];
+      
+      // Get threshold score (raw, not normalized)
+      let thresholdScore = minScore; // Default to minimum if no threshold set
+      if (thresholdValue && criterion.options && criterion.options[thresholdValue]) {
+        thresholdScore = criterion.options[thresholdValue].score * criterion.weight;
+      }
+      
+      // Check if score meets threshold (for SHALL non-mitigated)
+      const meetsThreshold = score >= thresholdScore;
       
       slcToScMapping[key].forEach(scKey => {
         if (scScores[scKey]) {
@@ -322,7 +333,9 @@ function calculateScore(criteria, selectedSC = {}, mitigations = {}) {
             score: score,
             maxScore: maxScore,
             normalizedScore: normalizedScore,
-            hasMitigation: hasMitigation
+            hasMitigation: hasMitigation,
+            threshold: thresholdScore,
+            meetsThreshold: meetsThreshold
           });
           
           if (scScores[scKey].type === 'shall') {
@@ -331,8 +344,9 @@ function calculateScore(criteria, selectedSC = {}, mitigations = {}) {
               scScores[scKey].mitigatedScore += normalizedScore;
               scScores[scKey].mitigatedCount++;
             } else {
-              // Non-mitigated SLCs use product
-              scScores[scKey].shallScore *= normalizedScore;
+              // Non-mitigated SLCs use threshold-based binary scoring
+              // 1 if meets threshold, 0 if doesn't
+              scScores[scKey].shallScore *= meetsThreshold ? 1 : 0;
               scScores[scKey].shallCount++;
             }
           } else if (scScores[scKey].type === 'should') {
