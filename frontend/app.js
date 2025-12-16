@@ -79,7 +79,23 @@ createApp({
       results: null,
       loading: false,
       error: null,
-      showSCSelector: false
+      showSCSelector: false,
+      showThresholds: {
+        slc1: false,
+        slc2: false,
+        slc3: false,
+        slc5: false,
+        slc33: false,
+        slc34: false,
+        slc11: false,
+        slc12: false,
+        slc13: false,
+        slc16: false,
+        slc17: false,
+        slc23: false,
+        slc24: false,
+        slc25: false
+      }
     };
   },
   methods: {
@@ -264,6 +280,10 @@ createApp({
     
     triggerImport() {
       this.$refs.fileInput.click();
+    },
+
+    toggleThreshold(slcKey) {
+      this.showThresholds[slcKey] = !this.showThresholds[slcKey];
     }
   },
   computed: {

@@ -130,6 +130,27 @@ h3 {
   user-select: none;
 }
 
+.threshold-toggle {
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  color: #495057;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: all 0.3s;
+  width: 100%;
+  text-align: left;
+  font-weight: 500;
+}
+
+.threshold-toggle:hover {
+  background: #e9ecef;
+  border-color: #ff6b35;
+  color: #ff6b35;
+}
+
 .threshold-group {
   margin-top: 8px;
   padding: 8px;
