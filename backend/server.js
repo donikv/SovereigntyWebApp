@@ -14,7 +14,7 @@ app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Configuration endpoint
 app.get('/api/config', (req, res) => {
-  res.json({ serverAddress: server_address });
+  res.json({ serverAddress: SERVER_ADDRESS });
 });
 
 // Routes
