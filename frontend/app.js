@@ -40,23 +40,6 @@ createApp({
           slc24: false,
           slc25: false
         },
-        thresholds: {
-          // Threshold values for each SLC (for SHALL scoring)
-          slc1: '',
-          slc2: '',
-          slc3: '',
-          slc5: '',
-          slc33: '',
-          slc34: '',
-          slc11: '',
-          slc12: '',
-          slc13: '',
-          slc16: '',
-          slc17: '',
-          slc23: '',
-          slc24: '',
-          slc25: ''
-        },
         selectedSC: {
           // Sovereignty Characteristics (empty = not selected, 'shall' or 'should')
         }
@@ -81,21 +64,22 @@ createApp({
       error: null,
       showSCSelector: false,
       serverAddress: '',
-      showThresholds: {
-        slc1: false,
-        slc2: false,
-        slc3: false,
-        slc5: false,
-        slc33: false,
-        slc34: false,
-        slc11: false,
-        slc12: false,
-        slc13: false,
-        slc16: false,
-        slc17: false,
-        slc23: false,
-        slc24: false,
-        slc25: false
+      thresholds: {
+        // Threshold values loaded from server configuration
+        slc1: '',
+        slc2: '',
+        slc3: '',
+        slc5: '',
+        slc33: '',
+        slc34: '',
+        slc11: '',
+        slc12: '',
+        slc13: '',
+        slc16: '',
+        slc17: '',
+        slc23: '',
+        slc24: '',
+        slc25: ''
       }
     };
   },
@@ -106,6 +90,7 @@ createApp({
         if (response.ok) {
           const config = await response.json();
           this.serverAddress = config.serverAddress;
+          this.thresholds = config.thresholds || this.thresholds;
         } else {
           // Fallback to relative URLs if config fails
           this.serverAddress = '';
@@ -188,22 +173,6 @@ createApp({
           slc24: false,
           slc25: false
         },
-        thresholds: {
-          slc1: '',
-          slc2: '',
-          slc3: '',
-          slc5: '',
-          slc33: '',
-          slc34: '',
-          slc11: '',
-          slc12: '',
-          slc13: '',
-          slc16: '',
-          slc17: '',
-          slc23: '',
-          slc24: '',
-          slc25: ''
-        },
         selectedSC: {}
       };
       this.results = null;
@@ -242,7 +211,6 @@ createApp({
         description: this.formData.description,
         criteria: this.formData.criteria,
         mitigations: this.formData.mitigations,
-        thresholds: this.formData.thresholds,
         exportDate: new Date().toISOString(),
         version: '1.0'
       };
@@ -278,9 +246,6 @@ createApp({
           if (importedData.mitigations) {
             this.formData.mitigations = { ...this.formData.mitigations, ...importedData.mitigations };
           }
-          if (importedData.thresholds) {
-            this.formData.thresholds = { ...this.formData.thresholds, ...importedData.thresholds };
-          }
           
           // Reset file input
           event.target.value = '';
@@ -300,8 +265,32 @@ createApp({
       this.$refs.fileInput.click();
     },
 
-    toggleThreshold(slcKey) {
-      this.showThresholds[slcKey] = !this.showThresholds[slcKey];
+    generateThresholdsConfig() {
+      const thresholdsData = {
+        slc1: '',
+        slc2: '',
+        slc3: '',
+        slc5: '',
+        slc33: '',
+        slc34: '',
+        slc11: '',
+        slc12: '',
+        slc13: '',
+        slc16: '',
+        slc17: '',
+        slc23: '',
+        slc24: '',
+        slc25: ''
+      };
+      
+      const dataStr = JSON.stringify(thresholdsData, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'thresholds.json';
+      link.click();
+      URL.revokeObjectURL(url);
     }
   },
   computed: {

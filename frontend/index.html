@@ -24,6 +24,9 @@
           <button type="button" class="btn-secondary" @click="triggerImport">
             📤 Import Data
           </button>
+          <button type="button" class="btn-secondary" @click="generateThresholdsConfig">
+            ⚙️ Generate Thresholds Config
+          </button>
           <input 
             type="file" 
             ref="fileInput" 
@@ -117,17 +120,6 @@
               <option value="go">Governmental Organization (GO)</option>
               <option value="po">Private Organization (PO)</option>
             </select>
-            <button type="button" class="threshold-toggle" @click="toggleThreshold('slc1')">
-              {{ showThresholds.slc1 ? '▼' : '▶' }} Set Threshold (SHALL)
-            </button>
-            <div v-show="showThresholds.slc1" class="threshold-group">
-              <label for="slc1-threshold">Threshold (SHALL):</label>
-              <select id="slc1-threshold" v-model="formData.thresholds.slc1">
-                <option value="">Minimum (PO)</option>
-                <option value="go">GO</option>
-                <option value="ngo">NGO</option>
-              </select>
-            </div>
           </div>
 
           <div class="form-group">
@@ -144,17 +136,6 @@
               <option value="greylist">Grey-list Country</option>
               <option value="blacklist">Black-list Country</option>
             </select>
-            <button type="button" class="threshold-toggle" @click="toggleThreshold('slc2')">
-              {{ showThresholds.slc2 ? '▼' : '▶' }} Set Threshold (SHALL)
-            </button>
-            <div v-show="showThresholds.slc2" class="threshold-group">
-              <label for="slc2-threshold">Threshold (SHALL):</label>
-              <select id="slc2-threshold" v-model="formData.thresholds.slc2">
-                <option value="">Minimum (Black-list)</option>
-                <option value="greylist">Grey-list</option>
-                <option value="whitelist">White-list</option>
-              </select>
-            </div>
           </div>
 
           <div class="form-group">
@@ -173,19 +154,6 @@
               <option value="copyleft">Copyleft (GPL)</option>
               <option value="proprietary">Commercial/Proprietary</option>
             </select>
-            <button type="button" class="threshold-toggle" @click="toggleThreshold('slc3')">
-              {{ showThresholds.slc3 ? '▼' : '▶' }} Set Threshold (SHALL)
-            </button>
-            <div v-show="showThresholds.slc3" class="threshold-group">
-              <label for="slc3-threshold">Threshold (SHALL):</label>
-              <select id="slc3-threshold" v-model="formData.thresholds.slc3">
-                <option value="">Minimum (Proprietary)</option>
-                <option value="copyleft">Copyleft (GPL)</option>
-                <option value="lgpl">LGPL/Intermediate</option>
-                <option value="permissive">Permissive</option>
-                <option value="public_domain">Public Domain</option>
-              </select>
-            </div>
           </div>
 
           <div class="form-group">
@@ -211,26 +179,6 @@
               <option value="11">11 months</option>
               <option value="12+">12 months or more</option>
             </select>
-            <button type="button" class="threshold-toggle" @click="toggleThreshold('slc5')">
-              {{ showThresholds.slc5 ? '▼' : '▶' }} Set Threshold (SHALL)
-            </button>
-            <div v-show="showThresholds.slc5" class="threshold-group">
-              <label for="slc5-threshold">Threshold (SHALL):</label>
-              <select id="slc5-threshold" v-model="formData.thresholds.slc5">
-                <option value="">Minimum (1 month or less)</option>
-                <option value="2">2 months</option>
-                <option value="3">3 months</option>
-                <option value="4">4 months</option>
-                <option value="5">5 months</option>
-                <option value="6">6 months</option>
-                <option value="7">7 months</option>
-                <option value="8">8 months</option>
-                <option value="9">9 months</option>
-                <option value="10">10 months</option>
-                <option value="11">11 months</option>
-                <option value="12+">12 months or more</option>
-              </select>
-            </div>
           </div>
 
           <div class="form-group">
@@ -247,17 +195,6 @@
               <option value="greylist">Grey-list Country</option>
               <option value="blacklist">Black-list Country</option>
             </select>
-            <button type="button" class="threshold-toggle" @click="toggleThreshold('slc33')">
-              {{ showThresholds.slc33 ? '▼' : '▶' }} Set Threshold (SHALL)
-            </button>
-            <div v-show="showThresholds.slc33" class="threshold-group">
-              <label for="slc33-threshold">Threshold (SHALL):</label>
-              <select id="slc33-threshold" v-model="formData.thresholds.slc33">
-                <option value="">Minimum (Black-list)</option>
-                <option value="greylist">Grey-list</option>
-                <option value="whitelist">White-list</option>
-              </select>
-            </div>
           </div>
 
           <div class="form-group">
@@ -276,19 +213,6 @@
               <option value="copyleft">Copyleft</option>
               <option value="proprietary">Commercial/Proprietary</option>
             </select>
-            <button type="button" class="threshold-toggle" @click="toggleThreshold('slc34')">
-              {{ showThresholds.slc34 ? '▼' : '▶' }} Set Threshold (SHALL)
-            </button>
-            <div v-show="showThresholds.slc34" class="threshold-group">
-              <label for="slc34-threshold">Threshold (SHALL):</label>
-              <select id="slc34-threshold" v-model="formData.thresholds.slc34">
-                <option value="">Minimum (Proprietary)</option>
-                <option value="copyleft">Copyleft</option>
-                <option value="lgpl">LGPL/Intermediate</option>
-                <option value="permissive">Permissive</option>
-                <option value="public_domain">Public Domain</option>
-              </select>
-            </div>
           </div>
 
           <div class="form-group">
@@ -306,18 +230,6 @@
               <option value="medium">&gt;1k contributors (Research/University)</option>
               <option value="small">&lt;1k contributors (Private project)</option>
             </select>
-            <button type="button" class="threshold-toggle" @click="toggleThreshold('slc11')">
-              {{ showThresholds.slc11 ? '▼' : '▶' }} Set Threshold (SHALL)
-            </button>
-            <div v-show="showThresholds.slc11" class="threshold-group">
-              <label for="slc11-threshold">Threshold (SHALL):</label>
-              <select id="slc11-threshold" v-model="formData.thresholds.slc11">
-                <option value="">Minimum (Private project)</option>
-                <option value="medium">Research/University</option>
-                <option value="large">Industry-supported</option>
-                <option value="huge">Widespread</option>
-              </select>
-            </div>
           </div>
 
           <div class="form-group">
@@ -336,19 +248,6 @@
               <option value="partial">Partial analysis (not maintained)</option>
               <option value="none">No compliance analysis</option>
             </select>
-            <button type="button" class="threshold-toggle" @click="toggleThreshold('slc12')">
-              {{ showThresholds.slc12 ? '▼' : '▶' }} Set Threshold (SHALL)
-            </button>
-            <div v-show="showThresholds.slc12" class="threshold-group">
-              <label for="slc12-threshold">Threshold (SHALL):</label>
-              <select id="slc12-threshold" v-model="formData.thresholds.slc12">
-                <option value="">Minimum (No compliance)</option>
-                <option value="partial">Partial (not maintained)</option>
-                <option value="partial_maintained">Partial (maintained)</option>
-                <option value="comprehensive">Comprehensive (not maintained)</option>
-                <option value="comprehensive_maintained">Comprehensive (maintained)</option>
-              </select>
-            </div>
           </div>
 
           <div class="form-group">
@@ -366,18 +265,6 @@
               <option value="aligned">Has company-aligned funding</option>
               <option value="none">No funding (but needed)</option>
             </select>
-            <button type="button" class="threshold-toggle" @click="toggleThreshold('slc13')">
-              {{ showThresholds.slc13 ? '▼' : '▶' }} Set Threshold (SHALL)
-            </button>
-            <div v-show="showThresholds.slc13" class="threshold-group">
-              <label for="slc13-threshold">Threshold (SHALL):</label>
-              <select id="slc13-threshold" v-model="formData.thresholds.slc13">
-                <option value="">Minimum (No funding)</option>
-                <option value="aligned">Company-aligned funding</option>
-                <option value="unaligned">Unaligned funding</option>
-                <option value="no_funding">No funding needed</option>
-              </select>
-            </div>
           </div>
 
           <div class="form-group">
@@ -396,19 +283,6 @@
               <option value="connected">Connected/Peer-to-Peer</option>
               <option value="isolated">Isolated/Manual</option>
             </select>
-            <button type="button" class="threshold-toggle" @click="toggleThreshold('slc16')">
-              {{ showThresholds.slc16 ? '▼' : '▶' }} Set Threshold (SHALL)
-            </button>
-            <div v-show="showThresholds.slc16" class="threshold-group">
-              <label for="slc16-threshold">Threshold (SHALL):</label>
-              <select id="slc16-threshold" v-model="formData.thresholds.slc16">
-                <option value="">Minimum (Isolated/Manual)</option>
-                <option value="connected">Connected/Peer-to-Peer</option>
-                <option value="functional">Functional/Distributed</option>
-                <option value="domain">Domain/Integrated</option>
-                <option value="enterprise">Enterprise/Universal</option>
-              </select>
-            </div>
           </div>
 
           <div class="form-group">
@@ -426,18 +300,6 @@
               <option value="most_unknown">Most processes unknown</option>
               <option value="all_unknown">All processes unknown</option>
             </select>
-            <button type="button" class="threshold-toggle" @click="toggleThreshold('slc17')">
-              {{ showThresholds.slc17 ? '▼' : '▶' }} Set Threshold (SHALL)
-            </button>
-            <div v-show="showThresholds.slc17" class="threshold-group">
-              <label for="slc17-threshold">Threshold (SHALL):</label>
-              <select id="slc17-threshold" v-model="formData.thresholds.slc17">
-                <option value="">Minimum (All unknown)</option>
-                <option value="most_unknown">Most processes unknown</option>
-                <option value="most_known">Most processes known</option>
-                <option value="all_known">All processes known</option>
-              </select>
-            </div>
           </div>
 
           <div class="form-group">
@@ -454,17 +316,6 @@
               <option value="retrained">Retrained pre-trained model</option>
               <option value="external">Externally trained model</option>
             </select>
-            <button type="button" class="threshold-toggle" @click="toggleThreshold('slc23')">
-              {{ showThresholds.slc23 ? '▼' : '▶' }} Set Threshold (SHALL)
-            </button>
-            <div v-show="showThresholds.slc23" class="threshold-group">
-              <label for="slc23-threshold">Threshold (SHALL):</label>
-              <select id="slc23-threshold" v-model="formData.thresholds.slc23">
-                <option value="">Minimum (Externally trained)</option>
-                <option value="retrained">Retrained pre-trained</option>
-                <option value="internal">Completely internally trained</option>
-              </select>
-            </div>
           </div>
 
           <div class="form-group">
@@ -482,18 +333,6 @@
               <option value="some">5-9 dependencies</option>
               <option value="many">≥10 dependencies</option>
             </select>
-            <button type="button" class="threshold-toggle" @click="toggleThreshold('slc24')">
-              {{ showThresholds.slc24 ? '▼' : '▶' }} Set Threshold (SHALL)
-            </button>
-            <div v-show="showThresholds.slc24" class="threshold-group">
-              <label for="slc24-threshold">Threshold (SHALL):</label>
-              <select id="slc24-threshold" v-model="formData.thresholds.slc24">
-                <option value="">Minimum (≥10 dependencies)</option>
-                <option value="some">5-9 dependencies</option>
-                <option value="few">2-4 dependencies</option>
-                <option value="one">1 dependency</option>
-              </select>
-            </div>
           </div>
 
           <div class="form-group">
@@ -511,18 +350,6 @@
               <option value="blackbox_consistent">Black-box (consistent output)</option>
               <option value="blackbox_opaque">Black-box (not explainable)</option>
             </select>
-            <button type="button" class="threshold-toggle" @click="toggleThreshold('slc25')">
-              {{ showThresholds.slc25 ? '▼' : '▶' }} Set Threshold (SHALL)
-            </button>
-            <div v-show="showThresholds.slc25" class="threshold-group">
-              <label for="slc25-threshold">Threshold (SHALL):</label>
-              <select id="slc25-threshold" v-model="formData.thresholds.slc25">
-                <option value="">Minimum (Not explainable)</option>
-                <option value="blackbox_consistent">Black-box (consistent)</option>
-                <option value="blackbox_external">Black-box (externally explainable)</option>
-                <option value="whitebox">White/Grey-box (explainable)</option>
-              </select>
-            </div>
           </div>
         </section>
 
