@@ -582,6 +582,9 @@
                   <ul>
                     <li v-for="(contrib, idx) in sc.contributingCriteria" :key="idx">
                       {{ contrib.name }}: {{ Math.round(contrib.normalizedScore * 100) }}%
+                      <span v-if="sc.type === 'shall' && contrib.hasMitigation" class="mitigation-badge">
+                        Mitigated
+                      </span>
                       <span v-if="sc.type === 'shall' && !contrib.hasMitigation" :class="contrib.meetsThreshold ? 'threshold-pass' : 'threshold-fail'">
                         {{ contrib.meetsThreshold ? '✓ Pass' : '✗ Fail' }}
                       </span>

@@ -439,6 +439,16 @@ textarea {
   font-weight: 600;
 }
 
+.mitigation-badge {
+  margin-left: 8px;
+  padding: 2px 8px;
+  background: #ff6b35;
+  color: white;
+  border-radius: 4px;
+  font-size: 0.85em;
+  font-weight: 600;
+}
+
 .results-section {
   margin-top: 40px;
   padding: 30px;
