@@ -16,7 +16,6 @@ This application calculates sovereignty scores for technologies based on:
 - **Threshold-Based Evaluation**: Set minimum requirements for SHALL criteria
 - **Mitigation Framework**: Support for risk mitigation strategies
 - **Import/Export**: Save and load evaluations as JSON files
-- **Collapsible Thresholds**: Clean UI with expandable threshold settings per criterion
 
 ## Scoring Methodology
 
