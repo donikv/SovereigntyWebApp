@@ -40,6 +40,23 @@ createApp({
           slc24: false,
           slc25: false
         },
+        mitigationDescriptions: {
+          // Mitigation descriptions for each SLC
+          slc1: '',
+          slc2: '',
+          slc3: '',
+          slc5: '',
+          slc33: '',
+          slc34: '',
+          slc11: '',
+          slc12: '',
+          slc13: '',
+          slc16: '',
+          slc17: '',
+          slc23: '',
+          slc24: '',
+          slc25: ''
+        },
         selectedSC: {
           // Sovereignty Characteristics (empty = not selected, 'shall' or 'should')
         }

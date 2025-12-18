@@ -120,6 +120,15 @@
               <option value="go">Governmental Organization (GO)</option>
               <option value="po">Private Organization (PO)</option>
             </select>
+            <div v-if="formData.mitigations.slc1" class="mitigation-description">
+              <label for="slc1-mitigation">Mitigation Description:</label>
+              <textarea 
+                id="slc1-mitigation" 
+                v-model="formData.mitigationDescriptions.slc1"
+                rows="2"
+                placeholder="Describe the mitigation measures..."
+              ></textarea>
+            </div>
           </div>
 
           <div class="form-group">
@@ -136,6 +145,15 @@
               <option value="greylist">Grey-list Country</option>
               <option value="blacklist">Black-list Country</option>
             </select>
+            <div v-if="formData.mitigations.slc2" class="mitigation-description">
+              <label for="slc2-mitigation">Mitigation Description:</label>
+              <textarea 
+                id="slc2-mitigation" 
+                v-model="formData.mitigationDescriptions.slc2"
+                rows="2"
+                placeholder="Describe the mitigation measures..."
+              ></textarea>
+            </div>
           </div>
 
           <div class="form-group">
@@ -154,6 +172,15 @@
               <option value="copyleft">Copyleft (GPL)</option>
               <option value="proprietary">Commercial/Proprietary</option>
             </select>
+            <div v-if="formData.mitigations.slc3" class="mitigation-description">
+              <label for="slc3-mitigation">Mitigation Description:</label>
+              <textarea 
+                id="slc3-mitigation" 
+                v-model="formData.mitigationDescriptions.slc3"
+                rows="2"
+                placeholder="Describe the mitigation measures..."
+              ></textarea>
+            </div>
           </div>
 
           <div class="form-group">
@@ -179,6 +206,15 @@
               <option value="11">11 months</option>
               <option value="12+">12 months or more</option>
             </select>
+            <div v-if="formData.mitigations.slc5" class="mitigation-description">
+              <label for="slc5-mitigation">Mitigation Description:</label>
+              <textarea 
+                id="slc5-mitigation" 
+                v-model="formData.mitigationDescriptions.slc5"
+                rows="2"
+                placeholder="Describe the mitigation measures..."
+              ></textarea>
+            </div>
           </div>
 
           <div class="form-group">
@@ -195,6 +231,15 @@
               <option value="greylist">Grey-list Country</option>
               <option value="blacklist">Black-list Country</option>
             </select>
+            <div v-if="formData.mitigations.slc33" class="mitigation-description">
+              <label for="slc33-mitigation">Mitigation Description:</label>
+              <textarea 
+                id="slc33-mitigation" 
+                v-model="formData.mitigationDescriptions.slc33"
+                rows="2"
+                placeholder="Describe the mitigation measures..."
+              ></textarea>
+            </div>
           </div>
 
           <div class="form-group">
@@ -213,6 +258,15 @@
               <option value="copyleft">Copyleft</option>
               <option value="proprietary">Commercial/Proprietary</option>
             </select>
+            <div v-if="formData.mitigations.slc34" class="mitigation-description">
+              <label for="slc34-mitigation">Mitigation Description:</label>
+              <textarea 
+                id="slc34-mitigation" 
+                v-model="formData.mitigationDescriptions.slc34"
+                rows="2"
+                placeholder="Describe the mitigation measures..."
+              ></textarea>
+            </div>
           </div>
 
           <div class="form-group">
@@ -230,6 +284,15 @@
               <option value="medium">&gt;1k contributors (Research/University)</option>
               <option value="small">&lt;1k contributors (Private project)</option>
             </select>
+            <div v-if="formData.mitigations.slc11" class="mitigation-description">
+              <label for="slc11-mitigation">Mitigation Description:</label>
+              <textarea 
+                id="slc11-mitigation" 
+                v-model="formData.mitigationDescriptions.slc11"
+                rows="2"
+                placeholder="Describe the mitigation measures..."
+              ></textarea>
+            </div>
           </div>
 
           <div class="form-group">
@@ -248,6 +311,15 @@
               <option value="partial">Partial analysis (not maintained)</option>
               <option value="none">No compliance analysis</option>
             </select>
+            <div v-if="formData.mitigations.slc12" class="mitigation-description">
+              <label for="slc12-mitigation">Mitigation Description:</label>
+              <textarea 
+                id="slc12-mitigation" 
+                v-model="formData.mitigationDescriptions.slc12"
+                rows="2"
+                placeholder="Describe the mitigation measures..."
+              ></textarea>
+            </div>
           </div>
 
           <div class="form-group">
@@ -265,6 +337,15 @@
               <option value="aligned">Has company-aligned funding</option>
               <option value="none">No funding (but needed)</option>
             </select>
+            <div v-if="formData.mitigations.slc13" class="mitigation-description">
+              <label for="slc13-mitigation">Mitigation Description:</label>
+              <textarea 
+                id="slc13-mitigation" 
+                v-model="formData.mitigationDescriptions.slc13"
+                rows="2"
+                placeholder="Describe the mitigation measures..."
+              ></textarea>
+            </div>
           </div>
 
           <div class="form-group">
@@ -283,6 +364,15 @@
               <option value="connected">Connected/Peer-to-Peer</option>
               <option value="isolated">Isolated/Manual</option>
             </select>
+            <div v-if="formData.mitigations.slc16" class="mitigation-description">
+              <label for="slc16-mitigation">Mitigation Description:</label>
+              <textarea 
+                id="slc16-mitigation" 
+                v-model="formData.mitigationDescriptions.slc16"
+                rows="2"
+                placeholder="Describe the mitigation measures..."
+              ></textarea>
+            </div>
           </div>
 
           <div class="form-group">
@@ -300,6 +390,15 @@
               <option value="most_unknown">Most processes unknown</option>
               <option value="all_unknown">All processes unknown</option>
             </select>
+            <div v-if="formData.mitigations.slc17" class="mitigation-description">
+              <label for="slc17-mitigation">Mitigation Description:</label>
+              <textarea 
+                id="slc17-mitigation" 
+                v-model="formData.mitigationDescriptions.slc17"
+                rows="2"
+                placeholder="Describe the mitigation measures..."
+              ></textarea>
+            </div>
           </div>
 
           <div class="form-group">
@@ -316,6 +415,15 @@
               <option value="retrained">Retrained pre-trained model</option>
               <option value="external">Externally trained model</option>
             </select>
+            <div v-if="formData.mitigations.slc23" class="mitigation-description">
+              <label for="slc23-mitigation">Mitigation Description:</label>
+              <textarea 
+                id="slc23-mitigation" 
+                v-model="formData.mitigationDescriptions.slc23"
+                rows="2"
+                placeholder="Describe the mitigation measures..."
+              ></textarea>
+            </div>
           </div>
 
           <div class="form-group">
@@ -333,6 +441,15 @@
               <option value="some">5-9 dependencies</option>
               <option value="many">≥10 dependencies</option>
             </select>
+            <div v-if="formData.mitigations.slc24" class="mitigation-description">
+              <label for="slc24-mitigation">Mitigation Description:</label>
+              <textarea 
+                id="slc24-mitigation" 
+                v-model="formData.mitigationDescriptions.slc24"
+                rows="2"
+                placeholder="Describe the mitigation measures..."
+              ></textarea>
+            </div>
           </div>
 
           <div class="form-group">
@@ -350,6 +467,15 @@
               <option value="blackbox_consistent">Black-box (consistent output)</option>
               <option value="blackbox_opaque">Black-box (not explainable)</option>
             </select>
+            <div v-if="formData.mitigations.slc25" class="mitigation-description">
+              <label for="slc25-mitigation">Mitigation Description:</label>
+              <textarea 
+                id="slc25-mitigation" 
+                v-model="formData.mitigationDescriptions.slc25"
+                rows="2"
+                placeholder="Describe the mitigation measures..."
+              ></textarea>
+            </div>
           </div>
         </section>
 
@@ -432,6 +558,9 @@
                   (Raw: {{ detail.score }} | Normalized: {{ Math.round(detail.normalizedScore * 100) }}%)
                 </span>
               </span>
+              <div v-if="formData.mitigations[key] && formData.mitigationDescriptions[key]" class="mitigation-info">
+                <strong>Mitigation:</strong> {{ formData.mitigationDescriptions[key] }}
+              </div>
             </div>
           </div>
         </div>

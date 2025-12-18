@@ -170,6 +170,26 @@ h3 {
   font-size: 0.9em;
 }
 
+.mitigation-description {
+  margin-top: 12px;
+  padding: 12px;
+  background: #fff3e0;
+  border-radius: 6px;
+  border-left: 3px solid #ff6b35;
+}
+
+.mitigation-description label {
+  font-size: 0.9em;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.mitigation-description textarea {
+  margin-top: 8px;
+  font-size: 0.95em;
+  resize: vertical;
+}
+
 label {
   display: block;
   margin-bottom: 8px;
@@ -584,6 +604,21 @@ textarea {
   font-size: 0.9em;
   color: #888;
   font-weight: normal;
+}
+
+.mitigation-info {
+  margin-top: 8px;
+  padding: 10px;
+  background: #fff3e0;
+  border-left: 3px solid #ff6b35;
+  border-radius: 4px;
+  font-size: 0.9em;
+  color: #555;
+  line-height: 1.5;
+}
+
+.mitigation-info strong {
+  color: #ff6b35;
 }
 
 .description {
