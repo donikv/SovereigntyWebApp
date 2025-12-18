@@ -5,7 +5,7 @@ const scoringRoutes = require('./routes/scoring');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const server_address = `http://${process.env.SERVER_ADDRESS}:${PORT}` || `http://localhost:${PORT}`;
+const SERVER_ADDRESS = process.env.SERVER_ADDRESS ? `http://${process.env.SERVER_ADDRESS}:${PORT}` : `http://localhost:${PORT}`;
 
 // Middleware
 app.use(cors());
@@ -26,5 +26,5 @@ app.get('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on ${server_address}`);
+  console.log(`Server running on ${SERVER_ADDRESS}`);
 });
