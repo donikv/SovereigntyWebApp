@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Threshold Configuration - EICACS Sovereignty Evaluation</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .threshold-config-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    
+    .config-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 20px;
+      border-bottom: 3px solid #003366;
+    }
+    
+    .config-header h1 {
+      color: #003366;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+    
+    .config-header p {
+      color: #666;
+      font-size: 1.1em;
+    }
+    
+    .config-actions {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding: 1rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+    
+    .threshold-grid-section {
+      padding: 25px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+    }
+    
+    .threshold-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .threshold-card {
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .threshold-card h3 {
+      margin: 0 0 0.5rem 0;
+      color: #1a237e;
+      font-size: 1.1rem;
+    }
+    
+    .threshold-card p {
+      margin: 0 0 1rem 0;
+      font-size: 0.9rem;
+      color: #666;
+    }
+    
+    .threshold-select {
+      width: 100%;
+      padding: 0.5rem;
+      border: 2px solid #ddd;
+      border-radius: 4px;
+      font-size: 1rem;
+      background: white;
+    }
+    
+    .threshold-select:focus {
+      outline: none;
+      border-color: #1a237e;
+    }
+    
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .btn-primary {
+      background-color: #1a237e;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: #0d1642;
+    }
+    
+    .btn-secondary {
+      background-color: #ff6b35;
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #e85a28;
+    }
+    
+    .success-message {
+      background-color: #4caf50;
+      color: white;
+      padding: 1rem;
+      border-radius: 4px;
+      text-align: center;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    
+    .success-message.show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="threshold-config-container">
+    <div class="config-header">
+      <h1>🔧 Threshold Configuration</h1>
+      <p>Configure threshold values for sovereignty lifecycle characteristics</p>
+    </div>
+    
+    <div class="success-message" :class="{ show: showSuccess }">
+      ✓ Configuration file generated successfully!
+    </div>
+    
+    <div class="config-actions">
+      <button @click="generateConfig" class="btn btn-primary">💾 Download Configuration</button>
+      <button @click="goBack" class="btn btn-secondary">← Back to Main Page</button>
+    </div>
+    
+    <div class="threshold-grid-section">
+      <div class="threshold-grid">
+      <!-- SLC1 -->
+      <div class="threshold-card">
+        <h3>SLC1: Software Ownership</h3>
+        <p>Type of organization owning the software</p>
+        <select v-model="thresholds.slc1" class="threshold-select">
+          <option value="">No threshold</option>
+          <option value="ngo">Non-Governmental Organization (NGO)</option>
+          <option value="go">Governmental Organization (GO)</option>
+          <option value="po">Private Organization (PO)</option>
+        </select>
+      </div>
+      
+      <!-- SLC2 -->
+      <div class="threshold-card">
+        <h3>SLC2: Software Country of Origin</h3>
+        <p>Country where software was developed</p>
+        <select v-model="thresholds.slc2" class="threshold-select">
+          <option value="">No threshold</option>
+          <option value="whitelist">White-list Country</option>
+          <option value="greylist">Grey-list Country</option>
+          <option value="blacklist">Black-list Country</option>
+        </select>
+      </div>
+      
+      <!-- SLC3 -->
+      <div class="threshold-card">
+        <h3>SLC3: Software License</h3>
+        <p>Type of software license</p>
+        <select v-model="thresholds.slc3" class="threshold-select">
+          <option value="">No threshold</option>
+          <option value="public_domain">Public Domain</option>
+          <option value="permissive">Permissive (MIT, Apache, BSD)</option>
+          <option value="lgpl">LGPL/Intermediate</option>
+          <option value="copyleft">Copyleft (GPL)</option>
+          <option value="proprietary">Commercial/Proprietary</option>
+        </select>
+      </div>
+      
+      <!-- SLC5 -->
+      <div class="threshold-card">
+        <h3>SLC5: Update Frequency</h3>
+        <p>How often software is updated</p>
+        <select v-model="thresholds.slc5" class="threshold-select">
+          <option value="">No threshold</option>
+          <option value="1">1 month or less</option>
+          <option value="2">2 months</option>
+          <option value="3">3 months</option>
+          <option value="4">4 months</option>
+          <option value="5">5 months</option>
+          <option value="6">6 months</option>
+          <option value="7">7 months</option>
+          <option value="8">8 months</option>
+          <option value="9">9 months</option>
+          <option value="10">10 months</option>
+          <option value="11">11 months</option>
+          <option value="12+">12 months or more</option>
+        </select>
+      </div>
+      
+      <!-- SLC33 -->
+      <div class="threshold-card">
+        <h3>SLC33: Data Country of Origin</h3>
+        <p>Country where data is stored/processed</p>
+        <select v-model="thresholds.slc33" class="threshold-select">
+          <option value="">No threshold</option>
+          <option value="whitelist">White-list Country</option>
+          <option value="greylist">Grey-list Country</option>
+          <option value="blacklist">Black-list Country</option>
+        </select>
+      </div>
+      
+      <!-- SLC34 -->
+      <div class="threshold-card">
+        <h3>SLC34: Data License</h3>
+        <p>Type of data license</p>
+        <select v-model="thresholds.slc34" class="threshold-select">
+          <option value="">No threshold</option>
+          <option value="public_domain">Public Domain</option>
+          <option value="permissive">Permissive</option>
+          <option value="lgpl">LGPL/Intermediate</option>
+          <option value="copyleft">Copyleft</option>
+          <option value="proprietary">Commercial/Proprietary</option>
+        </select>
+      </div>
+      
+      <!-- SLC11 -->
+      <div class="threshold-card">
+        <h3>SLC11: Community and Ecosystem</h3>
+        <p>Size and activity of developer community</p>
+        <select v-model="thresholds.slc11" class="threshold-select">
+          <option value="">No threshold</option>
+          <option value="huge">&gt;100k contributors (Widespread)</option>
+          <option value="large">&gt;10k contributors (Industry-supported)</option>
+          <option value="medium">&gt;1k contributors (Research/University)</option>
+          <option value="small">&lt;1k contributors (Private project)</option>
+        </select>
+      </div>
+      
+      <!-- SLC12 -->
+      <div class="threshold-card">
+        <h3>SLC12: Regulatory and Legal Compliance</h3>
+        <p>Level of compliance analysis</p>
+        <select v-model="thresholds.slc12" class="threshold-select">
+          <option value="">No threshold</option>
+          <option value="comprehensive_maintained">Comprehensive analysis (maintained)</option>
+          <option value="comprehensive">Comprehensive analysis (not maintained)</option>
+          <option value="partial_maintained">Partial analysis (maintained)</option>
+          <option value="partial">Partial analysis (not maintained)</option>
+          <option value="none">No compliance analysis</option>
+        </select>
+      </div>
+      
+      <!-- SLC13 -->
+      <div class="threshold-card">
+        <h3>SLC13: Funding and Sustainability</h3>
+        <p>Project funding status</p>
+        <select v-model="thresholds.slc13" class="threshold-select">
+          <option value="">No threshold</option>
+          <option value="no_funding">No funding needed</option>
+          <option value="unaligned">Has unaligned funding</option>
+          <option value="aligned">Has company-aligned funding</option>
+          <option value="none">No funding (but needed)</option>
+        </select>
+      </div>
+      
+      <!-- SLC16 -->
+      <div class="threshold-card">
+        <h3>SLC16: Interoperability</h3>
+        <p>Level of system interoperability</p>
+        <select v-model="thresholds.slc16" class="threshold-select">
+          <option value="">No threshold</option>
+          <option value="enterprise">Enterprise/Universal</option>
+          <option value="domain">Domain/Integrated</option>
+          <option value="functional">Functional/Distributed</option>
+          <option value="connected">Connected/Peer-to-Peer</option>
+          <option value="isolated">Isolated/Manual</option>
+        </select>
+      </div>
+      
+      <!-- SLC17 -->
+      <div class="threshold-card">
+        <h3>SLC17: Development Processes</h3>
+        <p>Transparency of development processes</p>
+        <select v-model="thresholds.slc17" class="threshold-select">
+          <option value="">No threshold</option>
+          <option value="all_known">All processes known</option>
+          <option value="most_known">Most processes known</option>
+          <option value="most_unknown">Most processes unknown</option>
+          <option value="all_unknown">All processes unknown</option>
+        </select>
+      </div>
+      
+      <!-- SLC23 -->
+      <div class="threshold-card">
+        <h3>SLC23: AI Model Retraining</h3>
+        <p>Level of control over AI model training</p>
+        <select v-model="thresholds.slc23" class="threshold-select">
+          <option value="">No threshold</option>
+          <option value="internal">Completely internally trained</option>
+          <option value="retrained">Retrained pre-trained model</option>
+          <option value="external">Externally trained model</option>
+        </select>
+      </div>
+      
+      <!-- SLC24 -->
+      <div class="threshold-card">
+        <h3>SLC24: External APIs and Services</h3>
+        <p>Number of external dependencies</p>
+        <select v-model="thresholds.slc24" class="threshold-select">
+          <option value="">No threshold</option>
+          <option value="one">1 dependency</option>
+          <option value="few">2-4 dependencies</option>
+          <option value="some">5-9 dependencies</option>
+          <option value="many">≥10 dependencies</option>
+        </select>
+      </div>
+      
+      <!-- SLC25 -->
+      <div class="threshold-card">
+        <h3>SLC25: Explainability</h3>
+        <p>Level of AI model explainability</p>
+        <select v-model="thresholds.slc25" class="threshold-select">
+          <option value="">No threshold</option>
+          <option value="whitebox">White/Grey-box (explainable)</option>
+          <option value="blackbox_external">Black-box (externally explainable)</option>
+          <option value="blackbox_consistent">Black-box (consistent output)</option>
+          <option value="blackbox_opaque">Black-box (not explainable)</option>
+        </select>
+      </div>
+    </div>
+    </div>
+  </div>
+  
+  <script src="thresholds.js"></script>
+</body>
+</html>

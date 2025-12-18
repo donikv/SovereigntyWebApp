@@ -265,32 +265,9 @@ createApp({
       this.$refs.fileInput.click();
     },
 
-    generateThresholdsConfig() {
-      const thresholdsData = {
-        slc1: '',
-        slc2: '',
-        slc3: '',
-        slc5: '',
-        slc33: '',
-        slc34: '',
-        slc11: '',
-        slc12: '',
-        slc13: '',
-        slc16: '',
-        slc17: '',
-        slc23: '',
-        slc24: '',
-        slc25: ''
-      };
-      
-      const dataStr = JSON.stringify(thresholdsData, null, 2);
-      const dataBlob = new Blob([dataStr], { type: 'application/json' });
-      const url = URL.createObjectURL(dataBlob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'thresholds.json';
-      link.click();
-      URL.revokeObjectURL(url);
+    openThresholdsConfig() {
+      // Open the thresholds configuration page
+      window.location.href = 'thresholds/thresholds.html';
     }
   },
   computed: {
