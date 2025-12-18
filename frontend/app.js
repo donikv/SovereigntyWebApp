@@ -80,6 +80,7 @@ createApp({
       loading: false,
       error: null,
       showSCSelector: false,
+      serverAddress: '',
       showThresholds: {
         slc1: false,
         slc2: false,
@@ -99,13 +100,30 @@ createApp({
     };
   },
   methods: {
+    async fetchConfig() {
+      try {
+        const response = await fetch('/api/config');
+        if (response.ok) {
+          const config = await response.json();
+          this.serverAddress = config.serverAddress;
+        } else {
+          // Fallback to relative URLs if config fails
+          this.serverAddress = '';
+        }
+      } catch (err) {
+        console.warn('Failed to fetch server config, using relative URLs:', err);
+        this.serverAddress = '';
+      }
+    },
+
     async calculateScore() {
       this.loading = true;
       this.error = null;
       this.results = null;
 
       try {
-        const response = await fetch('http://localhost:3000/api/calculate-score', {
+        const apiUrl = this.serverAddress ? `${this.serverAddress}/api/calculate-score` : '/api/calculate-score';
+        const response = await fetch(apiUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -290,5 +308,8 @@ createApp({
     Math() {
       return Math;
     }
+  },
+  async mounted() {
+    await this.fetchConfig();
   }
 }).mount('#app');

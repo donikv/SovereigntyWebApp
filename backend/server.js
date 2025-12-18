@@ -5,11 +5,17 @@ const scoringRoutes = require('./routes/scoring');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const server_address = `http://${process.env.SERVER_ADDRESS}:${PORT}` || `http://localhost:${PORT}`;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../frontend')));
+
+// Configuration endpoint
+app.get('/api/config', (req, res) => {
+  res.json({ serverAddress: server_address });
+});
 
 // Routes
 app.use('/api', scoringRoutes);
@@ -20,5 +26,5 @@ app.get('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on ${server_address}`);
 });
