@@ -13,7 +13,7 @@ body {
 }
 
 .container {
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
   background: white;
   border-radius: 12px;
@@ -604,6 +604,18 @@ textarea {
   font-size: 0.9em;
   color: #888;
   font-weight: normal;
+}
+
+.slc-mitigation-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  background: #ff6b35;
+  color: white;
+  border-radius: 12px;
+  font-size: 0.75em;
+  font-weight: 600;
+  vertical-align: middle;
 }
 
 .mitigation-info {

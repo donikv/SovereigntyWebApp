@@ -551,15 +551,31 @@
           <h3>SLC Criteria Details</h3>
           <div class="criteria-details">
             <div v-for="(detail, key) in results.slc.details" :key="key" class="detail-item">
-              <span class="detail-name">{{ detail.name }}:</span>
+              <span class="detail-name">
+                {{ detail.name }}
+                <span v-if="formData.mitigations[key]" class="slc-mitigation-badge">Mitigated</span>
+              </span>
               <span class="detail-value">
                 {{ detail.selection }} 
                 <span class="detail-scores">
                   (Raw: {{ detail.score }} | Normalized: {{ Math.round(detail.normalizedScore * 100) }}%)
                 </span>
               </span>
+              <!-- <div v-if="formData.mitigations[key] && formData.mitigationDescriptions[key]" class="mitigation-info">
+                <strong>Mitigation:</strong> {{ formData.mitigationDescriptions[key] }}
+              </div> -->
+            </div>
+          </div>
+          <h3>SLC Mitigation Details</h3>
+          <div class="criteria-details">
+            <div v-for="(detail, key) in results.slc.details" :key="key" class="detail-item">
+              <div v-if="formData.mitigations[key] && formData.mitigationDescriptions[key]">
+              <div class="detail-name">
+                {{ detail.name }}
+              </div>
               <div v-if="formData.mitigations[key] && formData.mitigationDescriptions[key]" class="mitigation-info">
                 <strong>Mitigation:</strong> {{ formData.mitigationDescriptions[key] }}
+              </div>
               </div>
             </div>
           </div>
