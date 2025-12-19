@@ -553,9 +553,9 @@
             <div v-for="(detail, key) in results.slc.details" :key="key" class="detail-item">
               <span class="detail-name">
                 {{ detail.name }}
-                <span v-if="formData.mitigations[key]" class="slc-mitigation-badge">Mitigated</span>
               </span>
               <span class="detail-value">
+                <span v-if="formData.mitigations[key]" class="mitigation-badge">Mitigated</span>
                 {{ detail.selection }} 
                 <span class="detail-scores">
                   (Raw: {{ detail.score }} | Normalized: {{ Math.round(detail.normalizedScore * 100) }}%)
@@ -566,17 +566,19 @@
               </div> -->
             </div>
           </div>
-          <h3>SLC Mitigation Details</h3>
-          <div class="criteria-details">
-            <div v-for="(detail, key) in results.slc.details" :key="key" class="detail-item">
-              <div v-if="formData.mitigations[key] && formData.mitigationDescriptions[key]">
-              <div class="detail-name">
-                {{ detail.name }}
-              </div>
-              <div v-if="formData.mitigations[key] && formData.mitigationDescriptions[key]" class="mitigation-info">
-                <strong>Mitigation:</strong> {{ formData.mitigationDescriptions[key] }}
-              </div>
-              </div>
+          <div v-if="Object.keys(results.slc.details).some(key => formData.mitigations[key] && formData.mitigationDescriptions[key])">
+            <h3>SLC Mitigation Details</h3>
+            <div class="criteria-details">
+              <template v-for="(detail, key) in results.slc.details" :key="key">
+                <div v-if="formData.mitigations[key] && formData.mitigationDescriptions[key]" class="detail-item" style="display: block;">
+                  <div class="detail-name" style="margin-bottom: 8px;">
+                    {{ detail.name }}
+                  </div>
+                  <div class="mitigation-info">
+                    <strong>Mitigation:</strong> {{ formData.mitigationDescriptions[key] }}
+                  </div>
+                </div>
+              </template>
             </div>
           </div>
         </div>
