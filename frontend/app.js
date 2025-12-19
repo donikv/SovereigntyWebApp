@@ -228,6 +228,7 @@ createApp({
         description: this.formData.description,
         criteria: this.formData.criteria,
         mitigations: this.formData.mitigations,
+        mitigationDescriptions: this.formData.mitigationDescriptions,
         exportDate: new Date().toISOString(),
         version: '1.0'
       };
@@ -262,6 +263,9 @@ createApp({
           this.formData.criteria = { ...this.formData.criteria, ...importedData.criteria };
           if (importedData.mitigations) {
             this.formData.mitigations = { ...this.formData.mitigations, ...importedData.mitigations };
+          }
+          if (importedData.mitigationDescriptions) {
+            this.formData.mitigationDescriptions = { ...this.formData.mitigationDescriptions, ...importedData.mitigationDescriptions };
           }
           
           // Reset file input
