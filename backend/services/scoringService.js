@@ -248,7 +248,7 @@ const slcCriteria = {
  * @param {Object} criteria - User selections for each criterion
  * @param {Object} selectedSC - Selected sovereignty characteristics with shall/should designation
  * @param {Object} mitigations - Mitigation flags for each SLC
- * @param {Object} thresholds - Threshold values for each SLC (for SHALL scoring)
+ * @param {Object} thresholds - Threshold values organized by SC, then SLC (for SHALL scoring)
  * @returns {Object} - Score breakdown and total
  */
 function calculateScore(criteria, selectedSC = {}, mitigations = {}, thresholds = {}) {
@@ -314,19 +314,21 @@ function calculateScore(criteria, selectedSC = {}, mitigations = {}, thresholds 
     // Map to sovereignty characteristics using normalized score
     if (slcToScMapping[key]) {
       const hasMitigation = mitigations[key] === true;
-      const thresholdValue = thresholds[key];
-      
-      // Get threshold score (raw, not normalized)
-      let thresholdScore = minScore; // Default to minimum if no threshold set
-      if (thresholdValue && criterion.options && criterion.options[thresholdValue]) {
-        thresholdScore = criterion.options[thresholdValue].score * criterion.weight;
-      }
-      
-      // Check if score meets threshold (for SHALL non-mitigated)
-      const meetsThreshold = score >= thresholdScore;
       
       slcToScMapping[key].forEach(scKey => {
         if (scScores[scKey]) {
+          // Get threshold for this specific SC-SLC combination
+          const thresholdValue = thresholds[scKey] && thresholds[scKey][key] ? thresholds[scKey][key] : null;
+          
+          // Get threshold score (raw, not normalized)
+          let thresholdScore = minScore; // Default to minimum if no threshold set
+          if (thresholdValue && criterion.options && criterion.options[thresholdValue]) {
+            thresholdScore = criterion.options[thresholdValue].score * criterion.weight;
+          }
+          
+          // Check if score meets threshold (for SHALL non-mitigated)
+          const meetsThreshold = score >= thresholdScore;
+          
           scScores[scKey].contributingCriteria.push({
             slc: key,
             name: criterion.name,

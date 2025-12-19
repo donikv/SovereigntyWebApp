@@ -81,23 +81,7 @@ createApp({
       error: null,
       showSCSelector: false,
       serverAddress: '',
-      thresholds: {
-        // Threshold values loaded from server configuration
-        slc1: '',
-        slc2: '',
-        slc3: '',
-        slc5: '',
-        slc33: '',
-        slc34: '',
-        slc11: '',
-        slc12: '',
-        slc13: '',
-        slc16: '',
-        slc17: '',
-        slc23: '',
-        slc24: '',
-        slc25: ''
-      }
+      thresholds: {}
     };
   },
   methods: {
@@ -107,14 +91,16 @@ createApp({
         if (response.ok) {
           const config = await response.json();
           this.serverAddress = config.serverAddress;
-          this.thresholds = config.thresholds || this.thresholds;
+          this.thresholds = config.thresholds || {};
         } else {
           // Fallback to relative URLs if config fails
           this.serverAddress = '';
+          this.thresholds = {};
         }
       } catch (err) {
         console.warn('Failed to fetch server config, using relative URLs:', err);
         this.serverAddress = '';
+        this.thresholds = {};
       }
     },
 
