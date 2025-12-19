@@ -236,14 +236,11 @@ createApp({
     },
     
     getSlcsForSc(scKey) {
-      // Get all SLCs that map to this SC
-      const slcs = [];
-      Object.keys(this.slcToScMapping).forEach(slcKey => {
-        if (this.slcToScMapping[slcKey].includes(scKey)) {
-          slcs.push(slcKey);
-        }
-      });
-      return slcs.sort();
+      // Return SLCs in the order they appear in the thresholds object for this SC
+      if (this.thresholds[scKey]) {
+        return Object.keys(this.thresholds[scKey]);
+      }
+      return [];
     },
     
     getSlcDescription(slcKey) {
