@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Digital Sovereignty Evaluation</title>
   <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -490,8 +492,13 @@
       </form>
 
       <!-- Results Section -->
-      <section v-if="results" class="results-section">
-        <h2>Evaluation Results: {{ results.technologyName }}</h2>
+      <section v-if="results" class="results-section" id="results-section">
+        <div class="results-header">
+          <h2>Evaluation Results: {{ results.technologyName }}</h2>
+          <button type="button" class="btn-secondary no-print" @click="exportToPDF" :disabled="pdfGenerating">
+            {{ pdfGenerating ? '📄 Generating PDF...' : '📄 Export to PDF' }}
+          </button>
+        </div>
         
         <div class="score-summary">
           <div class="score-card main-score">

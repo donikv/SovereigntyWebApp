@@ -477,6 +477,31 @@ textarea {
   border: 2px solid #004d99;
 }
 
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.results-header h2 {
+  margin-bottom: 0;
+  flex: 1;
+  min-width: 200px;
+}
+
+.no-print {
+  /* Elements with this class will be hidden during PDF generation */
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
 .score-summary {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

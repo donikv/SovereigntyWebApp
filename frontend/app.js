@@ -78,6 +78,7 @@ createApp({
       },
       results: null,
       loading: false,
+      pdfGenerating: false,
       error: null,
       showSCSelector: false,
       serverAddress: '',
@@ -275,6 +276,97 @@ createApp({
     openThresholdsConfig() {
       // Open the thresholds configuration page
       window.location.href = 'thresholds/thresholds.html';
+    },
+
+    async exportToPDF() {
+      try {
+        this.pdfGenerating = true;
+        this.error = null;
+
+        // Get the results section
+        const resultsSection = document.getElementById('results-section');
+        if (!resultsSection) {
+          throw new Error('No results to export');
+        }
+
+        // Clone the section to manipulate it without affecting the UI
+        const clone = resultsSection.cloneNode(true);
+        
+        // Remove no-print elements
+        clone.querySelectorAll('.no-print').forEach(el => el.remove());
+
+        // Create a temporary container for rendering
+        const tempContainer = document.createElement('div');
+        tempContainer.style.position = 'absolute';
+        tempContainer.style.left = '-9999px';
+        tempContainer.style.top = '0';
+        tempContainer.style.width = '210mm'; // A4 width
+        tempContainer.style.padding = '20px';
+        tempContainer.style.backgroundColor = 'white';
+        tempContainer.appendChild(clone);
+        document.body.appendChild(tempContainer);
+
+        // Use html2canvas to convert HTML to canvas
+        const canvas = await html2canvas(tempContainer, {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          backgroundColor: '#ffffff'
+        });
+
+        // Remove temporary container
+        document.body.removeChild(tempContainer);
+
+        // Get canvas dimensions
+        const imgWidth = 210; // A4 width in mm
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        
+        // Initialize jsPDF
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        
+        // Add title page
+        pdf.setFontSize(24);
+        pdf.setTextColor(0, 51, 102);
+        pdf.text('Digital Sovereignty Evaluation', 105, 30, { align: 'center' });
+        
+        pdf.setFontSize(14);
+        pdf.setTextColor(102, 102, 102);
+        pdf.text('Evaluation Report', 105, 45, { align: 'center' });
+        
+        pdf.setFontSize(12);
+        pdf.setTextColor(0, 0, 0);
+        pdf.text(`Technology: ${this.results.technologyName}`, 105, 60, { align: 'center' });
+        pdf.text(`Date: ${new Date().toLocaleDateString()}`, 105, 70, { align: 'center' });
+
+        // Add the canvas as image on a new page
+        pdf.addPage();
+        
+        let heightLeft = imgHeight;
+        let position = 0;
+        
+        // Add image to PDF, handling multiple pages if needed
+        const imgData = canvas.toDataURL('image/png');
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= 297; // A4 height in mm
+        
+        while (heightLeft > 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+          heightLeft -= 297;
+        }
+
+        // Save the PDF
+        const filename = `${this.results.technologyName.replace(/[^a-z0-9]/gi, '_')}_evaluation_${new Date().toISOString().split('T')[0]}.pdf`;
+        pdf.save(filename);
+
+      } catch (err) {
+        this.error = 'Error generating PDF: ' + err.message;
+        console.error('PDF generation error:', err);
+      } finally {
+        this.pdfGenerating = false;
+      }
     }
   },
   computed: {
