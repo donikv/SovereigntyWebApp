@@ -82,7 +82,13 @@ createApp({
       error: null,
       showSCSelector: false,
       serverAddress: '',
-      thresholds: {}
+      thresholds: {},
+      dbEnabled: false,
+      dbConnected: false,
+      savedEvaluations: [],
+      showEvaluationsList: false,
+      loadingEvaluations: false,
+      statistics: null
     };
   },
   methods: {
@@ -93,15 +99,21 @@ createApp({
           const config = await response.json();
           this.serverAddress = config.serverAddress;
           this.thresholds = config.thresholds || {};
+          this.dbEnabled = config.database?.enabled || false;
+          this.dbConnected = config.database?.connected || false;
         } else {
           // Fallback to relative URLs if config fails
           this.serverAddress = '';
           this.thresholds = {};
+          this.dbEnabled = false;
+          this.dbConnected = false;
         }
       } catch (err) {
         console.warn('Failed to fetch server config, using relative URLs:', err);
         this.serverAddress = '';
         this.thresholds = {};
+        this.dbEnabled = false;
+        this.dbConnected = false;
       }
     },
 
@@ -124,7 +136,14 @@ createApp({
           throw new Error('Failed to calculate score');
         }
 
-        this.results = await response.json();
+        const data = await response.json();
+        
+        // Handle the response format - extract results
+        this.results = {
+          technologyName: data.technologyName,
+          description: data.description,
+          ...data.results
+        };
         
         // Scroll to results
         setTimeout(() => {
@@ -367,6 +386,141 @@ createApp({
       } finally {
         this.pdfGenerating = false;
       }
+    },
+
+    // Database-related methods
+    async loadEvaluations() {
+      if (!this.dbConnected) {
+        this.error = 'Database is not connected';
+        return;
+      }
+
+      this.loadingEvaluations = true;
+      try {
+        const apiUrl = this.serverAddress ? `${this.serverAddress}/api/evaluations` : '/api/evaluations';
+        const response = await fetch(apiUrl);
+        
+        if (!response.ok) {
+          throw new Error('Failed to load evaluations');
+        }
+
+        const data = await response.json();
+        this.savedEvaluations = data.evaluations;
+        this.statistics = data.statistics;
+        this.showEvaluationsList = true;
+      } catch (err) {
+        this.error = 'Error loading evaluations: ' + err.message;
+        console.error('Load error:', err);
+      } finally {
+        this.loadingEvaluations = false;
+      }
+    },
+
+    async loadEvaluation(evaluationId) {
+      try {
+        const apiUrl = this.serverAddress ? `${this.serverAddress}/api/evaluations/${evaluationId}` : `/api/evaluations/${evaluationId}`;
+        const response = await fetch(apiUrl);
+        
+        if (!response.ok) {
+          throw new Error('Failed to load evaluation');
+        }
+
+        const evaluation = await response.json();
+        
+        // Load the evaluation data into the form
+        this.formData.technologyName = evaluation.technologyName || '';
+        this.formData.description = evaluation.description || '';
+        this.formData.criteria = { ...this.formData.criteria, ...evaluation.criteria };
+        this.formData.selectedSC = evaluation.selectedSC || {};
+        this.formData.mitigations = { ...this.formData.mitigations, ...evaluation.mitigations };
+        this.formData.mitigationDescriptions = { ...this.formData.mitigationDescriptions, ...evaluation.mitigationDescriptions };
+        this.results = evaluation.results;
+        
+        this.showEvaluationsList = false;
+        
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (err) {
+        this.error = 'Error loading evaluation: ' + err.message;
+        console.error('Load error:', err);
+      }
+    },
+
+    async deleteEvaluation(evaluationId) {
+      if (!confirm('Are you sure you want to delete this evaluation?')) {
+        return;
+      }
+
+      try {
+        const apiUrl = this.serverAddress ? `${this.serverAddress}/api/evaluations/${evaluationId}` : `/api/evaluations/${evaluationId}`;
+        const response = await fetch(apiUrl, {
+          method: 'DELETE'
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to delete evaluation');
+        }
+
+        // Reload the list
+        await this.loadEvaluations();
+      } catch (err) {
+        this.error = 'Error deleting evaluation: ' + err.message;
+        console.error('Delete error:', err);
+      }
+    },
+
+    async exportAllEvaluationsJSON() {
+      try {
+        const apiUrl = this.serverAddress ? `${this.serverAddress}/api/export/json` : '/api/export/json';
+        const response = await fetch(apiUrl);
+        
+        if (!response.ok) {
+          throw new Error('Failed to export evaluations');
+        }
+
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `evaluations-export-${new Date().toISOString().split('T')[0]}.json`;
+        link.click();
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        this.error = 'Error exporting evaluations: ' + err.message;
+        console.error('Export error:', err);
+      }
+    },
+
+    async exportAllEvaluationsCSV() {
+      try {
+        const apiUrl = this.serverAddress ? `${this.serverAddress}/api/export/csv` : '/api/export/csv';
+        const response = await fetch(apiUrl);
+        
+        if (!response.ok) {
+          throw new Error('Failed to export evaluations');
+        }
+
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `evaluations-export-${new Date().toISOString().split('T')[0]}.csv`;
+        link.click();
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        this.error = 'Error exporting evaluations: ' + err.message;
+        console.error('Export error:', err);
+      }
+    },
+
+    formatDate(dateString) {
+      if (!dateString) return '';
+      const date = new Date(dateString);
+      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+    },
+
+    closeEvaluationsList() {
+      this.showEvaluationsList = false;
     }
   },
   computed: {

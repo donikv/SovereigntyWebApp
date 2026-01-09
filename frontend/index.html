@@ -29,6 +29,32 @@
           <button type="button" class="btn-secondary" @click="openThresholdsConfig">
             ⚙️ Configure Thresholds
           </button>
+          <!-- Database-related buttons -->
+          <button 
+            v-if="dbEnabled && dbConnected" 
+            type="button" 
+            class="btn-secondary" 
+            @click="loadEvaluations"
+            :disabled="loadingEvaluations"
+          >
+            📊 {{ loadingEvaluations ? 'Loading...' : 'View Saved Evaluations' }}
+          </button>
+          <button 
+            v-if="dbEnabled && dbConnected" 
+            type="button" 
+            class="btn-secondary" 
+            @click="exportAllEvaluationsJSON"
+          >
+            💾 Export All (JSON)
+          </button>
+          <button 
+            v-if="dbEnabled && dbConnected" 
+            type="button" 
+            class="btn-secondary" 
+            @click="exportAllEvaluationsCSV"
+          >
+            📄 Export All (CSV)
+          </button>
           <input 
             type="file" 
             ref="fileInput" 
@@ -36,6 +62,12 @@
             accept=".json" 
             style="display: none;"
           >
+        </div>
+
+        <!-- Database Status Banner -->
+        <div v-if="dbEnabled" class="db-status-banner" :class="dbConnected ? 'connected' : 'disconnected'">
+          <span v-if="dbConnected">✓ Database Connected</span>
+          <span v-else>⚠ Database Disconnected</span>
         </div>
 
         <!-- Basic Information -->
@@ -595,6 +627,66 @@
 
       <div v-if="error" class="error-message">
         {{ error }}
+      </div>
+    </div>
+
+    <!-- Saved Evaluations Modal -->
+    <div v-if="showEvaluationsList" class="modal-overlay" @click="closeEvaluationsList">
+      <div class="modal-content" @click.stop>
+        <div class="modal-header">
+          <h2>Saved Evaluations</h2>
+          <button class="btn-close" @click="closeEvaluationsList">✕</button>
+        </div>
+        
+        <div v-if="statistics" class="statistics-summary">
+          <div class="stat-item">
+            <span class="stat-label">Total Evaluations:</span>
+            <span class="stat-value">{{ statistics.total }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Avg Final Score:</span>
+            <span class="stat-value">{{ statistics.averageScores?.avgFinalScore?.toFixed(1) || 0 }}%</span>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <div v-if="savedEvaluations.length === 0" class="no-evaluations">
+            No saved evaluations found.
+          </div>
+          
+          <div v-else class="evaluations-list">
+            <div v-for="evaluation in savedEvaluations" :key="evaluation.id" class="evaluation-card">
+              <div class="evaluation-header">
+                <h3>{{ evaluation.technologyName || 'Untitled' }}</h3>
+                <div class="evaluation-score" :class="getRatingClass(evaluation.results?.finalScore || 0)">
+                  {{ (evaluation.results?.finalScore || 0).toFixed(1) }}%
+                </div>
+              </div>
+              
+              <p v-if="evaluation.description" class="evaluation-description">
+                {{ evaluation.description }}
+              </p>
+              
+              <div class="evaluation-meta">
+                <span class="meta-item">
+                  📅 {{ formatDate(evaluation.createdAt) }}
+                </span>
+                <span class="meta-item">
+                  📊 Classification: {{ evaluation.results?.classification || 'N/A' }}
+                </span>
+              </div>
+              
+              <div class="evaluation-actions">
+                <button class="btn-primary btn-small" @click="loadEvaluation(evaluation.id)">
+                  Load
+                </button>
+                <button class="btn-danger btn-small" @click="deleteEvaluation(evaluation.id)">
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
