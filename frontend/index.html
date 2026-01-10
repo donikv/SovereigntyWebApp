@@ -527,9 +527,21 @@
       <section v-if="results" class="results-section" id="results-section">
         <div class="results-header">
           <h2>Evaluation Results: {{ results.technologyName }}</h2>
-          <button type="button" class="btn-secondary no-print" @click="exportToPDF" :disabled="pdfGenerating">
-            {{ pdfGenerating ? '📄 Generating PDF...' : '📄 Export to PDF' }}
-          </button>
+          <div class="results-actions">
+            <button 
+              v-if="dbEnabled && dbConnected && !currentEvaluationId" 
+              type="button" 
+              class="btn-secondary no-print" 
+              @click="saveCurrentEvaluation" 
+              :disabled="saving"
+            >
+              {{ saving ? 'Saving...' : 'Save to Database' }}
+            </button>
+            <span v-if="currentEvaluationId" class="saved-indicator no-print">✓ Saved to Database</span>
+            <button type="button" class="btn-secondary no-print" @click="exportToPDF" :disabled="pdfGenerating">
+              {{ pdfGenerating ? 'Generating PDF...' : 'Export to PDF' }}
+            </button>
+          </div>
         </div>
         
         <div class="score-summary">

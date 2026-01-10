@@ -88,7 +88,9 @@ createApp({
       savedEvaluations: [],
       showEvaluationsList: false,
       loadingEvaluations: false,
-      statistics: null
+      statistics: null,
+      saving: false,
+      currentEvaluationId: null
     };
   },
   methods: {
@@ -136,7 +138,10 @@ createApp({
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(this.formData)
+          body: JSON.stringify({
+            ...this.formData,
+            saveToDb: false  // Don't save automatically
+          })
         });
 
         if (!response.ok) {
@@ -151,6 +156,9 @@ createApp({
           description: data.description,
           ...data.results
         };
+        
+        // Reset saved state when new calculation is done
+        this.currentEvaluationId = null;
         
         // Scroll to results
         setTimeout(() => {
@@ -167,6 +175,53 @@ createApp({
       }
     },
     
+    async saveCurrentEvaluation() {
+      if (!this.dbEnabled || !this.dbConnected) {
+        this.error = 'Database is not available';
+        return;
+      }
+
+      if (!this.results) {
+        this.error = 'No evaluation results to save';
+        return;
+      }
+
+      this.saving = true;
+      this.error = null;
+
+      try {
+        const apiUrl = this.serverAddress ? `${this.serverAddress}/api/calculate-score` : '/api/calculate-score';
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            ...this.formData,
+            saveToDb: true
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to save evaluation');
+        }
+
+        const data = await response.json();
+        if (data.saved && data.id) {
+          this.currentEvaluationId = data.id;
+          // Show success feedback (could add a success message)
+          console.log('Evaluation saved with ID:', data.id);
+        } else {
+          throw new Error('Evaluation was not saved');
+        }
+      } catch (err) {
+        this.error = 'Error saving evaluation: ' + err.message;
+        console.error('Error:', err);
+      } finally {
+        this.saving = false;
+      }
+    },
+
     resetForm() {
       this.formData = {
         technologyName: '',
