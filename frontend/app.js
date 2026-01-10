@@ -122,6 +122,13 @@ createApp({
       this.error = null;
       this.results = null;
 
+      // Validate that at least one SC is selected
+      if (Object.keys(this.formData.selectedSC).length === 0) {
+        this.error = 'Please select at least one Sovereignty Characteristic (SHALL or SHOULD) to evaluate.';
+        this.loading = false;
+        return;
+      }
+
       try {
         const apiUrl = this.serverAddress ? `${this.serverAddress}/api/calculate-score` : '/api/calculate-score';
         const response = await fetch(apiUrl, {
@@ -434,7 +441,13 @@ createApp({
         this.formData.selectedSC = evaluation.selectedSC || {};
         this.formData.mitigations = { ...this.formData.mitigations, ...evaluation.mitigations };
         this.formData.mitigationDescriptions = { ...this.formData.mitigationDescriptions, ...evaluation.mitigationDescriptions };
-        this.results = evaluation.results;
+        
+        // Set results with proper structure
+        this.results = {
+          technologyName: evaluation.technologyName,
+          description: evaluation.description,
+          ...evaluation.results
+        };
         
         this.showEvaluationsList = false;
         
