@@ -7,3 +7,4 @@ thresholds.json
 # Docker volumes (for local development)
 mongodb_data/
 mongodb_config/
+guides/
