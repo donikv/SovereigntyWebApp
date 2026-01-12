@@ -131,11 +131,32 @@ SoveregnityWebApp/
 
 ## Installation & Running
 
-### Prerequisites
+### Quick Start with Docker (Recommended)
+
+The easiest way to run the application is using Docker Compose:
+
+```bash
+# Start the application and database
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Access the application at http://localhost:3000
+
+# Stop the application
+docker-compose down
+```
+
+For detailed Docker instructions, see [DOCKER.md](DOCKER.md).
+
+### Manual Installation
+
+#### Prerequisites
 - Node.js (v14 or higher)
 - MongoDB (local or cloud instance like MongoDB Atlas)
 
-### Setup
+#### Setup
 
 1. **Install dependencies:**
    ```bash
