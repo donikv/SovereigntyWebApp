@@ -122,7 +122,7 @@ SoveregnityWebApp/
 │       ├── thresholds.html    # Thresholds configuration page
 │       └── thresholds.js      # Thresholds management logic
 ├── .env.example               # Environment variables template
-├── thresholds.json            # Threshold configuration
+├── thresholds.json            # Threshold configuration -> Can be generated using thresholds.js (requires redeployment)
 ├── package.json               # Dependencies
 └── README.md                  # This file
 ```
@@ -232,7 +232,7 @@ DB_ENABLED=false npm start
 - **Export All (JSON)**: Export all evaluations from database (requires DB)
 - **Export All (CSV)**: Export all evaluations as CSV (requires DB)
 
-### 3. Sovereignty Characteristics (Optional)
+### 3. Sovereignty Characteristics (At least one needs to be selected)
 - Click **Show** to display all 13 characteristics
 - For each characteristic:
   - Click **SHALL** for mandatory requirements
@@ -243,8 +243,8 @@ DB_ENABLED=false npm start
 For each of the 14 criteria:
 - Select value from dropdown
 - Check **Mitigation** if compensating controls exist
-- Click **▶ Set Threshold** to expand threshold settings (for SHALL evaluation)
 - Select minimum acceptable value for pass/fail evaluation
+- Thresholds are set during initialization of the app, and cannot be changed during running (The app provides an interface to create the thresholds.json file for future deployment)
 
 ### 5. Calculate & Review
 - Click **Calculate Score** to see results:
