@@ -1,6 +1,6 @@
 # Digital Sovereignty Evaluation Web App
 
-A web application for evaluating the sovereignty level of digital technologies based on Sovereignty Linked Criteria (SLC) with to evaluate sovereignty characteristics.
+A web application for evaluating the sovereignty level of digital technologies based on Sovereignty Linked Criteria (SLC) to evaluate sovereignty characteristics.
 
 ## Overview
 
