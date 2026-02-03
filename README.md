@@ -1,12 +1,12 @@
 # Digital Sovereignty Evaluation Web App
 
-A web application for evaluating the sovereignty level of digital technologies based on Software, Licensing, and Compliance (SLC) criteria with optional strategic sovereignty characteristics assessment.
+A web application for evaluating the sovereignty level of digital technologies based on Sovereignty Linked Criteria (SLC) with to evaluate sovereignty characteristics.
 
 ## Overview
 
 This application calculates sovereignty scores for technologies based on:
 - **SLC Criteria** (14 criteria): Measurable attributes including software ownership, licensing, compliance, update frequency, community support, funding, interoperability, and AI-specific factors
-- **Sovereignty Characteristics** (13 characteristics - optional): Strategic framework for evaluating autonomy, independence, security, resilience, and accountability
+- **Sovereignty Characteristics** (13 characteristics): Strategic framework for evaluating autonomy, independence, security, resilience, accountability...
 - **Mitigation & Thresholds**: Risk mitigation strategies and pass/fail thresholds for strict compliance checking
 
 ### Key Features
@@ -22,17 +22,15 @@ This application calculates sovereignty scores for technologies based on:
 ### Basic Concepts
 
 **SHALL vs SHOULD Requirements:**
-- **SHALL** (mandatory): Non-negotiable requirements with strict evaluation
-- **SHOULD** (desirable): Recommended but flexible requirements with averaged scoring
+- **SHALL** (mandatory): Non-negotiable requirements with strict evaluation, that link directly to a Sovereignty Hazard (SH)
+- **SHOULD** (desirable): Recommended but more flexible requirements with averaged scoring, whose failure does not lead directly to an SH.
 
 **Mitigation:**
 - Represents compensating controls or risk management strategies
-- Changes how a criterion contributes to SHALL requirements
-- Does not affect SHOULD requirements
+- Changes how a criterion contributes to SH through SHALL requirements by providing a indirect path to SH
 
 **Thresholds:**
 - Set minimum acceptable values for SHALL requirements
-- Only applies to non-mitigated SHALL criteria
 - Results in binary pass/fail evaluation (1 or 0)
 
 ### Score Calculation Process
@@ -82,12 +80,12 @@ Overall_score = product of all selected SC scores
 
 **Scenario:**
 - SC1 (Autonomy) marked as SHALL
-- Contributing SLCs: SLC1 (no mitigation, threshold set), SLC3 (mitigated), SLC5 (no mitigation, no threshold)
+- Contributing SLCs: SLC1 (no mitigation, threshold set), SLC3 (mitigated), SLC5 (no mitigation, no threshold, special case that is not recommended in practice)
 
 **Calculation:**
 1. SLC1: score 0.8, threshold 0.6 → meets threshold → contributes 1
 2. SLC3: score 0.7, mitigated → contributes 0.7 (averaged)
-3. SLC5: score 0.5, no threshold set → contributes 1 (default pass)
+3. SLC5: score 0.5, no threshold set → contributes 1
 4. Non-mitigated product: 1 × 1 = 1
 5. Mitigated average: 0.7 / 1 = 0.7
 6. SC1 SHALL score: 1 × 0.7 = 0.7
@@ -230,9 +228,9 @@ DB_ENABLED=false npm start
 ### 2. Data Management
 - **📥 Export Data**: Save current evaluation as JSON (client-side)
 - **📤 Import Data**: Load previously saved evaluation (client-side)
-- **📊 View Saved Evaluations**: Browse all evaluations stored in database (requires DB)
-- **💾 Export All (JSON)**: Export all evaluations from database (requires DB)
-- **📄 Export All (CSV)**: Export all evaluations as CSV (requires DB)
+- **View Saved Evaluations**: Browse all evaluations stored in database (requires DB)
+- **Export All (JSON)**: Export all evaluations from database (requires DB)
+- **Export All (CSV)**: Export all evaluations as CSV (requires DB)
 
 ### 3. Sovereignty Characteristics (Optional)
 - Click **Show** to display all 13 characteristics
