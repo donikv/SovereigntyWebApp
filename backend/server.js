@@ -5,7 +5,7 @@ const fs = require('fs');
 require('dotenv').config();
 const scoringRoutes = require('./routes/scoring');
 const { DatabaseFactory } = require('./database');
-const { slcToScMapping } = require('./services/scoringService');
+const { slcToScMapping, slcCriteria, sovereigntyCharacteristics } = require('./services/scoringService');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -45,6 +45,8 @@ app.get('/api/config', (req, res) => {
     serverAddress: SERVER_ADDRESS,
     thresholds: thresholdsConfig,
     slcToScMapping: slcToScMapping,
+    slcCriteria: slcCriteria,
+    sovereigntyCharacteristics: sovereigntyCharacteristics,
     database: {
       enabled: DB_ENABLED,
       connected: db ? db.isConnected() : false,

@@ -446,20 +446,8 @@ function getSovereigntyRating(percentage) {
   return 'Very Low Sovereignty';
 }
 
-/**
- * Get criteria definitions for frontend
- */
-function getCriteriaDefinitions() {
-  return {
-    slc: slcCriteria,
-    sc: sovereigntyCharacteristics,
-    mapping: slcToScMapping
-  };
-}
-
 module.exports = {
   calculateScore,
-  getCriteriaDefinitions,
   slcCriteria,
   sovereigntyCharacteristics,
   slcToScMapping
