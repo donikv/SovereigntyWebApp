@@ -318,7 +318,9 @@ function calculateScore(criteria, selectedSC = {}, mitigations = {}, thresholds 
       slcToScMapping[key].forEach(scKey => {
         if (scScores[scKey]) {
           // Get threshold for this specific SC-SLC combination
-          const thresholdValue = thresholds[scKey] && thresholds[scKey][key] ? thresholds[scKey][key] : null;
+          // Thresholds are now arrays, use the first element (most recent)
+          const thresholdArray = thresholds[scKey] && thresholds[scKey][key] ? thresholds[scKey][key] : null;
+          const thresholdValue = Array.isArray(thresholdArray) && thresholdArray.length > 0 ? thresholdArray[0] : thresholdArray;
           
           // Get threshold score (raw, not normalized)
           let thresholdScore = minScore; // Default to minimum if no threshold set

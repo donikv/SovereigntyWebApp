@@ -148,6 +148,80 @@
       border-radius: 4px;
       font-size: 0.9rem;
       background: white;
+      transition: border-color 0.3s;
+    }
+    
+    .threshold-select:focus {
+      outline: none;
+      border-color: #1a237e;
+    }
+    
+    .threshold-history {
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+      background: #f5f5f5;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+    
+    .history-toggle {
+      color: #1a237e;
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: 0.8rem;
+      margin-top: 0.25rem;
+      display: inline-block;
+    }
+    
+    .history-toggle:hover {
+      color: #ff6b35;
+    }
+    
+    .history-item {
+      padding: 0.25rem 0;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .history-item:last-child {
+      border-bottom: none;
+    }
+    
+    .history-item.current {
+      font-weight: bold;
+      color: #1a237e;
+    }
+    
+    .update-threshold-btn {
+      margin-top: 0.5rem;
+      padding: 0.4rem 0.8rem;
+      background: #1a237e;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      width: 100%;
+    }
+    
+    .update-threshold-btn:hover {
+      background: #ff6b35;
+    }
+    
+    .update-threshold-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    
+    .threshold-changed {
+      background-color: #fff3cd;
+      border-color: #ffc107;
+    }
+    
+    .change-indicator {
+      color: #ff6b35;
+      font-size: 0.75rem;
+      font-weight: bold;
+      margin-top: 0.25rem;
     }
     
     .threshold-select:focus {
@@ -224,19 +298,21 @@
     </div>
     
     <div class="info-box">
-      <p><strong>ℹ️ About Thresholds:</strong></p>
+      <p><strong>About Thresholds:</strong></p>
       <p>Thresholds define the minimum acceptable values for each SLC criterion within a Sovereignty Characteristic (SC) when marked as SHALL.</p>
       <p>Each SC can have different thresholds for the same SLC, allowing fine-grained control over sovereignty requirements.</p>
+      <p><strong>Threshold History:</strong> When you change a threshold and download the configuration, the new value is prepended to the history. The most recent value (first in the array) is always used for evaluation.</p>
+      <p><strong>Save Changes:</strong> Changes are local until you download the configuration file. Replace the existing thresholds file with the downloaded one to persist your changes.</p>
     </div>
     
     <div class="success-message" :class="{ show: showSuccess }">
-      ✓ Configuration file generated successfully!
+      ✓ Configuration file downloaded successfully!
     </div>
     
     <div class="config-actions">
-      <button @click="expandAll" class="btn btn-expand">📂 Expand All</button>
-      <button @click="collapseAll" class="btn btn-collapse">📁 Collapse All</button>
-      <button @click="generateConfig" class="btn btn-primary">💾 Download Configuration</button>
+      <button @click="expandAll" class="btn btn-expand">Expand All</button>
+      <button @click="collapseAll" class="btn btn-collapse">Collapse All</button>
+      <button @click="generateConfig" class="btn btn-primary">↓ Download Configuration</button>
       <button @click="goBack" class="btn btn-secondary">← Back to Main Page</button>
     </div>
     
@@ -254,15 +330,51 @@
       </div>
       <div class="sc-content" :class="{ show: expandedSCs[scKey] }">
         <div class="slc-grid">
-          <div v-for="slcKey in getSlcsForSc(scKey)" :key="slcKey" class="slc-card">
+          <div v-for="slcKey in getSlcsForSc(scKey)" :key="slcKey" class="slc-card" :class="{ 'threshold-changed': hasChanges(scKey, slcKey) }">
             <h4>{{ slcCriteria[slcKey].name }}</h4>
             <p>{{ getSlcDescription(slcKey) }}</p>
-            <select v-model="thresholds[scKey][slcKey]" class="threshold-select">
+            
+            <!-- Current Threshold Display -->
+            <div style="margin-bottom: 0.5rem; font-size: 0.85rem; color: #666;">
+              <strong>Current:</strong> 
+              <span v-if="getCurrentThreshold(scKey, slcKey)" style="color: #1a237e;">
+                {{ getOptionLabel(slcKey, getCurrentThreshold(scKey, slcKey)) }}
+              </span>
+              <span v-else style="color: #999;">No threshold set</span>
+            </div>
+            
+            <!-- Threshold Selector -->
+            <select 
+              v-model="selectedThresholds[scKey][slcKey]"
+              class="threshold-select"
+            >
               <option value="">No threshold</option>
               <option v-for="(option, optKey) in slcCriteria[slcKey].options" :key="optKey" :value="optKey">
                 {{ option.label }}
               </option>
             </select>
+            
+            <!-- Change Indicator -->
+            <div v-if="hasChanges(scKey, slcKey)" class="change-indicator">
+              ⚠ Changed (will be added to history on download)
+            </div>
+            
+            <!-- History Toggle -->
+            <div v-if="getThresholdHistory(scKey, slcKey).length > 0">
+              <a @click="toggleHistory(scKey, slcKey)" class="history-toggle">
+                {{ showHistorySCs[scKey][slcKey] ? '▼ Hide' : '▶ Show' }} History ({{ getThresholdHistory(scKey, slcKey).length }})
+              </a>
+              
+              <!-- History Display -->
+              <div v-if="showHistorySCs[scKey][slcKey]" class="threshold-history">
+                <div v-for="(histValue, index) in getThresholdHistory(scKey, slcKey)" :key="index" class="history-item" :class="{ current: index === 0 }">
+                  <span v-if="index === 0">- </span>
+                  <span v-else>{{index}}. </span>
+                  {{ getOptionLabel(slcKey, histValue) }}
+                  <span v-if="index === 0" style="font-size: 0.7rem; color: #666;"> (current)</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
