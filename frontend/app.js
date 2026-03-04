@@ -94,23 +94,8 @@ const app = createApp({
       statistics: null,
       saving: false,
       currentEvaluationId: null,
-      // Mapping of SLC criteria to Sovereignty Characteristics
-      slcToScMapping: {
-        slc1: ['sc1', 'sc2', 'sc3', 'sc8', 'sc9', 'sc11', 'sc12'],
-        slc2: ['sc1', 'sc2', 'sc3', 'sc8', 'sc9', 'sc11', 'sc12'],
-        slc3: ['sc1', 'sc4', 'sc5'],
-        slc5: ['sc1', 'sc3', 'sc12'],
-        slc33: ['sc1', 'sc3', 'sc8', 'sc9', 'sc11'],
-        slc34: ['sc1', 'sc8'],
-        slc11: ['sc1', 'sc2', 'sc3', 'sc8'],
-        slc12: ['sc1', 'sc4', 'sc5', 'sc13'],
-        slc13: ['sc1', 'sc8', 'sc12'],
-        slc16: ['sc1', 'sc8', 'sc10'],
-        slc17: ['sc1', 'sc6', 'sc7', 'sc8', 'sc9'],
-        slc23: ['sc1', 'sc7', 'sc8'],
-        slc24: ['sc1', 'sc8', 'sc9', 'sc11', 'sc13'],
-        slc25: ['sc1', 'sc9', 'sc13']
-      },
+      // Mapping of SLC criteria to Sovereignty Characteristics (loaded from server)
+      slcToScMapping: {},
       // SLC option labels for display
       slcOptions: {
         slc1: {
@@ -367,12 +352,14 @@ const app = createApp({
           const config = await response.json();
           this.serverAddress = config.serverAddress;
           this.thresholds = config.thresholds || {};
+          this.slcToScMapping = config.slcToScMapping || {};
           this.dbEnabled = config.database?.enabled || false;
           this.dbConnected = config.database?.connected || false;
         } else {
           // Fallback to relative URLs if config fails
           this.serverAddress = '';
           this.thresholds = {};
+          this.slcToScMapping = {};
           this.dbEnabled = false;
           this.dbConnected = false;
         }

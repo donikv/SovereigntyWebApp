@@ -28,23 +28,8 @@ createApp({
         sc13: { code: 'SC13', name: 'Accountability', description: 'Clear accountability mechanisms for AI actions with transparency.' }
       },
       
-      // SLC to SC mapping
-      slcToScMapping: {
-        slc1: ['sc1', 'sc2', 'sc3', 'sc8', 'sc9', 'sc11', 'sc12'],
-        slc2: ['sc1', 'sc2', 'sc3', 'sc8', 'sc9', 'sc11', 'sc12'],
-        slc3: ['sc1', 'sc4', 'sc5'],
-        slc5: ['sc1', 'sc3', 'sc12'],
-        slc33: ['sc1', 'sc3', 'sc8', 'sc9', 'sc11'],
-        slc34: ['sc1', 'sc8'],
-        slc11: ['sc1', 'sc2', 'sc3', 'sc8'],
-        slc12: ['sc1', 'sc4', 'sc5', 'sc13'],
-        slc13: ['sc1', 'sc8', 'sc12'],
-        slc16: ['sc1', 'sc8', 'sc10'],
-        slc17: ['sc1', 'sc6', 'sc7', 'sc8', 'sc9'],
-        slc23: ['sc1', 'sc7', 'sc8'],
-        slc24: ['sc1', 'sc8', 'sc9', 'sc11', 'sc13'],
-        slc25: ['sc1', 'sc9', 'sc13']
-      },
+      // SLC to SC mapping (loaded from server)
+      slcToScMapping: {},
       
       // SLC Criteria definitions
       slcCriteria: {
@@ -226,6 +211,11 @@ createApp({
       try {
         const response = await fetch(`${this.serverAddress}/api/config`);
         const config = await response.json();
+        
+        // Load slcToScMapping from server
+        if (config.slcToScMapping) {
+          this.slcToScMapping = config.slcToScMapping;
+        }
         
         if (config.thresholds) {
           // Merge with current server thresholds
