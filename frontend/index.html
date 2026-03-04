@@ -105,7 +105,7 @@
             </button>
           </h2>
           <p class="section-description">
-            Select which sovereignty characteristics to evaluate. Mark each as <strong>SHALL</strong> (mandatory - uses product calculation) or <strong>SHOULD</strong> (desirable - uses average calculation). <strong>At least one SC must be selected.</strong>
+            Select which sovereignty characteristics to evaluate (SCs address all aspects of the lifecycle of AI-based military <strong>systems</strong> from their design to maintenance and eventual decommissioning). Mark each as <strong>SHALL</strong> (mandatory - leads directly to a Major Sovereignty Hazard) or <strong>SHOULD</strong> (desirable - leads directly or indirectly only to a Minor Sovereignty Hazard). <strong>At least one SC must be selected.</strong>
           </p>
           
           <div v-show="showSCSelector" class="sc-grid">
@@ -136,10 +136,14 @@
           </div>
         </section>
 
-        <!-- SLC Criteria - Software, Licensing, and Compliance -->
+        <!-- SLC Criteria -->
         <section class="form-section">
-          <h2>SLC Criteria - Software, Licensing & Compliance</h2>
+          <h2>SLC Criteria - Sovereignty Linked Criteria</h2>
           
+          <p class="section-description">
+	  Set of criteria used to assess <strong>AI-related technologies</strong> that are part of some AI enabled system.
+	  </p>
+
           <div class="form-group">
             <div class="slc-header">
               <label for="slc1">SLC1: Software Ownership *</label>
