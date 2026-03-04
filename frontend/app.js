@@ -1,6 +1,9 @@
 const { createApp } = Vue;
 
-createApp({
+const app = createApp({
+  components: {
+    'slc-input': SlcInput
+  },
   data() {
     return {
       formData: {
@@ -202,7 +205,158 @@ createApp({
           'blackbox_consistent': 'Black-box (consistent output)',
           'blackbox_opaque': 'Black-box (not explainable)'
         }
-      }
+      },
+      // SLC configurations for component rendering
+      slcConfigs: [
+        {
+          key: 'slc1',
+          label: 'SLC1: Software Ownership',
+          options: [
+            { value: 'ngo', label: 'Non-Governmental Organization (NGO)' },
+            { value: 'go', label: 'Governmental Organization (GO)' },
+            { value: 'po', label: 'Private Organization (PO)' }
+          ]
+        },
+        {
+          key: 'slc2',
+          label: 'SLC2: Software Country of Origin',
+          options: [
+            { value: 'whitelist', label: 'White-list Country' },
+            { value: 'greylist', label: 'Grey-list Country' },
+            { value: 'blacklist', label: 'Black-list Country' }
+          ]
+        },
+        {
+          key: 'slc3',
+          label: 'SLC3: Software License',
+          options: [
+            { value: 'public_domain', label: 'Public Domain' },
+            { value: 'permissive', label: 'Permissive (MIT, Apache, BSD)' },
+            { value: 'lgpl', label: 'LGPL/Intermediate' },
+            { value: 'copyleft', label: 'Copyleft (GPL)' },
+            { value: 'proprietary', label: 'Commercial/Proprietary' }
+          ]
+        },
+        {
+          key: 'slc5',
+          label: 'SLC5: Update Frequency',
+          options: [
+            { value: '1', label: '1 month or less' },
+            { value: '2', label: '2 months' },
+            { value: '3', label: '3 months' },
+            { value: '4', label: '4 months' },
+            { value: '5', label: '5 months' },
+            { value: '6', label: '6 months' },
+            { value: '7', label: '7 months' },
+            { value: '8', label: '8 months' },
+            { value: '9', label: '9 months' },
+            { value: '10', label: '10 months' },
+            { value: '11', label: '11 months' },
+            { value: '12+', label: '12 months or more' }
+          ]
+        },
+        {
+          key: 'slc33',
+          label: 'SLC33: Data Country of Origin',
+          options: [
+            { value: 'whitelist', label: 'White-list Country' },
+            { value: 'greylist', label: 'Grey-list Country' },
+            { value: 'blacklist', label: 'Black-list Country' }
+          ]
+        },
+        {
+          key: 'slc34',
+          label: 'SLC34: Data License',
+          options: [
+            { value: 'public_domain', label: 'Public Domain' },
+            { value: 'permissive', label: 'Permissive' },
+            { value: 'lgpl', label: 'LGPL/Intermediate' },
+            { value: 'copyleft', label: 'Copyleft' },
+            { value: 'proprietary', label: 'Commercial/Proprietary' }
+          ]
+        },
+        {
+          key: 'slc11',
+          label: 'SLC11: Community and Ecosystem',
+          options: [
+            { value: 'huge', label: '>100k contributors (Widespread)' },
+            { value: 'large', label: '>10k contributors (Industry-supported)' },
+            { value: 'medium', label: '>1k contributors (Research/University)' },
+            { value: 'small', label: '<1k contributors (Private project)' }
+          ]
+        },
+        {
+          key: 'slc12',
+          label: 'SLC12: Regulatory and Legal Compliance',
+          options: [
+            { value: 'comprehensive_maintained', label: 'Comprehensive analysis (maintained)' },
+            { value: 'comprehensive', label: 'Comprehensive analysis (not maintained)' },
+            { value: 'partial_maintained', label: 'Partial analysis (maintained)' },
+            { value: 'partial', label: 'Partial analysis (not maintained)' },
+            { value: 'none', label: 'No compliance analysis' }
+          ]
+        },
+        {
+          key: 'slc13',
+          label: 'SLC13: Funding and Sustainability',
+          options: [
+            { value: 'no_funding', label: 'No funding needed' },
+            { value: 'unaligned', label: 'Has unaligned funding' },
+            { value: 'aligned', label: 'Has company-aligned funding' },
+            { value: 'none', label: 'No funding (but needed)' }
+          ]
+        },
+        {
+          key: 'slc16',
+          label: 'SLC16: Interoperability',
+          options: [
+            { value: 'enterprise', label: 'Enterprise/Universal' },
+            { value: 'domain', label: 'Domain/Integrated' },
+            { value: 'functional', label: 'Functional/Distributed' },
+            { value: 'connected', label: 'Connected/Peer-to-Peer' },
+            { value: 'isolated', label: 'Isolated/Manual' }
+          ]
+        },
+        {
+          key: 'slc17',
+          label: 'SLC17: Development Processes',
+          options: [
+            { value: 'all_known', label: 'All processes known' },
+            { value: 'most_known', label: 'Most processes known' },
+            { value: 'most_unknown', label: 'Most processes unknown' },
+            { value: 'all_unknown', label: 'All processes unknown' }
+          ]
+        },
+        {
+          key: 'slc23',
+          label: 'SLC23: AI Model Retraining',
+          options: [
+            { value: 'internal', label: 'Completely internally trained' },
+            { value: 'retrained', label: 'Retrained pre-trained model' },
+            { value: 'external', label: 'Externally trained model' }
+          ]
+        },
+        {
+          key: 'slc24',
+          label: 'SLC24: External APIs and Services',
+          options: [
+            { value: 'one', label: '1 dependency' },
+            { value: 'few', label: '2-4 dependencies' },
+            { value: 'some', label: '5-9 dependencies' },
+            { value: 'many', label: '≥10 dependencies' }
+          ]
+        },
+        {
+          key: 'slc25',
+          label: 'SLC25: Explainability',
+          options: [
+            { value: 'whitebox', label: 'White/Grey-box (explainable)' },
+            { value: 'blackbox_external', label: 'Black-box (externally explainable)' },
+            { value: 'blackbox_consistent', label: 'Black-box (consistent output)' },
+            { value: 'blackbox_opaque', label: 'Black-box (not explainable)' }
+          ]
+        }
+      ]
     };
   },
   methods: {
@@ -745,4 +899,6 @@ createApp({
   async mounted() {
     await this.fetchConfig();
   }
-}).mount('#app');
+});
+
+app.mount('#app');
