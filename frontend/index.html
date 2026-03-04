@@ -27,7 +27,33 @@
             📤 Import Data
           </button>
           <button type="button" class="btn-secondary" @click="openThresholdsConfig">
-            ⚙️ Configure Thresholds
+          Create Thresholds
+          </button>
+          <!-- Database-related buttons -->
+          <button 
+            v-if="dbEnabled && dbConnected" 
+            type="button" 
+            class="btn-secondary" 
+            @click="loadEvaluations"
+            :disabled="loadingEvaluations"
+          >
+           {{ loadingEvaluations ? 'Loading...' : 'View Saved Evaluations' }}
+          </button>
+          <button 
+            v-if="dbEnabled && dbConnected" 
+            type="button" 
+            class="btn-secondary" 
+            @click="exportAllEvaluationsJSON"
+          >
+           Export All (JSON)
+          </button>
+          <button 
+            v-if="dbEnabled && dbConnected" 
+            type="button" 
+            class="btn-secondary" 
+            @click="exportAllEvaluationsCSV"
+          >
+           Export All (CSV)
           </button>
           <input 
             type="file" 
@@ -36,6 +62,12 @@
             accept=".json" 
             style="display: none;"
           >
+        </div>
+
+        <!-- Database Status Banner -->
+        <div v-if="dbEnabled" class="db-status-banner" :class="dbConnected ? 'connected' : 'disconnected'">
+          <span v-if="dbConnected">✓ Database Connected</span>
+          <span v-else>⚠ Database Disconnected</span>
         </div>
 
         <!-- Basic Information -->
@@ -67,13 +99,13 @@
         <!-- Sovereignty Characteristics Selection -->
         <section class="form-section">
           <h2>
-            Sovereignty Characteristics (Optional)
+            Sovereignty Characteristics *
             <button type="button" class="btn-toggle" @click="showSCSelector = !showSCSelector">
               {{ showSCSelector ? 'Hide' : 'Show' }} ({{ getSelectedSCCount() }} selected)
             </button>
           </h2>
           <p class="section-description">
-            Select which sovereignty characteristics to evaluate. Mark each as <strong>SHALL</strong> (mandatory - uses product calculation) or <strong>SHOULD</strong> (desirable - uses average calculation).
+            Select which sovereignty characteristics to evaluate (SCs address all aspects of the lifecycle of AI-based military <strong>systems</strong> from their design to maintenance and eventual decommissioning). Mark each as <strong>SHALL</strong> (mandatory - leads directly to a Major Sovereignty Hazard) or <strong>SHOULD</strong> (desirable - leads directly or indirectly only to a Minor Sovereignty Hazard). <strong>At least one SC must be selected.</strong>
           </p>
           
           <div v-show="showSCSelector" class="sc-grid">
@@ -104,10 +136,14 @@
           </div>
         </section>
 
-        <!-- SLC Criteria - Software, Licensing, and Compliance -->
+        <!-- SLC Criteria -->
         <section class="form-section">
-          <h2>SLC Criteria - Software, Licensing & Compliance</h2>
+          <h2>SLC Criteria - Sovereignty Linked Criteria</h2>
           
+          <p class="section-description">
+	  Set of criteria used to assess <strong>AI-related technologies</strong> that are part of some AI enabled system.
+	  </p>
+
           <div class="form-group">
             <div class="slc-header">
               <label for="slc1">SLC1: Software Ownership *</label>
@@ -495,9 +531,21 @@
       <section v-if="results" class="results-section" id="results-section">
         <div class="results-header">
           <h2>Evaluation Results: {{ results.technologyName }}</h2>
-          <button type="button" class="btn-secondary no-print" @click="exportToPDF" :disabled="pdfGenerating">
-            {{ pdfGenerating ? '📄 Generating PDF...' : '📄 Export to PDF' }}
-          </button>
+          <div class="results-actions">
+            <button 
+              v-if="dbEnabled && dbConnected && !currentEvaluationId" 
+              type="button" 
+              class="btn-secondary no-print" 
+              @click="saveCurrentEvaluation" 
+              :disabled="saving"
+            >
+              {{ saving ? 'Saving...' : 'Save to Database' }}
+            </button>
+            <span v-if="currentEvaluationId" class="saved-indicator no-print">✓ Saved to Database</span>
+            <button type="button" class="btn-secondary no-print" @click="exportToPDF" :disabled="pdfGenerating">
+              {{ pdfGenerating ? 'Generating PDF...' : 'Export to PDF' }}
+            </button>
+          </div>
         </div>
         
         <div class="score-summary">
@@ -595,6 +643,72 @@
 
       <div v-if="error" class="error-message">
         {{ error }}
+      </div>
+    </div>
+
+    <!-- Saved Evaluations Modal -->
+    <div v-if="showEvaluationsList" class="modal-overlay" @click="closeEvaluationsList">
+      <div class="modal-content" @click.stop>
+        <div class="modal-header">
+          <h2>Saved Evaluations</h2>
+          <button class="btn-close" @click="closeEvaluationsList">✕</button>
+        </div>
+        
+        <div v-if="statistics" class="statistics-summary">
+          <div class="stat-item">
+            <span class="stat-label">Total Evaluations:</span>
+            <span class="stat-value">{{ statistics.total }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Avg Final Score:</span>
+            <span class="stat-value">{{ statistics.averageScores?.avgFinalScore?.toFixed(1) || 0 }}%</span>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <div v-if="savedEvaluations.length === 0" class="no-evaluations">
+            No saved evaluations found.
+          </div>
+          
+          <div v-else class="evaluations-list">
+            <div v-for="evaluation in savedEvaluations" :key="evaluation.id" class="evaluation-card">
+              <div class="evaluation-header">
+                <h3>{{ evaluation.technologyName || 'Untitled' }}</h3>
+                <div class="evaluation-score" :class="getRatingClass((evaluation.results?.sovereignty?.overallScore || 0) * 100)">
+                  {{ ((evaluation.results?.sovereignty?.overallScore || 0) * 100).toFixed(1) }}%
+                </div>
+              </div>
+              
+              <p v-if="evaluation.description" class="evaluation-description">
+                {{ evaluation.description }}
+              </p>
+              
+              <div class="evaluation-meta">
+                <span class="meta-item">
+                  📅 {{ formatDate(evaluation.createdAt) }}
+                </span>
+                <span class="meta-item" v-if="evaluation.selectedSC && Object.keys(evaluation.selectedSC).length > 0">
+                  SCs Evaluated: {{ Object.keys(evaluation.selectedSC).length }}
+                </span>
+                <span class="meta-item" v-if="evaluation.mitigations && Object.values(evaluation.mitigations).some(m => m)">
+                  Mitigations: {{ Object.values(evaluation.mitigations).filter(m => m).length }}
+                </span>
+                <!-- <span class="meta-item">
+                  📊 {{ evaluation.results?.rating || 'N/A' }}
+                </span> -->
+              </div>
+              
+              <div class="evaluation-actions">
+                <button class="btn-primary btn-small" @click="loadEvaluation(evaluation.id)">
+                  Load
+                </button>
+                <button class="btn-danger btn-small" @click="deleteEvaluation(evaluation.id)">
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
