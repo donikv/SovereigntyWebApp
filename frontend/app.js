@@ -90,7 +90,119 @@ createApp({
       loadingEvaluations: false,
       statistics: null,
       saving: false,
-      currentEvaluationId: null
+      currentEvaluationId: null,
+      // Mapping of SLC criteria to Sovereignty Characteristics
+      slcToScMapping: {
+        slc1: ['sc1', 'sc2', 'sc3', 'sc8', 'sc9', 'sc11', 'sc12'],
+        slc2: ['sc1', 'sc2', 'sc3', 'sc8', 'sc9', 'sc11', 'sc12'],
+        slc3: ['sc1', 'sc4', 'sc5'],
+        slc5: ['sc1', 'sc3', 'sc12'],
+        slc33: ['sc1', 'sc3', 'sc8', 'sc9', 'sc11'],
+        slc34: ['sc1', 'sc8'],
+        slc11: ['sc1', 'sc2', 'sc3', 'sc8'],
+        slc12: ['sc1', 'sc4', 'sc5', 'sc13'],
+        slc13: ['sc1', 'sc8', 'sc12'],
+        slc16: ['sc1', 'sc8', 'sc10'],
+        slc17: ['sc1', 'sc6', 'sc7', 'sc8', 'sc9'],
+        slc23: ['sc1', 'sc7', 'sc8'],
+        slc24: ['sc1', 'sc8', 'sc9', 'sc11', 'sc13'],
+        slc25: ['sc1', 'sc9', 'sc13']
+      },
+      // SLC option labels for display
+      slcOptions: {
+        slc1: {
+          'ngo': 'Non-Governmental Organization (NGO)',
+          'go': 'Governmental Organization (GO)',
+          'po': 'Private Organization (PO)'
+        },
+        slc2: {
+          'whitelist': 'White-list Country',
+          'greylist': 'Grey-list Country',
+          'blacklist': 'Black-list Country'
+        },
+        slc3: {
+          'public_domain': 'Public Domain',
+          'permissive': 'Permissive (MIT, Apache, BSD)',
+          'lgpl': 'LGPL/Intermediate',
+          'copyleft': 'Copyleft (GPL)',
+          'proprietary': 'Commercial/Proprietary'
+        },
+        slc5: {
+          '12+': '12 months or more',
+          '11': '11 months',
+          '10': '10 months',
+          '9': '9 months',
+          '8': '8 months',
+          '7': '7 months',
+          '6': '6 months',
+          '5': '5 months',
+          '4': '4 months',
+          '3': '3 months',
+          '2': '2 months',
+          '1': '1 month or less'
+        },
+        slc33: {
+          'whitelist': 'White-list Country',
+          'greylist': 'Grey-list Country',
+          'blacklist': 'Black-list Country'
+        },
+        slc34: {
+          'public_domain': 'Public Domain',
+          'permissive': 'Permissive',
+          'lgpl': 'LGPL/Intermediate',
+          'copyleft': 'Copyleft',
+          'proprietary': 'Commercial/Proprietary'
+        },
+        slc11: {
+          'huge': '>100k contributors (Widespread use)',
+          'large': '>10k contributors (Industry-supported)',
+          'medium': '>1k contributors (Research/University)',
+          'small': '<1k contributors (Private project)'
+        },
+        slc12: {
+          'comprehensive_maintained': 'Comprehensive analysis (maintained)',
+          'comprehensive': 'Comprehensive analysis (not maintained)',
+          'partial_maintained': 'Partial analysis (maintained)',
+          'partial': 'Partial analysis (not maintained)',
+          'none': 'No compliance analysis'
+        },
+        slc13: {
+          'no_funding': 'No funding needed',
+          'unaligned': 'Has unaligned funding',
+          'aligned': 'Has company-aligned funding',
+          'none': 'No funding (needed)'
+        },
+        slc16: {
+          'enterprise': 'Enterprise/Universal',
+          'domain': 'Domain/Integrated',
+          'functional': 'Functional/Distributed',
+          'connected': 'Connected/Peer-to-Peer',
+          'isolated': 'Isolated/Manual'
+        },
+        slc17: {
+          'all_known': 'All processes known',
+          'most_known': 'Most processes known',
+          'most_unknown': 'Most processes unknown',
+          'all_unknown': 'All processes unknown'
+        },
+        slc23: {
+          'internal': 'Completely internally trained',
+          'retrained': 'Retrained pre-trained model',
+          'external': 'Externally trained model'
+        },
+        slc24: {
+          'one': '1 dependency',
+          'few': '2-4 dependencies',
+          'some': '5-9 dependencies',
+          'many': '≥10 dependencies'
+        },
+        slc25: {
+          'whitebox': 'White/Grey-box (explainable)',
+          'blackbox_external': 'Black-box (externally explainable)',
+          'blackbox_consistent': 'Black-box (consistent output)',
+          'blackbox_opaque': 'Black-box (not explainable)'
+        }
+      }
     };
   },
   methods: {
@@ -589,6 +701,40 @@ createApp({
 
     closeEvaluationsList() {
       this.showEvaluationsList = false;
+    },
+
+    // Get thresholds for a specific SLC across all SHALL SCs
+    getThresholdsForSlc(slcKey) {
+      const thresholdInfo = [];
+      
+      // Get all SCs that this SLC maps to
+      const mappedSCs = this.slcToScMapping[slcKey] || [];
+      
+      // For each mapped SC, check if it's marked as SHALL and has a threshold
+      mappedSCs.forEach(scKey => {
+        if (this.formData.selectedSC[scKey] === 'shall') {
+          const thresholdArray = this.thresholds[scKey] && this.thresholds[scKey][slcKey];
+          if (thresholdArray && Array.isArray(thresholdArray) && thresholdArray.length > 0) {
+            const thresholdValue = thresholdArray[0]; // Get most recent (first in array)
+            const thresholdLabel = this.slcOptions[slcKey]?.[thresholdValue] || thresholdValue;
+            const scInfo = this.sovereigntyCharacteristics[scKey];
+            thresholdInfo.push({
+              scKey,
+              scCode: scInfo.code,
+              scName: scInfo.name,
+              thresholdValue,
+              thresholdLabel
+            });
+          }
+        }
+      });
+      
+      return thresholdInfo;
+    },
+
+    // Check if any SHALL SC has a threshold for this SLC
+    hasThresholds(slcKey) {
+      return this.getThresholdsForSlc(slcKey).length > 0;
     }
   },
   computed: {
