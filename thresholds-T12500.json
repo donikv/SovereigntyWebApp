@@ -1,0 +1,85 @@
+{
+    "sc1": {
+        "slc1": "ngo",
+        "slc2": "whitelist",
+        "slc3": "proprietary",
+        "slc5": "6",
+        "slc33": "whitelist",
+        "slc34": "copyleft",
+        "slc11": "large",
+        "slc12": "comprehensive",
+        "slc13": "unaligned",
+        "slc16": "domain",
+        "slc17": "all_known",
+        "slc23": "internal",
+        "slc24": "one",
+        "slc25": "whitebox"
+    },
+    "sc2": {
+        "slc1": "ngo",
+        "slc2": "whitelist",
+        "slc11": "huge"
+    },
+    "sc3": {
+        "slc1": "ngo",
+        "slc2": "whitelist",
+        "slc5": "12+",
+        "slc33": "whitelist",
+        "slc11": "large"
+    },
+    "sc4": {
+        "slc3": "permissive",
+        "slc12": "comprehensive_maintained"
+    },
+    "sc5": {
+        "slc3": "permissive",
+        "slc12": "comprehensive_maintained"
+    },
+    "sc6": {
+        "slc17": "all_known"
+    },
+    "sc7": {
+        "slc17": "all_known",
+        "slc23": "internal"
+    },
+    "sc8": {
+        "slc1": "ngo",
+        "slc2": "whitelist",
+        "slc33": "whitelist",
+        "slc34": "permissive",
+        "slc11": "large",
+        "slc13": "no_funding",
+        "slc16": "enterprise",
+        "slc17": "most_known",
+        "slc23": "retrained",
+        "slc24": "few"
+    },
+    "sc9": {
+        "slc1": "ngo",
+        "slc2": "whitelist",
+        "slc33": "whitelist",
+        "slc17": "all_known",
+        "slc24": "one",
+        "slc25": "whitebox"
+    },
+    "sc10": {
+        "slc16": "enterprise"
+    },
+    "sc11": {
+        "slc1": "ngo",
+        "slc2": "whitelist",
+        "slc33": "whitelist",
+        "slc24": "few"
+    },
+    "sc12": {
+        "slc1": "ngo",
+        "slc2": "greylist",
+        "slc5": "9",
+        "slc13": "no_funding"
+    },
+    "sc13": {
+        "slc12": "comprehensive_maintained",
+        "slc24": "one",
+        "slc25": "whitebox"
+    }
+}

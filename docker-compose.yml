@@ -48,7 +48,7 @@ services:
     networks:
       - sovereignty-network
     volumes:
-      - ./thresholds.json:/app/thresholds.json:ro
+      - ./thresholds-T12500.json:/app/thresholds.json:ro
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://${SERVER_ADDRESS:-localhost}:${APP_PORT:-3000}/api/config"]
       interval: 30s
