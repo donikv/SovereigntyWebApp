@@ -7,6 +7,7 @@
   <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="components/SlcInput.js"></script>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -21,10 +22,10 @@
         <!-- Import/Export Controls -->
         <div class="import-export-controls">
           <button type="button" class="btn-secondary" @click="exportData" :disabled="!formData.technologyName">
-            📥 Export Data
+            ↓ Export Data
           </button>
           <button type="button" class="btn-secondary" @click="triggerImport">
-            📤 Import Data
+            ↑ Import Data
           </button>
           <button type="button" class="btn-secondary" @click="openThresholdsConfig">
           Create Thresholds
@@ -141,380 +142,21 @@
           <h2>SLC Criteria - Sovereignty Linked Criteria</h2>
           
           <p class="section-description">
-	  Set of criteria used to assess <strong>AI-related technologies</strong> that are part of some AI enabled system.
-	  </p>
+	          Set of criteria used to assess <strong>AI-related technologies</strong> that are part of some AI enabled system.
+	        </p>
 
-          <div class="form-group">
-            <div class="slc-header">
-              <label for="slc1">SLC1: Software Ownership *</label>
-              <label class="mitigation-label">
-                <input type="checkbox" v-model="formData.mitigations.slc1">
-                <span>Mitigation</span>
-              </label>
-            </div>
-            <select id="slc1" v-model="formData.criteria.slc1" required>
-              <option value="">Select...</option>
-              <option value="ngo">Non-Governmental Organization (NGO)</option>
-              <option value="go">Governmental Organization (GO)</option>
-              <option value="po">Private Organization (PO)</option>
-            </select>
-            <div v-if="formData.mitigations.slc1" class="mitigation-description">
-              <label for="slc1-mitigation">Mitigation Description:</label>
-              <textarea 
-                id="slc1-mitigation" 
-                v-model="formData.mitigationDescriptions.slc1"
-                rows="2"
-                placeholder="Describe the mitigation measures..."
-              ></textarea>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="slc-header">
-              <label for="slc2">SLC2: Software Country of Origin *</label>
-              <label class="mitigation-label">
-                <input type="checkbox" v-model="formData.mitigations.slc2">
-                <span>Mitigation</span>
-              </label>
-            </div>
-            <select id="slc2" v-model="formData.criteria.slc2" required>
-              <option value="">Select...</option>
-              <option value="whitelist">White-list Country</option>
-              <option value="greylist">Grey-list Country</option>
-              <option value="blacklist">Black-list Country</option>
-            </select>
-            <div v-if="formData.mitigations.slc2" class="mitigation-description">
-              <label for="slc2-mitigation">Mitigation Description:</label>
-              <textarea 
-                id="slc2-mitigation" 
-                v-model="formData.mitigationDescriptions.slc2"
-                rows="2"
-                placeholder="Describe the mitigation measures..."
-              ></textarea>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="slc-header">
-              <label for="slc3">SLC3: Software License *</label>
-              <label class="mitigation-label">
-                <input type="checkbox" v-model="formData.mitigations.slc3">
-                <span>Mitigation</span>
-              </label>
-            </div>
-            <select id="slc3" v-model="formData.criteria.slc3" required>
-              <option value="">Select...</option>
-              <option value="public_domain">Public Domain</option>
-              <option value="permissive">Permissive (MIT, Apache, BSD)</option>
-              <option value="lgpl">LGPL/Intermediate</option>
-              <option value="copyleft">Copyleft (GPL)</option>
-              <option value="proprietary">Commercial/Proprietary</option>
-            </select>
-            <div v-if="formData.mitigations.slc3" class="mitigation-description">
-              <label for="slc3-mitigation">Mitigation Description:</label>
-              <textarea 
-                id="slc3-mitigation" 
-                v-model="formData.mitigationDescriptions.slc3"
-                rows="2"
-                placeholder="Describe the mitigation measures..."
-              ></textarea>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="slc-header">
-              <label for="slc5">SLC5: Update Frequency *</label>
-              <label class="mitigation-label">
-                <input type="checkbox" v-model="formData.mitigations.slc5">
-                <span>Mitigation</span>
-              </label>
-            </div>
-            <select id="slc5" v-model="formData.criteria.slc5" required>
-              <option value="">Select...</option>
-              <option value="1">1 month or less</option>
-              <option value="2">2 months</option>
-              <option value="3">3 months</option>
-              <option value="4">4 months</option>
-              <option value="5">5 months</option>
-              <option value="6">6 months</option>
-              <option value="7">7 months</option>
-              <option value="8">8 months</option>
-              <option value="9">9 months</option>
-              <option value="10">10 months</option>
-              <option value="11">11 months</option>
-              <option value="12+">12 months or more</option>
-            </select>
-            <div v-if="formData.mitigations.slc5" class="mitigation-description">
-              <label for="slc5-mitigation">Mitigation Description:</label>
-              <textarea 
-                id="slc5-mitigation" 
-                v-model="formData.mitigationDescriptions.slc5"
-                rows="2"
-                placeholder="Describe the mitigation measures..."
-              ></textarea>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="slc-header">
-              <label for="slc33">SLC33: Data Country of Origin *</label>
-              <label class="mitigation-label">
-                <input type="checkbox" v-model="formData.mitigations.slc33">
-                <span>Mitigation</span>
-              </label>
-            </div>
-            <select id="slc33" v-model="formData.criteria.slc33" required>
-              <option value="">Select...</option>
-              <option value="whitelist">White-list Country</option>
-              <option value="greylist">Grey-list Country</option>
-              <option value="blacklist">Black-list Country</option>
-            </select>
-            <div v-if="formData.mitigations.slc33" class="mitigation-description">
-              <label for="slc33-mitigation">Mitigation Description:</label>
-              <textarea 
-                id="slc33-mitigation" 
-                v-model="formData.mitigationDescriptions.slc33"
-                rows="2"
-                placeholder="Describe the mitigation measures..."
-              ></textarea>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="slc-header">
-              <label for="slc34">SLC34: Data License *</label>
-              <label class="mitigation-label">
-                <input type="checkbox" v-model="formData.mitigations.slc34">
-                <span>Mitigation</span>
-              </label>
-            </div>
-            <select id="slc34" v-model="formData.criteria.slc34" required>
-              <option value="">Select...</option>
-              <option value="public_domain">Public Domain</option>
-              <option value="permissive">Permissive</option>
-              <option value="lgpl">LGPL/Intermediate</option>
-              <option value="copyleft">Copyleft</option>
-              <option value="proprietary">Commercial/Proprietary</option>
-            </select>
-            <div v-if="formData.mitigations.slc34" class="mitigation-description">
-              <label for="slc34-mitigation">Mitigation Description:</label>
-              <textarea 
-                id="slc34-mitigation" 
-                v-model="formData.mitigationDescriptions.slc34"
-                rows="2"
-                placeholder="Describe the mitigation measures..."
-              ></textarea>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="slc-header">
-              <label for="slc11">SLC11: Community and Ecosystem *</label>
-              <label class="mitigation-label">
-                <input type="checkbox" v-model="formData.mitigations.slc11">
-                <span>Mitigation</span>
-              </label>
-            </div>
-            <select id="slc11" v-model="formData.criteria.slc11" required>
-              <option value="">Select...</option>
-              <option value="huge">&gt;100k contributors (Widespread)</option>
-              <option value="large">&gt;10k contributors (Industry-supported)</option>
-              <option value="medium">&gt;1k contributors (Research/University)</option>
-              <option value="small">&lt;1k contributors (Private project)</option>
-            </select>
-            <div v-if="formData.mitigations.slc11" class="mitigation-description">
-              <label for="slc11-mitigation">Mitigation Description:</label>
-              <textarea 
-                id="slc11-mitigation" 
-                v-model="formData.mitigationDescriptions.slc11"
-                rows="2"
-                placeholder="Describe the mitigation measures..."
-              ></textarea>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="slc-header">
-              <label for="slc12">SLC12: Regulatory and Legal Compliance *</label>
-              <label class="mitigation-label">
-                <input type="checkbox" v-model="formData.mitigations.slc12">
-                <span>Mitigation</span>
-              </label>
-            </div>
-            <select id="slc12" v-model="formData.criteria.slc12" required>
-              <option value="">Select...</option>
-              <option value="comprehensive_maintained">Comprehensive analysis (maintained)</option>
-              <option value="comprehensive">Comprehensive analysis (not maintained)</option>
-              <option value="partial_maintained">Partial analysis (maintained)</option>
-              <option value="partial">Partial analysis (not maintained)</option>
-              <option value="none">No compliance analysis</option>
-            </select>
-            <div v-if="formData.mitigations.slc12" class="mitigation-description">
-              <label for="slc12-mitigation">Mitigation Description:</label>
-              <textarea 
-                id="slc12-mitigation" 
-                v-model="formData.mitigationDescriptions.slc12"
-                rows="2"
-                placeholder="Describe the mitigation measures..."
-              ></textarea>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="slc-header">
-              <label for="slc13">SLC13: Funding and Sustainability *</label>
-              <label class="mitigation-label">
-                <input type="checkbox" v-model="formData.mitigations.slc13">
-                <span>Mitigation</span>
-              </label>
-            </div>
-            <select id="slc13" v-model="formData.criteria.slc13" required>
-              <option value="">Select...</option>
-              <option value="no_funding">No funding needed</option>
-              <option value="unaligned">Has unaligned funding</option>
-              <option value="aligned">Has company-aligned funding</option>
-              <option value="none">No funding (but needed)</option>
-            </select>
-            <div v-if="formData.mitigations.slc13" class="mitigation-description">
-              <label for="slc13-mitigation">Mitigation Description:</label>
-              <textarea 
-                id="slc13-mitigation" 
-                v-model="formData.mitigationDescriptions.slc13"
-                rows="2"
-                placeholder="Describe the mitigation measures..."
-              ></textarea>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="slc-header">
-              <label for="slc16">SLC16: Interoperability *</label>
-              <label class="mitigation-label">
-                <input type="checkbox" v-model="formData.mitigations.slc16">
-                <span>Mitigation</span>
-              </label>
-            </div>
-            <select id="slc16" v-model="formData.criteria.slc16" required>
-              <option value="">Select...</option>
-              <option value="enterprise">Enterprise/Universal</option>
-              <option value="domain">Domain/Integrated</option>
-              <option value="functional">Functional/Distributed</option>
-              <option value="connected">Connected/Peer-to-Peer</option>
-              <option value="isolated">Isolated/Manual</option>
-            </select>
-            <div v-if="formData.mitigations.slc16" class="mitigation-description">
-              <label for="slc16-mitigation">Mitigation Description:</label>
-              <textarea 
-                id="slc16-mitigation" 
-                v-model="formData.mitigationDescriptions.slc16"
-                rows="2"
-                placeholder="Describe the mitigation measures..."
-              ></textarea>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="slc-header">
-              <label for="slc17">SLC17: Development Processes *</label>
-              <label class="mitigation-label">
-                <input type="checkbox" v-model="formData.mitigations.slc17">
-                <span>Mitigation</span>
-              </label>
-            </div>
-            <select id="slc17" v-model="formData.criteria.slc17" required>
-              <option value="">Select...</option>
-              <option value="all_known">All processes known</option>
-              <option value="most_known">Most processes known</option>
-              <option value="most_unknown">Most processes unknown</option>
-              <option value="all_unknown">All processes unknown</option>
-            </select>
-            <div v-if="formData.mitigations.slc17" class="mitigation-description">
-              <label for="slc17-mitigation">Mitigation Description:</label>
-              <textarea 
-                id="slc17-mitigation" 
-                v-model="formData.mitigationDescriptions.slc17"
-                rows="2"
-                placeholder="Describe the mitigation measures..."
-              ></textarea>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="slc-header">
-              <label for="slc23">SLC23: AI Model Retraining *</label>
-              <label class="mitigation-label">
-                <input type="checkbox" v-model="formData.mitigations.slc23">
-                <span>Mitigation</span>
-              </label>
-            </div>
-            <select id="slc23" v-model="formData.criteria.slc23" required>
-              <option value="">Select...</option>
-              <option value="internal">Completely internally trained</option>
-              <option value="retrained">Retrained pre-trained model</option>
-              <option value="external">Externally trained model</option>
-            </select>
-            <div v-if="formData.mitigations.slc23" class="mitigation-description">
-              <label for="slc23-mitigation">Mitigation Description:</label>
-              <textarea 
-                id="slc23-mitigation" 
-                v-model="formData.mitigationDescriptions.slc23"
-                rows="2"
-                placeholder="Describe the mitigation measures..."
-              ></textarea>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="slc-header">
-              <label for="slc24">SLC24: External APIs and Services *</label>
-              <label class="mitigation-label">
-                <input type="checkbox" v-model="formData.mitigations.slc24">
-                <span>Mitigation</span>
-              </label>
-            </div>
-            <select id="slc24" v-model="formData.criteria.slc24" required>
-              <option value="">Select...</option>
-              <option value="one">1 dependency</option>
-              <option value="few">2-4 dependencies</option>
-              <option value="some">5-9 dependencies</option>
-              <option value="many">≥10 dependencies</option>
-            </select>
-            <div v-if="formData.mitigations.slc24" class="mitigation-description">
-              <label for="slc24-mitigation">Mitigation Description:</label>
-              <textarea 
-                id="slc24-mitigation" 
-                v-model="formData.mitigationDescriptions.slc24"
-                rows="2"
-                placeholder="Describe the mitigation measures..."
-              ></textarea>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="slc-header">
-              <label for="slc25">SLC25: Explainability *</label>
-              <label class="mitigation-label">
-                <input type="checkbox" v-model="formData.mitigations.slc25">
-                <span>Mitigation</span>
-              </label>
-            </div>
-            <select id="slc25" v-model="formData.criteria.slc25" required>
-              <option value="">Select...</option>
-              <option value="whitebox">White/Grey-box (explainable)</option>
-              <option value="blackbox_external">Black-box (externally explainable)</option>
-              <option value="blackbox_consistent">Black-box (consistent output)</option>
-              <option value="blackbox_opaque">Black-box (not explainable)</option>
-            </select>
-            <div v-if="formData.mitigations.slc25" class="mitigation-description">
-              <label for="slc25-mitigation">Mitigation Description:</label>
-              <textarea 
-                id="slc25-mitigation" 
-                v-model="formData.mitigationDescriptions.slc25"
-                rows="2"
-                placeholder="Describe the mitigation measures..."
-              ></textarea>
-            </div>
-          </div>
+          <slc-input
+            v-for="slc in slcConfigs"
+            :key="slc.key"
+            :slc-key="slc.key"
+            :label="slc.label"
+            :options="slc.options"
+            v-model="formData.criteria[slc.key]"
+            v-model:mitigation="formData.mitigations[slc.key]"
+            v-model:mitigation-description="formData.mitigationDescriptions[slc.key]"
+            :has-thresholds="hasThresholds(slc.key)"
+            :thresholds="getThresholdsForSlc(slc.key)"
+          />
         </section>
 
         <div class="form-actions">
@@ -551,22 +193,12 @@
         <div class="score-summary">
           <div class="score-card main-score">
             <h3>Overall Sovereignty Score</h3>
-            <div class="score-value">{{ results.sovereignty.overallScore * 100 + '%' }}</div>
-            <!-- <div v-if="!(results.sovereignty && results.sovereignty.shallCount + results.sovereignty.shouldCount > 0)" class="score-rating" :class="getRatingClass(results.percentageScore)">
-              {{ results.rating }}
-            </div>
-            <div v-if="!(results.sovereignty && results.sovereignty.shallCount + results.sovereignty.shouldCount > 0)" class="score-detail">{{ results.totalScore }} / {{ results.maxScore }} points</div> -->
+            <div class="score-value">{{ parseFloat(results.sovereignty.overallScore * 100).toFixed(2) }}%</div>
           </div>
-
-          <!-- <div class="score-card">
-            <h3>SLC Criteria</h3>
-            <div class="score-value small">{{ results.slc.percentage }}%</div>
-            <div class="score-detail">{{ results.slc.score }} / {{ results.slc.maxScore }} points</div>
-          </div> -->
 
           <div v-if="results.sovereignty && results.sovereignty.shallCount + results.sovereignty.shouldCount > 0" class="score-card sovereignty-card">
             <h3>Sovereignty Assessment</h3>
-            <div class="score-value small">{{ results.sovereignty.overallPercentage }}%</div>
+            <div class="score-value small">{{ parseFloat(results.sovereignty.overallPercentage).toFixed(2) }}%</div>
             <div class="score-detail">
               SHALL: {{ results.sovereignty.shallScore }} ({{ results.sovereignty.shallCount }})
               | SHOULD: {{ results.sovereignty.shouldScore }} ({{ results.sovereignty.shouldCount }})
