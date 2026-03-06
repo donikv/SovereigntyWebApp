@@ -95,6 +95,7 @@ const slcToScMapping = {
 const slcCriteria = {
   slc1: {
     name: 'SLC1: Software Ownership',
+    description: 'Type of organization owning the software',
     weight: 1,
     options: {
       'ngo': { label: 'Non-Governmental Organization (NGO)', score: 3 },
@@ -104,6 +105,7 @@ const slcCriteria = {
   },
   slc2: {
     name: 'SLC2: Software Country of Origin',
+    description: 'Country where software was developed',
     weight: 1,
     options: {
       'whitelist': { label: 'White-list Country', score: 10 },
@@ -113,6 +115,7 @@ const slcCriteria = {
   },
   slc3: {
     name: 'SLC3: Software License',
+    description: 'Type of software license',
     weight: 1,
     options: {
       'public_domain': { label: 'Public Domain', score: 5 },
@@ -124,6 +127,7 @@ const slcCriteria = {
   },
   slc5: {
     name: 'SLC5: Update Frequency',
+    description: 'How often software is updated',
     weight: 1,
     options: {
       '12+': { label: '12 months or more', score: 12 },
@@ -142,6 +146,7 @@ const slcCriteria = {
   },
   slc33: {
     name: 'SLC33: Data Country of Origin',
+    description: 'Country where data is stored/processed',
     weight: 1,
     options: {
       'whitelist': { label: 'White-list Country', score: 10 },
@@ -151,6 +156,7 @@ const slcCriteria = {
   },
   slc34: {
     name: 'SLC34: Data License',
+    description: 'Type of data license',
     weight: 1,
     options: {
       'public_domain': { label: 'Public Domain', score: 5 },
@@ -162,6 +168,7 @@ const slcCriteria = {
   },
   slc11: {
     name: 'SLC11: Community and Ecosystem',
+    description: 'Size and activity of developer community',
     weight: 1,
     options: {
       'huge': { label: '>100k contributors (Widespread use)', score: 4 },
@@ -172,6 +179,7 @@ const slcCriteria = {
   },
   slc12: {
     name: 'SLC12: Regulatory and Legal Compliance',
+    description: 'Level of compliance analysis',
     weight: 1,
     options: {
       'comprehensive_maintained': { label: 'Comprehensive analysis (maintained)', score: 5 },
@@ -183,6 +191,7 @@ const slcCriteria = {
   },
   slc13: {
     name: 'SLC13: Funding and Sustainability',
+    description: 'Project funding status',
     weight: 1,
     options: {
       'no_funding': { label: 'No funding needed', score: 4 },
@@ -193,6 +202,7 @@ const slcCriteria = {
   },
   slc16: {
     name: 'SLC16: Interoperability',
+    description: 'Level of system interoperability',
     weight: 1,
     options: {
       'enterprise': { label: 'Enterprise/Universal', score: 5 },
@@ -204,6 +214,7 @@ const slcCriteria = {
   },
   slc17: {
     name: 'SLC17: Development Processes',
+    description: 'Transparency of development processes',
     weight: 1,
     options: {
       'all_known': { label: 'All processes known', score: 4 },
@@ -214,6 +225,7 @@ const slcCriteria = {
   },
   slc23: {
     name: 'SLC23: AI Model Retraining',
+    description: 'Level of control over AI model training',
     weight: 1,
     options: {
       'internal': { label: 'Completely internally trained', score: 3 },
@@ -223,6 +235,7 @@ const slcCriteria = {
   },
   slc24: {
     name: 'SLC24: External APIs and Services',
+    description: 'Number of external dependencies',
     weight: 1,
     options: {
       'one': { label: '1 dependency', score: 4 },
@@ -233,6 +246,7 @@ const slcCriteria = {
   },
   slc25: {
     name: 'SLC25: Explainability',
+    description: 'Level of AI model explainability',
     weight: 1,
     options: {
       'whitebox': { label: 'White/Grey-box (explainable)', score: 3 },

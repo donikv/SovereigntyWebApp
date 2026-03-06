@@ -103,23 +103,7 @@ createApp({
     },
     
     getSlcDescription(slcKey) {
-      const descriptions = {
-        slc1: 'Type of organization owning the software',
-        slc2: 'Country where software was developed',
-        slc3: 'Type of software license',
-        slc5: 'How often software is updated',
-        slc33: 'Country where data is stored/processed',
-        slc34: 'Type of data license',
-        slc11: 'Size and activity of developer community',
-        slc12: 'Level of compliance analysis',
-        slc13: 'Project funding status',
-        slc16: 'Level of system interoperability',
-        slc17: 'Transparency of development processes',
-        slc23: 'Level of control over AI model training',
-        slc24: 'Number of external dependencies',
-        slc25: 'Level of AI model explainability'
-      };
-      return descriptions[slcKey] || '';
+      return this.slcCriteria[slcKey]?.description || '';
     },
     
     getCurrentThreshold(scKey, slcKey) {

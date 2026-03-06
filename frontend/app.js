@@ -10,75 +10,20 @@ const app = createApp({
         technologyName: '',
         description: '',
         criteria: {
-          // SLC Criteria
-          slc1: '',
-          slc2: '',
-          slc3: '',
-          slc5: '',
-          slc33: '',
-          slc34: '',
-          slc11: '',
-          slc12: '',
-          slc13: '',
-          slc16: '',
-          slc17: '',
-          slc23: '',
-          slc24: '',
-          slc25: ''
+          // SLC Criteria - dynamically populated from server
         },
         mitigations: {
-          // Mitigation flags for each SLC
-          slc1: false,
-          slc2: false,
-          slc3: false,
-          slc5: false,
-          slc33: false,
-          slc34: false,
-          slc11: false,
-          slc12: false,
-          slc13: false,
-          slc16: false,
-          slc17: false,
-          slc23: false,
-          slc24: false,
-          slc25: false
+          // Mitigation flags for each SLC - dynamically populated from server
         },
         mitigationDescriptions: {
-          // Mitigation descriptions for each SLC
-          slc1: '',
-          slc2: '',
-          slc3: '',
-          slc5: '',
-          slc33: '',
-          slc34: '',
-          slc11: '',
-          slc12: '',
-          slc13: '',
-          slc16: '',
-          slc17: '',
-          slc23: '',
-          slc24: '',
-          slc25: ''
+          // Mitigation descriptions for each SLC - dynamically populated from server
         },
         selectedSC: {
           // Sovereignty Characteristics (empty = not selected, 'shall' or 'should')
         }
       },
-      sovereigntyCharacteristics: {
-        sc1: { code: 'SC1', name: 'Autonomy', description: 'Autonomous decision-making with human supervision' },
-        sc2: { code: 'SC2', name: 'Technological Independence', description: 'Self-sufficiency in AI development' },
-        sc3: { code: 'SC3', name: 'Security and Digital Integrity', description: 'Protection against cyber threats' },
-        sc4: { code: 'SC4', name: 'Legal and Ethical Frameworks', description: 'Compliance with laws and ethical norms' },
-        sc5: { code: 'SC5', name: 'International Compliance', description: 'Minimize external dependencies' },
-        sc6: { code: 'SC6', name: 'Import/Export Control', description: 'Regulate AI technology trade' },
-        sc7: { code: 'SC7', name: 'Resilience', description: 'Robust and swift recovery from disruptions' },
-        sc8: { code: 'SC8', name: 'Indispensability', description: 'Promote indispensable capabilities' },
-        sc9: { code: 'SC9', name: 'Protection', description: 'No negative impact on critical infrastructure' },
-        sc10: { code: 'SC10', name: 'Openness and Interoperability', description: 'System compatibility' },
-        sc11: { code: 'SC11', name: 'Infrastructure Sovereignty', description: 'Control over AI infrastructure' },
-        sc12: { code: 'SC12', name: 'Economic Considerations', description: 'Economically viable development' },
-        sc13: { code: 'SC13', name: 'Accountability', description: 'Clear accountability mechanisms' }
-      },
+      // Sovereignty Characteristics - loaded from server
+      sovereigntyCharacteristics: {},
       results: null,
       loading: false,
       pdfGenerating: false,
@@ -112,13 +57,23 @@ const app = createApp({
           this.thresholds = config.thresholds || {};
           this.slcToScMapping = config.slcToScMapping || {};
           
-          // Transform slcCriteria into slcOptions and slcConfigs
+          // Load sovereignty characteristics from server
+          if (config.sovereigntyCharacteristics) {
+            this.sovereigntyCharacteristics = config.sovereigntyCharacteristics;
+          }
+          
+          // Transform slcCriteria into slcOptions, slcConfigs, and initialize form data
           if (config.slcCriteria) {
             this.slcOptions = {};
             this.slcConfigs = [];
             
             Object.keys(config.slcCriteria).forEach(slcKey => {
               const slc = config.slcCriteria[slcKey];
+              
+              // Initialize form data for this SLC
+              this.formData.criteria[slcKey] = '';
+              this.formData.mitigations[slcKey] = false;
+              this.formData.mitigationDescriptions[slcKey] = '';
               
               // Build slcOptions (value -> label mapping)
               this.slcOptions[slcKey] = {};
