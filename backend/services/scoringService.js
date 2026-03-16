@@ -171,10 +171,10 @@ const slcCriteria = {
     description: 'Size and activity of developer community',
     weight: 1,
     options: {
-      'huge': { label: '>100k contributors (Widespread use)', score: 4 },
-      'large': { label: '>10k contributors (Industry-supported)', score: 3 },
-      'medium': { label: '>1k contributors (Research/University)', score: 2 },
-      'small': { label: '<1k contributors (Private project)', score: 1 }
+      'huge': { label: '>100k users/participants (Widespread use)', score: 4 },
+      'large': { label: '>10k users/participants (Industry-supported)', score: 3 },
+      'medium': { label: '>1k users/participants (Research/University)', score: 2 },
+      'small': { label: '<1k users/participants (Private project)', score: 1 }
     }
   },
   slc12: {
