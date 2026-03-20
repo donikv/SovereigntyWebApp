@@ -70,6 +70,7 @@ h3 {
   padding: 1rem;
   background: #f8f9fa;
   border-radius: 8px;
+  justify-content: center;
 }
 
 .btn-secondary {
