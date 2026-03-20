@@ -274,3 +274,62 @@
 .success-message.show {
   display: block;
 }
+
+@media (max-width: 768px) {
+  .threshold-config-container {
+    padding: 1rem;
+    border-radius: 8px;
+  }
+
+  .config-header h1 {
+    font-size: 1.6em;
+  }
+
+  .config-header p {
+    font-size: 0.95em;
+  }
+
+  .config-actions {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .config-actions .btn {
+    flex: 1 1 calc(50% - 0.25rem);
+    min-width: 120px;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.85rem;
+    text-align: center;
+  }
+
+  .slc-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sc-header {
+    padding: 1rem;
+  }
+
+  .sc-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .sc-content {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .config-header h1 {
+    font-size: 1.3em;
+  }
+
+  .config-actions .btn {
+    flex: 1 1 100%;
+  }
+
+  .sc-header h2 {
+    font-size: 1rem;
+  }
+}
