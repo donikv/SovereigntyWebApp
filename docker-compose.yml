@@ -3,7 +3,7 @@ version: '3.8'
 services:
   # MongoDB Database Service
   mongodb:
-    image: mongo:7.0
+    image: mongo:7.0.31
     container_name: sovereignty-mongodb
     restart: unless-stopped
     environment:
