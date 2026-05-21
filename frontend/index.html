@@ -97,6 +97,17 @@
             </div>
           </div>
 
+          <!-- SWH GitHub URL -->
+          <div v-if="formData.technologyName" class="swh-github-row">
+            <label class="swh-github-label">GitHub URL for SWH lookup</label>
+            <input
+              type="text"
+              v-model="swhGithubUrl"
+              class="swh-github-url"
+              placeholder="https://github.com/org/repo — or clear to search by name"
+            >
+          </div>
+
           <!-- SWH Lookup Result -->
           <div v-if="swhError" class="swh-result swh-error">
             <strong>SWH Lookup:</strong> {{ swhError }}
@@ -116,6 +127,17 @@
             <div v-else class="swh-no-suggestions">
               Origin found but no mappable metadata available.
             </div>
+          </div>
+          <div v-if="swhCandidates.length > 1" class="swh-candidates">
+            <span class="swh-candidates-label">Other matches:</span>
+            <button
+              v-for="c in swhCandidates.filter(c => c.url !== swhResult.originUrl)"
+              :key="c.url"
+              type="button"
+              class="swh-candidate-btn"
+              @click="selectSWHCandidate(c.url)"
+              :disabled="swhLoading"
+            >{{ c.url }}</button>
           </div>
 
           <div class="form-group">

@@ -15,9 +15,38 @@ async function getJson(url) {
   return response.json();
 }
 
+function scoreOrigin(url, name) {
+  const lower = url.toLowerCase();
+  const term = name.toLowerCase();
+  let score = 0;
+
+  try {
+    const segments = new URL(url).pathname.replace(/^\/|\/$/g, '').split('/');
+    const repoName = segments[segments.length - 1];
+    const orgName = segments[segments.length - 2] || '';
+
+    if (repoName === term) score += 10;
+    else if (repoName.startsWith(term)) score += 5;
+
+    if (orgName === term) score += 4;
+
+    if (repoName === term && orgName === term) score += 8;
+
+    if (segments.length === 2) score += 2;
+  } catch (_) {
+    if (lower.includes(`/${term}`)) score += 1;
+  }
+
+  return score;
+}
+
 async function searchOrigins(name) {
   const encoded = encodeURIComponent(name);
-  return getJson(`${SWH_BASE}/origin/search/${encoded}/?limit=5`);
+  const results = await getJson(`${SWH_BASE}/origin/search/${encoded}/?limit=10`);
+  if (!results || results.length === 0) return results;
+  const scored = results.map(r => ({ ...r, _score: scoreOrigin(r.url, name) }));
+  console.log('[SWH] scored origins:\n' + scored.map(r => `  ${r._score}\t${r.url}`).join('\n'));
+  return scored.sort((a, b) => b._score - a._score);
 }
 
 async function fetchOriginData(originUrl) {

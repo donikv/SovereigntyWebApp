@@ -1212,3 +1212,66 @@ footer a:hover {
   font-style: italic;
   margin-top: 4px;
 }
+
+.swh-github-row {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.swh-github-label {
+  font-size: 0.82rem;
+  color: #555;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.swh-github-url {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: #333;
+}
+
+.swh-candidates {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #cde0f5;
+}
+
+.swh-candidates-label {
+  font-size: 0.82rem;
+  color: #555;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.swh-candidate-btn {
+  padding: 3px 10px;
+  background: white;
+  color: #005cbf;
+  border: 1px solid #90bde8;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  word-break: break-all;
+  text-align: left;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.swh-candidate-btn:hover:not(:disabled) {
+  background: #e8f2ff;
+  border-color: #005cbf;
+}
+
+.swh-candidate-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

@@ -14,6 +14,7 @@ router.get('/swh-metadata', async (req, res) => {
     let originUrl = origin || null;
     console.log('[SWH] lookup request — name:', name, 'origin:', origin);
 
+    let candidates = [];
     if (!originUrl) {
       console.log('[SWH] searching origins for:', name);
       const results = await searchOrigins(name);
@@ -22,6 +23,7 @@ router.get('/swh-metadata', async (req, res) => {
         return res.status(404).json({ name, error: 'Not found in Software Heritage' });
       }
       originUrl = results[0].url;
+      candidates = results.slice(0, 5).map(r => ({ url: r.url }));
       console.log('[SWH] resolved origin URL:', originUrl);
     }
 
@@ -34,6 +36,7 @@ router.get('/swh-metadata', async (req, res) => {
     return res.json({
       name: name || null,
       originUrl,
+      candidates,
       rawData: {
         origin: rawData.origin,
         latestVisit: rawData.latestVisit,
