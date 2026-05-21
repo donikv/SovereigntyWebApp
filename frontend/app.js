@@ -183,8 +183,11 @@ const app = createApp({
       if (s.description && !this.formData.description) {
         this.formData.description = s.description;
       }
-      if (s.slc3) this.formData.criteria.slc3 = s.slc3;
-      if (s.slc5) this.formData.criteria.slc5 = s.slc5;
+      if (s.slc3)  this.formData.criteria.slc3  = s.slc3;
+      if (s.slc34) this.formData.criteria.slc34 = s.slc34;
+      if (s.slc5)  this.formData.criteria.slc5  = s.slc5;
+      if (s.slc11) this.formData.criteria.slc11 = s.slc11;
+      if (s.slc17) this.formData.criteria.slc17 = s.slc17;
       this.swhResult = null;
     },
 

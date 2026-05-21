@@ -120,8 +120,11 @@
             <div v-if="Object.keys(swhResult.suggestions).length" class="swh-suggestions">
               <span class="swh-suggestions-label">Suggestions available:</span>
               <span v-if="swhResult.suggestions.description" class="swh-tag">Description</span>
-              <span v-if="swhResult.suggestions.slc3" class="swh-tag">License (SLC3)</span>
-              <span v-if="swhResult.suggestions.slc5" class="swh-tag">Update Frequency (SLC5)</span>
+              <span v-if="swhResult.suggestions.slc3"  class="swh-tag">License (SLC3)</span>
+              <span v-if="swhResult.suggestions.slc34" class="swh-tag">Data License (SLC34)</span>
+              <span v-if="swhResult.suggestions.slc5"  class="swh-tag">Update Frequency (SLC5)</span>
+              <span v-if="swhResult.suggestions.slc11" class="swh-tag">Community Size (SLC11)</span>
+              <span v-if="swhResult.suggestions.slc17" class="swh-tag">Dev Processes (SLC17)</span>
               <button type="button" class="btn-swh-apply" @click="applySWHSuggestions">Apply Suggestions</button>
             </div>
             <div v-else class="swh-no-suggestions">
