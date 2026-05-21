@@ -6,7 +6,9 @@ async function getJson(url) {
     signal: AbortSignal.timeout(30000)
   });
   if (!response.ok) {
-    const err = new Error(`SWH API error ${response.status}`);
+    let body = '';
+    try { body = await response.text(); } catch (_) {}
+    const err = new Error(`SWH API error ${response.status}: ${body || response.statusText}`);
     err.status = response.status;
     throw err;
   }
@@ -15,7 +17,7 @@ async function getJson(url) {
 
 async function searchOrigins(name) {
   const encoded = encodeURIComponent(name);
-  return getJson(`${SWH_BASE}/origin/search/?pattern=${encoded}&limit=5`);
+  return getJson(`${SWH_BASE}/origin/search/${encoded}/?limit=5`);
 }
 
 async function fetchOriginData(originUrl) {
@@ -28,9 +30,10 @@ async function fetchOriginData(originUrl) {
 
   let intrinsic = null;
   try {
-    intrinsic = await getJson(
+    const raw = await getJson(
       `${SWH_BASE}/intrinsic-metadata/origin/?origin_url=${encoded}`
     );
+    intrinsic = Array.isArray(raw) ? null : raw;
   } catch (_) {
     // Intrinsic metadata is optional — not all origins have it
   }
