@@ -44,7 +44,11 @@ const app = createApp({
       // SLC option labels for display (loaded from server)
       slcOptions: {},
       // SLC configurations for component rendering (loaded from server)
-      slcConfigs: []
+      slcConfigs: [],
+      // SWH lookup state
+      swhLoading: false,
+      swhResult: null,
+      swhError: null
     };
   },
   methods: {
@@ -112,6 +116,41 @@ const app = createApp({
         this.dbEnabled = false;
         this.dbConnected = false;
       }
+    },
+
+    async lookupSWH() {
+      if (!this.formData.technologyName) return;
+      this.swhLoading = true;
+      this.swhResult = null;
+      this.swhError = null;
+      try {
+        const name = encodeURIComponent(this.formData.technologyName.trim());
+        const apiUrl = this.serverAddress
+          ? `${this.serverAddress}/api/swh-metadata?name=${name}`
+          : `/api/swh-metadata?name=${name}`;
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        if (!response.ok) {
+          this.swhError = data.error || 'Not found in Software Heritage';
+        } else {
+          this.swhResult = data;
+        }
+      } catch (err) {
+        this.swhError = 'Failed to reach Software Heritage: ' + err.message;
+      } finally {
+        this.swhLoading = false;
+      }
+    },
+
+    applySWHSuggestions() {
+      if (!this.swhResult?.suggestions) return;
+      const s = this.swhResult.suggestions;
+      if (s.description && !this.formData.description) {
+        this.formData.description = s.description;
+      }
+      if (s.slc3) this.formData.criteria.slc3 = s.slc3;
+      if (s.slc5) this.formData.criteria.slc5 = s.slc5;
+      this.swhResult = null;
     },
 
     async calculateScore() {
