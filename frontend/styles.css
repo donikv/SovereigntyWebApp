@@ -1109,3 +1109,169 @@ footer a:hover {
     text-align: center;
   }
 }
+
+/* SWH Lookup */
+.input-with-action {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.input-with-action input {
+  flex: 1;
+  min-width: 0;
+}
+
+.btn-swh-lookup {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  background: #005cbf;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.btn-swh-lookup:hover:not(:disabled) {
+  background: #004799;
+}
+
+.btn-swh-lookup:disabled {
+  background: #aaa;
+  cursor: not-allowed;
+}
+
+.swh-result {
+  margin-top: 8px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.swh-error {
+  background: #fff3f3;
+  border: 1px solid #f5c6c6;
+  color: #c0392b;
+}
+
+.swh-success {
+  background: #f0f7ff;
+  border: 1px solid #b3d4f5;
+  color: #1a3a5c;
+}
+
+.swh-result-header {
+  margin-bottom: 6px;
+}
+
+.swh-result-header a {
+  color: #005cbf;
+  word-break: break-all;
+}
+
+.swh-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.swh-suggestions-label {
+  font-weight: 600;
+}
+
+.swh-tag {
+  background: #d0e8ff;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 0.8rem;
+}
+
+.btn-swh-apply {
+  margin-left: auto;
+  padding: 4px 12px;
+  background: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-swh-apply:hover {
+  background: #1e8449;
+}
+
+.swh-no-suggestions {
+  color: #666;
+  font-style: italic;
+  margin-top: 4px;
+}
+
+.swh-github-row {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.swh-github-label {
+  font-size: 0.82rem;
+  color: #555;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.swh-github-url {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: #333;
+}
+
+.swh-candidates {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #cde0f5;
+}
+
+.swh-candidates-label {
+  font-size: 0.82rem;
+  color: #555;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.swh-candidate-btn {
+  padding: 3px 10px;
+  background: white;
+  color: #005cbf;
+  border: 1px solid #90bde8;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  word-break: break-all;
+  text-align: left;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.swh-candidate-btn:hover:not(:disabled) {
+  background: #e8f2ff;
+  border-color: #005cbf;
+}
+
+.swh-candidate-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

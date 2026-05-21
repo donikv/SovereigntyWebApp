@@ -79,20 +79,75 @@
           
           <div class="form-group">
             <label for="technologyName">Technology Name *</label>
-            <input 
-              type="text" 
-              id="technologyName" 
-              v-model="formData.technologyName" 
-              placeholder="e.g., Cloud Storage Service, Messaging Platform"
-              required
+            <div class="input-with-action">
+              <input
+                type="text"
+                id="technologyName"
+                v-model="formData.technologyName"
+                placeholder="e.g., Cloud Storage Service, Messaging Platform"
+                required
+              >
+              <button
+                type="button"
+                class="btn-swh-lookup"
+                @click="lookupSWH"
+                :disabled="!formData.technologyName || swhLoading"
+                title="Look up metadata in Software Heritage archive"
+              >{{ swhLoading ? 'Looking up...' : 'Lookup SWH' }}</button>
+            </div>
+          </div>
+
+          <!-- SWH GitHub URL -->
+          <div v-if="formData.technologyName" class="swh-github-row">
+            <label class="swh-github-label">GitHub URL for SWH lookup</label>
+            <input
+              type="text"
+              v-model="swhGithubUrl"
+              class="swh-github-url"
+              placeholder="https://github.com/org/repo — or clear to search by name"
             >
+          </div>
+
+          <!-- SWH Lookup Result -->
+          <div v-if="swhError" class="swh-result swh-error">
+            <strong>SWH Lookup:</strong> {{ swhError }}
+          </div>
+          <div v-if="swhResult" class="swh-result swh-success">
+            <div class="swh-result-header">
+              <strong>Found in Software Heritage:</strong>
+              <a :href="swhResult.originUrl" target="_blank" rel="noopener">{{ swhResult.originUrl }}</a>
+            </div>
+            <div v-if="Object.keys(swhResult.suggestions).length" class="swh-suggestions">
+              <span class="swh-suggestions-label">Suggestions available:</span>
+              <span v-if="swhResult.suggestions.description" class="swh-tag">Description</span>
+              <span v-if="swhResult.suggestions.slc3"  class="swh-tag">License (SLC3)</span>
+              <span v-if="swhResult.suggestions.slc34" class="swh-tag">Data License (SLC34)</span>
+              <span v-if="swhResult.suggestions.slc5"  class="swh-tag">Update Frequency (SLC5)</span>
+              <span v-if="swhResult.suggestions.slc11" class="swh-tag">Community Size (SLC11)</span>
+              <span v-if="swhResult.suggestions.slc17" class="swh-tag">Dev Processes (SLC17)</span>
+              <button type="button" class="btn-swh-apply" @click="applySWHSuggestions">Apply Suggestions</button>
+            </div>
+            <div v-else class="swh-no-suggestions">
+              Origin found but no mappable metadata available.
+            </div>
+          </div>
+          <div v-if="swhCandidates.length > 1" class="swh-candidates">
+            <span class="swh-candidates-label">Other matches:</span>
+            <button
+              v-for="c in swhCandidates.filter(c => c.url !== swhResult.originUrl)"
+              :key="c.url"
+              type="button"
+              class="swh-candidate-btn"
+              @click="selectSWHCandidate(c.url)"
+              :disabled="swhLoading"
+            >{{ c.url }}</button>
           </div>
 
           <div class="form-group">
             <label for="description">Description</label>
-            <textarea 
-              id="description" 
-              v-model="formData.description" 
+            <textarea
+              id="description"
+              v-model="formData.description"
               rows="3"
               placeholder="Brief description of the technology and its use case"
             ></textarea>
