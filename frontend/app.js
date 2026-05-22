@@ -188,6 +188,7 @@ const app = createApp({
       if (s.slc5)  this.formData.criteria.slc5  = s.slc5;
       if (s.slc11) this.formData.criteria.slc11 = s.slc11;
       if (s.slc17) this.formData.criteria.slc17 = s.slc17;
+      if (s.slc24) this.formData.criteria.slc24 = s.slc24;
       this.swhResult = null;
     },
 

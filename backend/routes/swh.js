@@ -41,7 +41,8 @@ router.get('/swh-metadata', async (req, res) => {
         origin: rawData.origin,
         latestVisit: rawData.latestVisit,
         visitCount: rawData.visits.length,
-        intrinsic: rawData.intrinsic
+        intrinsic: rawData.intrinsic,
+        defenseFields: rawData.defenseFields
       },
       suggestions
     });
