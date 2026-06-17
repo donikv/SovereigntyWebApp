@@ -458,8 +458,8 @@ textarea {
 }
 
 .btn-sc-bulk:hover {
-  border-color: var(--navy-medium);
-  color: var(--navy-medium);
+  border-color: var(--orange);
+  color: var(--orange);
 }
 
 .btn-sc-bulk.shall:hover {
