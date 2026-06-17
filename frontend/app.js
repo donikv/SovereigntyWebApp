@@ -354,6 +354,18 @@ const app = createApp({
     getSelectedSCCount() {
       return Object.keys(this.formData.selectedSC).length;
     },
+
+    selectAllSC(type) {
+      const selected = {};
+      Object.keys(this.sovereigntyCharacteristics).forEach((key) => {
+        selected[key] = type;
+      });
+      this.formData.selectedSC = selected;
+    },
+
+    unselectAllSC() {
+      this.formData.selectedSC = {};
+    },
     
     getRatingClass(percentage) {
       if (percentage >= 90) return 'rating-excellent';

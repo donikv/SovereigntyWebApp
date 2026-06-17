@@ -360,6 +360,42 @@ textarea {
   line-height: 1.4;
 }
 
+.sc-bulk-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.btn-sc-bulk {
+  padding: 8px 14px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  color: #666;
+  font-weight: 600;
+  font-size: 0.85em;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-sc-bulk:hover {
+  border-color: #004d99;
+  color: #004d99;
+}
+
+.btn-sc-bulk.shall:hover {
+  background: #003366;
+  border-color: #003366;
+  color: white;
+}
+
+.btn-sc-bulk.should:hover {
+  background: #0066cc;
+  border-color: #0066cc;
+  color: white;
+}
+
 .sc-buttons {
   display: flex;
   gap: 8px;

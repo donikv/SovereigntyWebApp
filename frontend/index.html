@@ -166,7 +166,13 @@
           <p class="section-description">
             Select which sovereignty characteristics to evaluate (SCs address all aspects of the lifecycle of AI-based military <strong>systems</strong> from their design to maintenance and eventual decommissioning). Mark each as <strong>SHALL</strong> (mandatory - leads directly to a Major Sovereignty Hazard) or <strong>SHOULD</strong> (desirable - leads directly or indirectly only to a Minor Sovereignty Hazard). <strong>At least one SC must be selected.</strong>
           </p>
-          
+
+          <div class="sc-bulk-actions">
+            <button type="button" class="btn-sc-bulk should" @click="selectAllSC('should')">Select all as SHOULD</button>
+            <button type="button" class="btn-sc-bulk shall" @click="selectAllSC('shall')">Select all as SHALL</button>
+            <button type="button" class="btn-sc-bulk" @click="unselectAllSC()">Unselect all</button>
+          </div>
+
           <div v-show="showSCSelector" class="sc-grid">
             <div v-for="(sc, key) in sovereigntyCharacteristics" :key="key" class="sc-item">
               <div class="sc-header">
