@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 require('dotenv').config();
 const scoringRoutes = require('./routes/scoring');
+const swhRoutes = require('./routes/swh');
 const { DatabaseFactory } = require('./database');
 const { slcToScMapping, slcCriteria, sovereigntyCharacteristics } = require('./services/scoringService');
 
@@ -57,6 +58,7 @@ app.get('/api/config', (req, res) => {
 
 // Routes
 app.use('/api', scoringRoutes);
+app.use('/api', swhRoutes);
 
 // Serve frontend
 app.get('*', (req, res) => {
