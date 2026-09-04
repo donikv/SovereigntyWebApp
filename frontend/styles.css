@@ -885,6 +885,188 @@ footer a:hover {
   border: 1px solid var(--warning-border);
 }
 
+/* Sovereignty Metadata Model - input section */
+.metadata-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.metadata-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.metadata-input-layer {
+  padding: 15px;
+  background: var(--bg-light);
+  border-radius: 8px;
+  border-left: 4px solid var(--navy);
+}
+
+.metadata-layer-title {
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 15px;
+  font-size: 0.95em;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.metadata-input-layer .form-group:last-child {
+  margin-bottom: 0;
+}
+
+.metadata-autofill-tag {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  background: var(--blue-tag-bg);
+  color: var(--blue-deep-text);
+  border-radius: 10px;
+  font-size: 0.72em;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  vertical-align: middle;
+}
+
+.metadata-help {
+  margin-top: 5px;
+  font-size: 0.85em;
+  color: var(--text-light);
+  font-style: italic;
+}
+
+/* Sovereignty Metadata Model - output table */
+.metadata-modal .modal-body {
+  background: var(--bg-light);
+}
+
+.metadata-table-wrapper {
+  background: var(--white);
+  padding: 24px;
+  border-radius: 8px;
+}
+
+.metadata-doc-header {
+  border-bottom: 3px solid var(--navy);
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+}
+
+.metadata-doc-header h3 {
+  margin: 0;
+  color: var(--navy);
+  font-size: 1.25em;
+}
+
+.metadata-doc-subject {
+  margin-top: 4px;
+  color: var(--orange);
+  font-weight: 600;
+  font-size: 1.05em;
+}
+
+.metadata-layer {
+  margin-bottom: 20px;
+}
+
+.metadata-layer:last-of-type {
+  margin-bottom: 0;
+}
+
+.metadata-layer-header {
+  background: var(--navy);
+  color: var(--white);
+  padding: 8px 14px;
+  border-radius: 6px 6px 0 0;
+  font-weight: 700;
+  font-size: 0.9em;
+  letter-spacing: 0.03em;
+}
+
+table.metadata-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border-gray);
+  border-top: none;
+  font-size: 0.9em;
+}
+
+table.metadata-table th,
+table.metadata-table td {
+  padding: 8px 14px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border-muted);
+}
+
+table.metadata-table tr:last-child th,
+table.metadata-table tr:last-child td {
+  border-bottom: none;
+}
+
+table.metadata-table th {
+  width: 34%;
+  font-weight: 600;
+  color: var(--blue-deep-text);
+  background: var(--blue-pale-bg);
+  border-right: 1px solid var(--border-muted);
+}
+
+.metadata-value {
+  color: var(--text);
+  word-break: break-word;
+}
+
+.metadata-empty {
+  color: var(--text-lighter);
+}
+
+.metadata-note {
+  margin-top: 4px;
+  padding-left: 10px;
+  border-left: 2px solid var(--border-gray);
+  color: var(--text-light);
+  font-size: 0.92em;
+  font-style: italic;
+}
+
+.metadata-origin {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.metadata-origin-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  background: var(--border-muted);
+  color: var(--text-light);
+  border-radius: 10px;
+  font-size: 0.78em;
+  font-weight: 600;
+}
+
+.metadata-doc-footer {
+  margin-top: 20px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-muted);
+  color: var(--text-lighter);
+  font-size: 0.8em;
+}
+
+.metadata-modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 15px 30px;
+  border-top: 2px solid var(--border-muted);
+}
+
 /* Modal Styles */
 .modal-overlay {
   position: fixed;
@@ -1149,6 +1331,53 @@ footer a:hover {
     flex-direction: column;
     gap: 10px;
     padding: 15px;
+  }
+
+  .metadata-modal-actions {
+    padding: 15px;
+  }
+
+  .metadata-modal-actions .btn-secondary {
+    flex: 1 1 100%;
+  }
+
+  .metadata-table-wrapper {
+    padding: 15px;
+  }
+
+  /* Stack label above value so long labels stay readable on narrow screens */
+  table.metadata-table,
+  table.metadata-table tbody,
+  table.metadata-table tr,
+  table.metadata-table th,
+  table.metadata-table td {
+    display: block;
+    width: auto;
+  }
+
+  table.metadata-table tr {
+    border-bottom: 1px solid var(--border-muted);
+    padding: 4px 0;
+  }
+
+  table.metadata-table tr:last-child {
+    border-bottom: none;
+  }
+
+  table.metadata-table th {
+    border-right: none;
+    border-bottom: none;
+    background: transparent;
+    padding-bottom: 2px;
+  }
+
+  table.metadata-table td {
+    border-bottom: none;
+    padding-top: 0;
+  }
+
+  .metadata-origin {
+    padding-top: 4px;
   }
 
   .detail-item {

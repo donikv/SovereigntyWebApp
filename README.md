@@ -111,13 +111,18 @@ SoveregnityWebApp/
 │   │   ├── DatabaseFactory.js # Database factory for easy switching
 │   │   └── index.js           # Database module exports
 │   ├── routes/
-│   │   └── scoring.js         # API routes with DB operations
+│   │   ├── scoring.js         # API routes with DB operations
+│   │   └── swh.js             # Software Heritage lookup endpoint
 │   └── services/
-│       └── scoringService.js  # Scoring calculation logic
+│       ├── scoringService.js  # Scoring calculation logic
+│       ├── metadataModel.js   # Sovereignty Metadata Model definition (3 layers)
+│       └── swhService.js      # Software Heritage fetching and field mapping
 ├── frontend/
 │   ├── index.html             # Main HTML page
 │   ├── app.js                 # Vue.js application
 │   ├── styles.css             # Styling
+│   ├── components/
+│   │   └── SlcInput.js        # Reusable SLC criterion input
 │   └── thresholds/
 │       ├── thresholds.html    # Thresholds configuration page
 │       └── thresholds.js      # Thresholds management logic
@@ -232,28 +237,33 @@ DB_ENABLED=false npm start
 - **Export All (JSON)**: Export all evaluations from database (requires DB)
 - **Export All (CSV)**: Export all evaluations as CSV (requires DB)
 
-### 3. Sovereignty Characteristics (At least one needs to be selected)
+### 3. Sovereignty Metadata Model (Optional)
+- Click **Show** to reveal the fields that are not collected anywhere else
+- Click **View Metadata Model** to open the compiled 3-layer table, with **Save as PNG** / **Copy JSON**
+- These fields are descriptive only and **do not affect the sovereignty score**
+
+### 4. Sovereignty Characteristics (At least one needs to be selected)
 - Click **Show** to display all 13 characteristics
 - For each characteristic:
   - Click **SHALL** for mandatory requirements
   - Click **SHOULD** for desirable requirements
   - Click again to deselect
 
-### 4. SLC Criteria (Required)
+### 5. SLC Criteria (Required)
 For each of the 14 criteria:
 - Select value from dropdown
 - Check **Mitigation** if compensating controls exist
 - Select minimum acceptable value for pass/fail evaluation
 - Thresholds are set during initialization of the app, and cannot be changed during running (The app provides an interface to create the thresholds.json file for future deployment)
 
-### 5. Calculate & Review
+### 6. Calculate & Review
 - Click **Calculate Score** to see results:
   - Overall sovereignty score
   - Per-characteristic breakdown with SHALL/SHOULD components
   - Contributing SLC criteria with pass/fail indicators
   - Normalized scores and raw values
 
-### 6. Reset
+### 7. Reset
 - Click **Reset** to clear all inputs
 
 ## SLC Criteria Reference
@@ -281,6 +291,65 @@ For each of the 14 criteria:
 - **SLC23 - AI Model Retraining**: Internal (3) > Retrained (2) > External (1)
 - **SLC24 - External Dependencies**: 1 (4) > 2-4 (3) > 5-9 (2) > ≥10 (1)
 - **SLC25 - Explainability**: White-box (3) > External (2) > Consistent (1) > Opaque (0)
+
+## Sovereignty Metadata Model
+
+A compact, three-layer descriptive record of the technology under evaluation. It is a **view over data the app already collects** — 18 of its 23 fields reuse existing SLC criteria, form inputs, or Software Heritage lookup results. The model is defined in `backend/services/metadataModel.js` and served to the frontend via `/api/config`.
+
+**The metadata model does not participate in scoring.** Adding or changing metadata values never changes a sovereignty score.
+
+### Layer 1: Governance Layer
+
+| Field | Source |
+|---|---|
+| Software maintainer | Auto-filled from SWH/GitHub repository owner |
+| Licensing status | Auto-filled — declared SPDX identifier, or the category detected from the licence text |
+| Compromising accessibility | Assessor judgement (Yes / No / Unknown) with a free-text justification |
+| Traceability | Auto-filled — archived development history exists in Software Heritage |
+| Auditability of source code | Auto-filled — source available for audit |
+| Long-term availability | Auto-filled — archived with a recent successful capture |
+
+### Layer 2: Software description Layer
+
+| Field | Source |
+|---|---|
+| Name | Technology Name field |
+| Description | Description field |
+| Version | Auto-filled from the latest published release tag |
+| Programming Language | Auto-filled from the repository's primary language |
+| Operating System | Auto-filled from codemeta `operatingSystem` when present, else manual |
+
+### Layer 3: Sustainability and Trust Layer
+
+| Field | Source |
+|---|---|
+| Software ownership | SLC1 |
+| Software country of origin | SLC2 |
+| Software license | SLC3 |
+| Data ownership | Manual (same organisation scale as SLC1) |
+| Data country of origin | SLC33 |
+| Data license | SLC34 |
+| Community and ecosystem | SLC11 |
+| Regulatory and legal compliance | SLC12 |
+| Funding and sustainability | SLC13 |
+| Interoperability | SLC16 |
+| Development processes | SLC17 |
+| Vendor lock-in | Manual (None / Low / Moderate / High / Unknown) |
+
+### Output
+
+**View Metadata Model** opens the compiled table, grouped by layer, with each row tagged by its source (e.g. `SLC1`, `SWH / Manual`). From there:
+- **Save as PNG** — renders the table to an image, sized for inclusion in reports and slides
+- **Copy JSON** — copies the resolved model to the clipboard
+
+Metadata is persisted with the evaluation and is included in Export/Import Data.
+
+### Adding a field
+
+Add an entry to the relevant layer in `backend/services/metadataModel.js`. The frontend renders inputs and table rows from that definition — no UI changes are needed. Each field declares its `source`:
+- `'form'` + `formField` — read from a top-level form field
+- `'slc'` + `slc` — read from an SLC criterion, labelled with that criterion's option label
+- `'metadata'` + `input` (`text` / `textarea` / `select` / `boolean`) — assessor-entered; add `autofill: true` if the Software Heritage lookup can populate it (then map it in `mapToSuggestions` in `backend/services/swhService.js`)
 
 ## Sovereignty Characteristics
 
@@ -329,9 +398,20 @@ Calculate sovereignty score and optionally save to database.
     "sc1": "shall",
     "sc2": "should"
   },
+  "metadata": {
+    "softwareMaintainer": "numpy (Organization)",
+    "licensingStatus": "BSD-3-Clause",
+    "version": "v2.5.2",
+    "programmingLanguage": "Python",
+    "traceability": true,
+    "vendorLockIn": "low",
+    ...
+  },
   "saveToDb": true
 }
 ```
+
+`metadata` is optional and does not affect scoring — see [Sovereignty Metadata Model](#sovereignty-metadata-model).
 
 **Response:**
 ```json
@@ -580,6 +660,21 @@ Evaluations are stored with the following structure:
     slc1: String,
     slc2: String,
     // ... mitigation descriptions
+  },
+  metadata: {
+    // Sovereignty Metadata Model fields not derived from criteria/form
+    softwareMaintainer: String,
+    licensingStatus: String,
+    compromisingAccessibility: String,
+    compromisingAccessibilityNote: String,
+    traceability: Boolean,
+    auditability: Boolean,
+    longTermAvailability: Boolean,
+    version: String,
+    programmingLanguage: String,
+    operatingSystem: String,
+    dataOwnership: String,
+    vendorLockIn: String
   },
   results: {
     overallScore: Number,

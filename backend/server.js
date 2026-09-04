@@ -7,6 +7,7 @@ const scoringRoutes = require('./routes/scoring');
 const swhRoutes = require('./routes/swh');
 const { DatabaseFactory } = require('./database');
 const { slcToScMapping, slcCriteria, sovereigntyCharacteristics } = require('./services/scoringService');
+const { metadataModel } = require('./services/metadataModel');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -48,6 +49,7 @@ app.get('/api/config', (req, res) => {
     slcToScMapping: slcToScMapping,
     slcCriteria: slcCriteria,
     sovereigntyCharacteristics: sovereigntyCharacteristics,
+    metadataModel: metadataModel,
     database: {
       enabled: DB_ENABLED,
       connected: db ? db.isConnected() : false,
