@@ -237,24 +237,25 @@ DB_ENABLED=false npm start
 - **Export All (JSON)**: Export all evaluations from database (requires DB)
 - **Export All (CSV)**: Export all evaluations as CSV (requires DB)
 
-### 3. Sovereignty Metadata Model (Optional)
-- Click **Show** to reveal the fields that are not collected anywhere else
-- Click **View Metadata Model** to open the compiled 3-layer table, with **Save as PNG** / **Copy JSON**
-- These fields are descriptive only and **do not affect the sovereignty score**
-
-### 4. Sovereignty Characteristics (At least one needs to be selected)
+### 3. Sovereignty Characteristics (At least one needs to be selected)
 - Click **Show** to display all 13 characteristics
 - For each characteristic:
   - Click **SHALL** for mandatory requirements
   - Click **SHOULD** for desirable requirements
   - Click again to deselect
 
-### 5. SLC Criteria (Required)
+### 4. SLC Criteria (Required)
 For each of the 14 criteria:
 - Select value from dropdown
 - Check **Mitigation** if compensating controls exist
 - Select minimum acceptable value for pass/fail evaluation
 - Thresholds are set during initialization of the app, and cannot be changed during running (The app provides an interface to create the thresholds.json file for future deployment)
+
+### 5. Sovereignty Metadata Model (Optional)
+Shown as a compact bar below the SLC criteria:
+- **Edit Metadata** opens a small popup with the handful of fields not collected anywhere else. Field descriptions are hidden — click the **?** next to a label to reveal one.
+- **View Metadata Model** opens the compiled 3-layer table, with **Save as PNG**
+- These fields are descriptive only and **do not affect the sovereignty score**
 
 ### 6. Calculate & Review
 - Click **Calculate Score** to see results:
@@ -304,7 +305,7 @@ A compact, three-layer descriptive record of the technology under evaluation. It
 |---|---|
 | Software maintainer | Auto-filled from SWH/GitHub repository owner |
 | Licensing status | Auto-filled — declared SPDX identifier, or the category detected from the licence text |
-| Compromising accessibility | Assessor judgement (Yes / No / Unknown) with a free-text justification |
+| Compromising accessibility | Assessor judgement (Yes / No / Unknown) |
 | Traceability | Auto-filled — archived development history exists in Software Heritage |
 | Auditability of source code | Auto-filled — source available for audit |
 | Long-term availability | Auto-filled — archived with a recent successful capture |
@@ -338,9 +339,7 @@ A compact, three-layer descriptive record of the technology under evaluation. It
 
 ### Output
 
-**View Metadata Model** opens the compiled table, grouped by layer, with each row tagged by its source (e.g. `SLC1`, `SWH / Manual`). From there:
-- **Save as PNG** — renders the table to an image, sized for inclusion in reports and slides
-- **Copy JSON** — copies the resolved model to the clipboard
+**View Metadata Model** opens the compiled table, grouped by layer. **Save as PNG** renders it to an image sized for inclusion in reports and slides.
 
 Metadata is persisted with the evaluation and is included in Export/Import Data.
 
@@ -666,7 +665,6 @@ Evaluations are stored with the following structure:
     softwareMaintainer: String,
     licensingStatus: String,
     compromisingAccessibility: String,
-    compromisingAccessibilityNote: String,
     traceability: Boolean,
     auditability: Boolean,
     longTermAvailability: Boolean,

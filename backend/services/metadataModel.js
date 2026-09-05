@@ -51,17 +51,7 @@ const metadataModel = {
           { value: 'yes', label: 'Yes' },
           { value: 'unknown', label: 'Unknown' }
         ],
-        note: 'compromisingAccessibilityNote',
         help: 'Assessor judgement on whether accessibility of the software is compromised'
-      },
-      // Rendered inside its parent field rather than as a row of its own
-      compromisingAccessibilityNote: {
-        label: 'Justification',
-        source: 'metadata',
-        input: 'textarea',
-        isNote: true,
-        hideInTable: true,
-        placeholder: 'Justify the assessment above...'
       },
       traceability: {
         label: 'Traceability',

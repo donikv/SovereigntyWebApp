@@ -885,59 +885,141 @@ footer a:hover {
   border: 1px solid var(--warning-border);
 }
 
-/* Sovereignty Metadata Model - input section */
-.metadata-actions {
+/* Sovereignty Metadata Model - compact entry point */
+.metadata-section {
+  padding: 15px 20px;
+}
+
+.metadata-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.metadata-bar-label {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.metadata-bar-label h2 {
+  margin: 0;
+  border: none;
+  padding: 0;
+}
+
+.metadata-optional-tag {
+  padding: 2px 10px;
+  background: var(--bg-light);
+  border: 1px solid var(--border-gray);
+  color: var(--text-light);
+  border-radius: 10px;
+  font-size: 0.75em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.metadata-count {
+  color: var(--text-lighter);
+  font-size: 0.85em;
+}
+
+.metadata-bar-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 15px;
 }
 
-.metadata-inputs {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+/* Sovereignty Metadata Model - compact editor popup */
+/* Both classes needed to override .modal-content's wider max-width */
+.modal-content.metadata-editor {
+  max-width: 520px;
 }
 
-.metadata-input-layer {
-  padding: 15px;
-  background: var(--bg-light);
-  border-radius: 8px;
-  border-left: 4px solid var(--navy);
+.metadata-edit-layer + .metadata-edit-layer {
+  margin-top: 18px;
 }
 
-.metadata-layer-title {
+.metadata-edit-layer-title {
   font-weight: 700;
   color: var(--navy);
-  margin-bottom: 15px;
-  font-size: 0.95em;
+  font-size: 0.8em;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
+  padding-bottom: 6px;
+  margin-bottom: 12px;
+  border-bottom: 2px solid var(--border-muted);
 }
 
-.metadata-input-layer .form-group:last-child {
-  margin-bottom: 0;
+.metadata-field + .metadata-field {
+  margin-top: 12px;
+}
+
+.metadata-field-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 5px;
+}
+
+.metadata-field-label label {
+  margin: 0;
+  font-size: 0.9em;
+}
+
+.metadata-field input[type="text"],
+.metadata-field select,
+.metadata-field textarea {
+  padding: 8px 10px;
+  font-size: 0.9em;
+  border-width: 1px;
+}
+
+.metadata-help-toggle {
+  width: 17px;
+  height: 17px;
+  flex: none;
+  padding: 0;
+  border: 1px solid var(--border-gray);
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--text-lighter);
+  font-size: 0.7em;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.metadata-help-toggle:hover,
+.metadata-help-toggle.open {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: var(--white);
 }
 
 .metadata-autofill-tag {
-  display: inline-block;
-  margin-left: 8px;
-  padding: 2px 8px;
+  padding: 1px 7px;
   background: var(--blue-tag-bg);
   color: var(--blue-deep-text);
   border-radius: 10px;
-  font-size: 0.72em;
-  font-weight: 600;
-  text-transform: none;
-  letter-spacing: 0;
-  vertical-align: middle;
+  font-size: 0.68em;
+  font-weight: 700;
+  letter-spacing: 0.03em;
 }
 
 .metadata-help {
-  margin-top: 5px;
-  font-size: 0.85em;
-  color: var(--text-light);
-  font-style: italic;
+  margin-bottom: 6px;
+  padding: 6px 10px;
+  background: var(--blue-pale-bg);
+  border-left: 3px solid var(--blue-pale-border);
+  border-radius: 0 4px 4px 0;
+  font-size: 0.82em;
+  color: var(--text-muted);
 }
 
 /* Sovereignty Metadata Model - output table */
@@ -1024,30 +1106,6 @@ table.metadata-table th {
 
 .metadata-empty {
   color: var(--text-lighter);
-}
-
-.metadata-note {
-  margin-top: 4px;
-  padding-left: 10px;
-  border-left: 2px solid var(--border-gray);
-  color: var(--text-light);
-  font-size: 0.92em;
-  font-style: italic;
-}
-
-.metadata-origin {
-  width: 1%;
-  white-space: nowrap;
-}
-
-.metadata-origin-badge {
-  display: inline-block;
-  padding: 2px 8px;
-  background: var(--border-muted);
-  color: var(--text-light);
-  border-radius: 10px;
-  font-size: 0.78em;
-  font-weight: 600;
 }
 
 .metadata-doc-footer {
@@ -1376,8 +1434,17 @@ table.metadata-table th {
     padding-top: 0;
   }
 
-  .metadata-origin {
-    padding-top: 4px;
+  .metadata-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .metadata-bar-actions {
+    width: 100%;
+  }
+
+  .metadata-bar-actions .btn-secondary {
+    flex: 1 1 0;
   }
 
   .detail-item {

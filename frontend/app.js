@@ -29,10 +29,10 @@ const app = createApp({
       sovereigntyCharacteristics: {},
       // Sovereignty Metadata Model (3 layers) - loaded from server
       metadataModel: {},
-      showMetadataSection: false,
       showMetadataModal: false,
+      showMetadataEditor: false,
+      expandedMetadataHelp: null,
       metadataPngGenerating: false,
-      metadataCopied: false,
       results: null,
       loading: false,
       pdfGenerating: false,
@@ -223,33 +223,30 @@ const app = createApp({
       this.swhResult = null;
     },
 
-    // Resolve every metadata model field to a display row, keeping track of
-    // where the value came from so the exported table is self-explanatory
+    // Resolve a metadata model field to its display value
     resolveMetadataValue(field) {
       if (field.source === 'form') {
-        return { value: this.formData[field.formField] || '', origin: 'Form' };
+        return this.formData[field.formField] || '';
       }
 
       if (field.source === 'slc') {
         const selection = this.formData.criteria[field.slc];
-        const label = selection ? (this.slcOptions[field.slc]?.[selection] || selection) : '';
-        return { value: label, origin: field.slc.toUpperCase() };
+        return selection ? (this.slcOptions[field.slc]?.[selection] || selection) : '';
       }
 
       const raw = this.formData.metadata[field.key];
-      const origin = field.autofill ? 'SWH / Manual' : 'Manual';
 
       if (field.input === 'boolean') {
-        if (raw === null || raw === undefined || raw === '') return { value: '', origin };
-        return { value: raw ? 'Yes' : 'No', origin };
+        if (raw === null || raw === undefined || raw === '') return '';
+        return raw ? 'Yes' : 'No';
       }
 
       if (field.input === 'select' && raw) {
         const option = (field.options || []).find(o => o.value === raw);
-        return { value: option ? option.label : raw, origin };
+        return option ? option.label : raw;
       }
 
-      return { value: raw || '', origin };
+      return raw || '';
     },
 
     openMetadataModal() {
@@ -258,7 +255,20 @@ const app = createApp({
 
     closeMetadataModal() {
       this.showMetadataModal = false;
-      this.metadataCopied = false;
+    },
+
+    openMetadataEditor() {
+      this.showMetadataEditor = true;
+    },
+
+    closeMetadataEditor() {
+      this.showMetadataEditor = false;
+      this.expandedMetadataHelp = null;
+    },
+
+    // Field help is hidden by default to keep the editor compact
+    toggleMetadataHelp(fieldKey) {
+      this.expandedMetadataHelp = this.expandedMetadataHelp === fieldKey ? null : fieldKey;
     },
 
     async exportMetadataPNG() {
@@ -310,25 +320,6 @@ const app = createApp({
       }
     },
 
-    async copyMetadataJSON() {
-      const payload = {
-        technologyName: this.formData.technologyName,
-        exportDate: new Date().toISOString(),
-        layers: this.metadataTable.map(layer => ({
-          code: layer.code,
-          name: layer.name,
-          fields: layer.rows.map(row => ({ label: row.label, value: row.value, source: row.origin }))
-        }))
-      };
-
-      try {
-        await navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
-        this.metadataCopied = true;
-        setTimeout(() => { this.metadataCopied = false; }, 2000);
-      } catch (err) {
-        this.error = 'Could not copy to clipboard: ' + err.message;
-      }
-    },
 
     async calculateScore() {
       this.loading = true;
@@ -869,16 +860,11 @@ const app = createApp({
         name: layer.name,
         rows: Object.entries(layer.fields)
           .filter(([, field]) => !field.hideInTable)
-          .map(([fieldKey, field]) => {
-            const resolved = this.resolveMetadataValue({ ...field, key: fieldKey });
-            return {
-              key: fieldKey,
-              label: field.label,
-              value: resolved.value,
-              origin: resolved.origin,
-              note: field.note ? this.formData.metadata[field.note] : ''
-            };
-          })
+          .map(([fieldKey, field]) => ({
+            key: fieldKey,
+            label: field.label,
+            value: this.resolveMetadataValue({ ...field, key: fieldKey })
+          }))
       }));
     },
 
@@ -891,14 +877,17 @@ const app = createApp({
           code: layer.code,
           name: layer.name,
           fields: Object.entries(layer.fields)
-            .filter(([, field]) => field.source === 'metadata' && !field.isNote)
-            .map(([fieldKey, field]) => ({
-              ...field,
-              key: fieldKey,
-              noteField: field.note ? { ...layer.fields[field.note], key: field.note } : null
-            }))
+            .filter(([, field]) => field.source === 'metadata')
+            .map(([fieldKey, field]) => ({ ...field, key: fieldKey }))
         }))
         .filter(layer => layer.fields.length > 0);
+    },
+
+    // DD.MM.YYYY for the exported table footer
+    metadataGeneratedDate() {
+      const d = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()}`;
     },
 
     metadataFilledCount() {
