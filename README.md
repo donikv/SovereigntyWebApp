@@ -229,6 +229,10 @@ DB_ENABLED=false npm start
 ### 1. Basic Information
 - Enter **Technology Name** (required)
 - Add **Description** (optional)
+- **Sovereignty Metadata Model** (optional, at the foot of the section):
+  - **Edit Metadata** opens a small popup with the handful of fields not collected anywhere else. Field descriptions are hidden — click the **?** next to a label to reveal one.
+  - **View Metadata Model** opens the compiled 3-layer table, with **Save as PNG**. The same button is repeated next to **Calculate Score** / **Reset** at the foot of the form.
+  - These fields are descriptive only and **do not affect the sovereignty score**
 
 ### 2. Data Management
 - **📥 Export Data**: Save current evaluation as JSON (client-side)
@@ -251,20 +255,14 @@ For each of the 14 criteria:
 - Select minimum acceptable value for pass/fail evaluation
 - Thresholds are set during initialization of the app, and cannot be changed during running (The app provides an interface to create the thresholds.json file for future deployment)
 
-### 5. Sovereignty Metadata Model (Optional)
-Shown as a compact bar below the SLC criteria:
-- **Edit Metadata** opens a small popup with the handful of fields not collected anywhere else. Field descriptions are hidden — click the **?** next to a label to reveal one.
-- **View Metadata Model** opens the compiled 3-layer table, with **Save as PNG**
-- These fields are descriptive only and **do not affect the sovereignty score**
-
-### 6. Calculate & Review
+### 5. Calculate & Review
 - Click **Calculate Score** to see results:
   - Overall sovereignty score
   - Per-characteristic breakdown with SHALL/SHOULD components
   - Contributing SLC criteria with pass/fail indicators
   - Normalized scores and raw values
 
-### 7. Reset
+### 6. Reset
 - Click **Reset** to clear all inputs
 
 ## SLC Criteria Reference
@@ -345,7 +343,7 @@ Each assessor field holds a single string: either a preset's `value` or arbitrar
 
 ### Output
 
-**View Metadata Model** opens the compiled table, grouped by layer. **Save as PNG** renders it to an image sized for inclusion in reports and slides.
+**View Metadata Model** — available from the Technology Information section and again next to the **Calculate Score** / **Reset** buttons — opens the compiled table, grouped by layer. **Save as PNG** renders it to an image sized for inclusion in reports and slides.
 
 Metadata is persisted with the evaluation and is included in Export/Import Data.
 
