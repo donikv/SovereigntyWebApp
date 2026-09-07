@@ -398,26 +398,26 @@
                 :placeholder="field.placeholder"
               >
 
-              <select
-                v-else-if="field.input === 'select'"
-                :id="'meta-' + field.key"
-                v-model="formData.metadata[field.key]"
-              >
-                <option value="">Select...</option>
-                <option v-for="option in field.options" :key="option.value" :value="option.value">
-                  {{ option.label }}
-                </option>
-              </select>
-
-              <select
-                v-else-if="field.input === 'boolean'"
-                :id="'meta-' + field.key"
-                v-model="formData.metadata[field.key]"
-              >
-                <option :value="null">Unknown</option>
-                <option :value="true">Yes</option>
-                <option :value="false">No</option>
-              </select>
+              <template v-else-if="field.input === 'select'">
+                <select
+                  :id="'meta-' + field.key"
+                  :value="presetSelection(field)"
+                  @change="onPresetChange(field, $event.target.value)"
+                >
+                  <option value="">Select...</option>
+                  <option v-for="option in field.options" :key="option.value" :value="option.value">
+                    {{ option.label }}
+                  </option>
+                  <option v-if="field.allowOther" value="__other">Other (specify)</option>
+                </select>
+                <input
+                  v-if="field.allowOther && presetSelection(field) === '__other'"
+                  type="text"
+                  class="metadata-other-input"
+                  v-model="formData.metadata[field.key]"
+                  :placeholder="field.placeholder"
+                >
+              </template>
 
               <textarea
                 v-else

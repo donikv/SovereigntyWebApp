@@ -110,14 +110,24 @@ function detectLicenseFromText(text) {
   return null;
 }
 
-// Human-readable fallback when no real SPDX identifier is available
-const LICENSE_CATEGORY_LABELS = {
-  public_domain: 'Public Domain',
-  permissive:    'Permissive',
-  lgpl:          'LGPL / Intermediate',
-  copyleft:      'Copyleft',
-  proprietary:   'Commercial / Proprietary'
+// GitHub's primary-language name -> programmingLanguage preset in metadataModel.js.
+// Anything unlisted (e.g. "Jupyter Notebook") is passed through as free text.
+const LANGUAGE_PRESETS = {
+  'python': 'python',
+  'javascript': 'javascript',
+  'typescript': 'javascript',
+  'java': 'java',
+  'c': 'c',
+  'c++': 'cpp',
+  'c#': 'csharp',
+  'go': 'go',
+  'rust': 'rust'
 };
+
+function mapProgrammingLanguage(language) {
+  if (!language) return null;
+  return LANGUAGE_PRESETS[language.trim().toLowerCase()] || language;
+}
 
 // Map SPDX identifier or URL to SLC3/SLC34 option key
 function mapLicense(license) {
@@ -436,21 +446,21 @@ function mapToSuggestions(rawData) {
 
   // Metadata model fields — namespaced so they never collide with the slcN keys
   const metadata = {};
+  // The maintainer name carries more information than any preset would
   if (df?.softwareMaintainer)  metadata.softwareMaintainer  = df.softwareMaintainer;
-  // Prefer the declared SPDX identifier; fall back to the detected category
-  const licensingStatus = df?.LicensingStatus
-    || (df?.LicensingCategories
-      ? `${LICENSE_CATEGORY_LABELS[df.LicensingCategories] || df.LicensingCategories} (detected from licence text)`
-      : null);
+  // A real SPDX identifier is more precise than a preset, so pass it through as
+  // free text; otherwise the detected category matches a preset value directly
+  const licensingStatus = df?.LicensingStatus || df?.LicensingCategories || null;
   if (licensingStatus)         metadata.licensingStatus     = licensingStatus;
   if (df?.version)             metadata.version             = df.version;
-  if (df?.programmingLanguage) metadata.programmingLanguage = df.programmingLanguage;
+  const language = mapProgrammingLanguage(df?.programmingLanguage);
+  if (language)                metadata.programmingLanguage = language;
   if (df?.operatingSystem)     metadata.operatingSystem     = df.operatingSystem;
-  // Booleans are always meaningful — an archived-but-empty history is a real "false"
   if (df) {
-    metadata.traceability         = df.Traceability;
-    metadata.auditability         = df.auditability;
-    metadata.longTermAvailability = df.longTermAvailability;
+    metadata.traceability         = df.Traceability ? 'full' : 'none';
+    metadata.auditability         = df.auditability ? 'full' : 'none';
+    // A false flag only means "no recent capture", not "no guarantee"
+    metadata.longTermAvailability = df.longTermAvailability ? 'archived' : 'unknown';
   }
   if (Object.keys(metadata).length) suggestions.metadata = metadata;
 

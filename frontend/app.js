@@ -1,5 +1,9 @@
 const { createApp } = Vue;
 
+// Sentinel for the "Other (specify)" entry in a preset dropdown. Never stored —
+// choosing it just reveals the free-text box for that field.
+const OTHER_OPTION = '__other';
+
 const app = createApp({
   components: {
     'slc-input': SlcInput
@@ -32,6 +36,8 @@ const app = createApp({
       showMetadataModal: false,
       showMetadataEditor: false,
       expandedMetadataHelp: null,
+      // Fields switched to "Other (specify)" whose free text is still empty
+      metadataOtherActive: {},
       metadataPngGenerating: false,
       results: null,
       loading: false,
@@ -83,7 +89,7 @@ const app = createApp({
             Object.values(config.metadataModel).forEach(layer => {
               Object.entries(layer.fields).forEach(([fieldKey, field]) => {
                 if (field.source === 'metadata') {
-                  this.formData.metadata[fieldKey] = field.input === 'boolean' ? null : '';
+                  this.formData.metadata[fieldKey] = '';
                 }
               });
             });
@@ -236,17 +242,35 @@ const app = createApp({
 
       const raw = this.formData.metadata[field.key];
 
-      if (field.input === 'boolean') {
-        if (raw === null || raw === undefined || raw === '') return '';
-        return raw ? 'Yes' : 'No';
-      }
-
+      // A value that matches no preset is free text and is shown verbatim
       if (field.input === 'select' && raw) {
         const option = (field.options || []).find(o => o.value === raw);
         return option ? option.label : raw;
       }
 
       return raw || '';
+    },
+
+    // Which entry the preset dropdown should show. A stored value that matches
+    // no preset means the assessor (or SWH) supplied free text.
+    presetSelection(field) {
+      if (this.metadataOtherActive[field.key]) return OTHER_OPTION;
+      const raw = this.formData.metadata[field.key];
+      if (raw === '' || raw === null || raw === undefined) return '';
+      return (field.options || []).some(o => o.value === raw) ? raw : OTHER_OPTION;
+    },
+
+    onPresetChange(field, selected) {
+      if (selected === OTHER_OPTION) {
+        // Keep any free text already there, otherwise start with an empty box
+        if (this.presetSelection(field) !== OTHER_OPTION) {
+          this.formData.metadata[field.key] = '';
+        }
+        this.metadataOtherActive[field.key] = true;
+      } else {
+        this.formData.metadata[field.key] = selected;
+        this.metadataOtherActive[field.key] = false;
+      }
     },
 
     openMetadataModal() {
@@ -264,6 +288,10 @@ const app = createApp({
     closeMetadataEditor() {
       this.showMetadataEditor = false;
       this.expandedMetadataHelp = null;
+      // Drop "Other" flags for fields left blank so they read as unset again
+      Object.keys(this.metadataOtherActive).forEach(key => {
+        if (!this.formData.metadata[key]) delete this.metadataOtherActive[key];
+      });
     },
 
     // Field help is hidden by default to keep the editor compact
@@ -441,7 +469,7 @@ const app = createApp({
       Object.values(this.metadataModel).forEach(layer => {
         Object.entries(layer.fields).forEach(([fieldKey, field]) => {
           if (field.source === 'metadata') {
-            metadata[fieldKey] = field.input === 'boolean' ? null : '';
+            metadata[fieldKey] = '';
           }
         });
       });
@@ -458,6 +486,7 @@ const app = createApp({
       this.results = null;
       this.error = null;
       this.currentEvaluationId = null;
+      this.metadataOtherActive = {};
       this.swhResult = null;
       this.swhError = null;
       this.swhCandidates = [];

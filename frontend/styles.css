@@ -979,6 +979,11 @@ footer a:hover {
   border-width: 1px;
 }
 
+/* Free-text box revealed by the "Other (specify)" preset */
+.metadata-other-input {
+  margin-top: 6px;
+}
+
 .metadata-help-toggle {
   width: 17px;
   height: 17px;
