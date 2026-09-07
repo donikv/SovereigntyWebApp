@@ -111,13 +111,18 @@ SoveregnityWebApp/
 │   │   ├── DatabaseFactory.js # Database factory for easy switching
 │   │   └── index.js           # Database module exports
 │   ├── routes/
-│   │   └── scoring.js         # API routes with DB operations
+│   │   ├── scoring.js         # API routes with DB operations
+│   │   └── swh.js             # Software Heritage lookup endpoint
 │   └── services/
-│       └── scoringService.js  # Scoring calculation logic
+│       ├── scoringService.js  # Scoring calculation logic
+│       ├── metadataModel.js   # Sovereignty Metadata Model definition (3 layers)
+│       └── swhService.js      # Software Heritage fetching and field mapping
 ├── frontend/
 │   ├── index.html             # Main HTML page
 │   ├── app.js                 # Vue.js application
 │   ├── styles.css             # Styling
+│   ├── components/
+│   │   └── SlcInput.js        # Reusable SLC criterion input
 │   └── thresholds/
 │       ├── thresholds.html    # Thresholds configuration page
 │       └── thresholds.js      # Thresholds management logic
@@ -224,6 +229,10 @@ DB_ENABLED=false npm start
 ### 1. Basic Information
 - Enter **Technology Name** (required)
 - Add **Description** (optional)
+- **Sovereignty Metadata Model** (optional, at the foot of the section):
+  - **Edit Metadata** opens a small popup with the handful of fields not collected anywhere else. Field descriptions are hidden — click the **?** next to a label to reveal one.
+  - **View Metadata Model** opens the compiled 3-layer table, with **Save as PNG**. The same button is repeated next to **Calculate Score** / **Reset** at the foot of the form.
+  - These fields are descriptive only and **do not affect the sovereignty score**
 
 ### 2. Data Management
 - **📥 Export Data**: Save current evaluation as JSON (client-side)
@@ -282,6 +291,69 @@ For each of the 14 criteria:
 - **SLC24 - External Dependencies**: 1 (4) > 2-4 (3) > 5-9 (2) > ≥10 (1)
 - **SLC25 - Explainability**: White-box (3) > External (2) > Consistent (1) > Opaque (0)
 
+## Sovereignty Metadata Model
+
+A compact, three-layer descriptive record of the technology under evaluation. It is a **view over data the app already collects** — 18 of its 23 fields reuse existing SLC criteria, form inputs, or Software Heritage lookup results. The model is defined in `backend/services/metadataModel.js` and served to the frontend via `/api/config`.
+
+**The metadata model does not participate in scoring.** Adding or changing metadata values never changes a sovereignty score.
+
+Fields that map onto an SLC criterion read their value straight from that criterion and are never entered twice. The remaining fields are assessor-entered and offer a **preset dropdown plus an "Other (specify)" free-text option**, so an entry that does not fit a preset can always be typed in.
+
+### Layer 1: Governance Layer
+
+| Field | Description | Input | Example |
+|---|---|---|---|
+| Software maintainer | Distinguishes the entity responsible for the support and the maintenance of a software library | Presets (Foundation / Company / Academic / Government / Community / Unmaintained) + free text · SWH | PyTorch Foundation |
+| Licensing status | Describes the legal conditions governing the use, modification, redistribution, and/or commercialization of software and its source code | Presets (Public domain / Permissive / Weak copyleft / Strong copyleft / Proprietary / Dual / Undeclared) + free text · SWH | BSD License |
+| Compromising accessibility | Indicates the extent to which the software's source code is available and obtainable by users, developers, or auditors | Presets (Fully open / Registration required / Restricted / Closed / Unknown) + free text | a link as evidence |
+| Traceability | Represents the ability to identify and follow the origin, history, versions, modifications, and relationships of a software artifact over time | Presets (Full / Partial / Minimal / None / Unknown) + free text · SWH | a link as evidence |
+| Auditability of source code | Describes the extent to which source code can be independently inspected, examined, and verified | Presets (Fully auditable / Third-party audited / Partial / Not auditable / Unknown) + free text · SWH | Yes |
+| Long-term availability | Represents the ability to ensure the software and/or its source code remains accessible, identifiable, and retrievable over time, including after the original repository, organization, or hosting service changes or disappears | Presets (Archived / Community-driven / Institutional / Single-vendor / No guarantee / Unknown) + free text · SWH | Community-driven collaboration |
+
+### Layer 2: Software description Layer
+
+| Field | Description | Input | Example |
+|---|---|---|---|
+| Name | Define identification of the library | Technology Name field | TensorFlow |
+| Description | Provides an understandable definition of the library including its purpose and scope, functionality, and usage | Description field | An open-source machine-learning framework |
+| Version | Identification of the release or state of the software | Free text (no meaningful preset list) · SWH | 2.21.0 |
+| Programming Language | Define the name of the programming language or languages in which the software is implemented | Presets (Python, JavaScript/TypeScript, Java, C, C++, C#, Go, Rust) + free text · SWH | C++, Python and others |
+| Operating System | Identify the operating system or environment on which the software is designed and can run | Presets (Cross-platform, Linux, Windows, macOS, Unix-like, Android, iOS, Platform-independent) + free text · SWH | Linux, macOS, Windows/WSL2 |
+
+### Layer 3: Sustainability and Trust Layer
+
+| Field | Description | Input | Example |
+|---|---|---|---|
+| Software ownership | Identify the name of the owner of the software | **SLC1** | Open-source |
+| Software country of origin | Identify the Country from which the software originates and where most of the current maintainers are from or affiliated to | **SLC2** | France |
+| Software License | Define the type of the license that the technology is distributed on | **SLC3** | BSD-3 clause license |
+| Data ownership | Identify the owner of the data that the software is used with, more specifically for machine learning technology | Presets (In-house / Commercial / Public-open / Government / Academic / Mixed / Not applicable / Unknown) + free text | Google Research |
+| Data country of origin | Identify the country from which the Data originates | **SLC33** | USA |
+| Data License | Define the type of license that the dataset is distributed under | **SLC34** | SCIN Data Use License |
+| Community and ecosystem | Identify the size and the health of the community and the ecosystem of the library | **SLC11** | 50k+ stars, 20k+ forks |
+| Regulatory and legal compliance | Identify the conformity of the library to regulatory and legal requirements | **SLC12** | Yes |
+| Funding and sustainability | Define the funding and sustainability that can affect the library development project | **SLC13** | Public and private grants |
+| Interoperability | The possibility of the software to work seamlessly with other systems and tools | **SLC16** | Multiplatform |
+| Development processes | Describe the processes that exist for contribution to open-source project | **SLC17** | Community-driven open-source development Git/GitHub |
+| Vendor Lock-in | Define the level of control over the technology and the infrastructure | Presets (None / Low / Moderate / High / Unknown) + free text | Low |
+
+### How preset values are stored
+
+Each assessor field holds a single string: either a preset's `value` or arbitrary free text. Anything that matches no preset is treated as free text and rendered verbatim, which is also how Software Heritage values with no matching preset are carried through — a maintainer name (`numpy (Organization)`) or a precise SPDX identifier (`MIT`) shows as typed, while a detected licence category (`permissive`) lands on the matching preset.
+
+### Output
+
+**View Metadata Model** — available from the Technology Information section and again next to the **Calculate Score** / **Reset** buttons — opens the compiled table, grouped by layer. **Save as PNG** renders it to an image sized for inclusion in reports and slides.
+
+Metadata is persisted with the evaluation and is included in Export/Import Data.
+
+### Adding a field
+
+Add an entry to the relevant layer in `backend/services/metadataModel.js`. The frontend renders inputs and table rows from that definition — no UI changes are needed. Each field declares its `source`:
+- `'form'` + `formField` — read from a top-level form field
+- `'slc'` + `slc` — read from an SLC criterion, labelled with that criterion's option label
+- `'metadata'` + `input` (`text` / `textarea` / `select`) — assessor-entered. For `select`, list `options` and add `allowOther: true` to offer the free-text escape. Add `autofill: true` if the Software Heritage lookup can populate it, then map it in `mapToSuggestions` in `backend/services/swhService.js` — emit a preset `value` where one fits, otherwise emit the raw string and it renders as free text.
+
 ## Sovereignty Characteristics
 
 1. **SC1: Autonomy** - Autonomous decision-making
@@ -329,9 +401,20 @@ Calculate sovereignty score and optionally save to database.
     "sc1": "shall",
     "sc2": "should"
   },
+  "metadata": {
+    "softwareMaintainer": "numpy (Organization)",
+    "licensingStatus": "BSD-3-Clause",
+    "version": "v2.5.2",
+    "programmingLanguage": "python",
+    "traceability": "full",
+    "vendorLockIn": "low",
+    ...
+  },
   "saveToDb": true
 }
 ```
+
+`metadata` is optional and does not affect scoring — see [Sovereignty Metadata Model](#sovereignty-metadata-model).
 
 **Response:**
 ```json
@@ -580,6 +663,20 @@ Evaluations are stored with the following structure:
     slc1: String,
     slc2: String,
     // ... mitigation descriptions
+  },
+  metadata: {
+    // Sovereignty Metadata Model fields not derived from criteria/form
+    softwareMaintainer: String,
+    licensingStatus: String,
+    compromisingAccessibility: String,
+    traceability: String,
+    auditability: String,
+    longTermAvailability: String,
+    version: String,
+    programmingLanguage: String,
+    operatingSystem: String,
+    dataOwnership: String,
+    vendorLockIn: String
   },
   results: {
     overallScore: Number,

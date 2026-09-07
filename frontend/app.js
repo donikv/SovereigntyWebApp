@@ -1,5 +1,9 @@
 const { createApp } = Vue;
 
+// Sentinel for the "Other (specify)" entry in a preset dropdown. Never stored —
+// choosing it just reveals the free-text box for that field.
+const OTHER_OPTION = '__other';
+
 const app = createApp({
   components: {
     'slc-input': SlcInput
@@ -20,10 +24,21 @@ const app = createApp({
         },
         selectedSC: {
           // Sovereignty Characteristics (empty = not selected, 'shall' or 'should')
+        },
+        metadata: {
+          // Metadata model fields not covered by criteria/form - populated from server model
         }
       },
       // Sovereignty Characteristics - loaded from server
       sovereigntyCharacteristics: {},
+      // Sovereignty Metadata Model (3 layers) - loaded from server
+      metadataModel: {},
+      showMetadataModal: false,
+      showMetadataEditor: false,
+      expandedMetadataHelp: null,
+      // Fields switched to "Other (specify)" whose free text is still empty
+      metadataOtherActive: {},
+      metadataPngGenerating: false,
       results: null,
       loading: false,
       pdfGenerating: false,
@@ -67,7 +82,19 @@ const app = createApp({
           if (config.sovereigntyCharacteristics) {
             this.sovereigntyCharacteristics = config.sovereigntyCharacteristics;
           }
-          
+
+          // Load the metadata model and seed the assessor-entered fields
+          if (config.metadataModel) {
+            this.metadataModel = config.metadataModel;
+            Object.values(config.metadataModel).forEach(layer => {
+              Object.entries(layer.fields).forEach(([fieldKey, field]) => {
+                if (field.source === 'metadata') {
+                  this.formData.metadata[fieldKey] = '';
+                }
+              });
+            });
+          }
+
           // Transform slcCriteria into slcOptions, slcConfigs, and initialize form data
           if (config.slcCriteria) {
             this.slcOptions = {};
@@ -108,6 +135,7 @@ const app = createApp({
           this.slcToScMapping = {};
           this.slcOptions = {};
           this.slcConfigs = [];
+          this.metadataModel = {};
           this.dbEnabled = false;
           this.dbConnected = false;
         }
@@ -189,8 +217,137 @@ const app = createApp({
       if (s.slc11) this.formData.criteria.slc11 = s.slc11;
       if (s.slc17) this.formData.criteria.slc17 = s.slc17;
       if (s.slc24) this.formData.criteria.slc24 = s.slc24;
+      // Metadata model fields - only fill blanks so assessor edits are never overwritten
+      if (s.metadata) {
+        Object.entries(s.metadata).forEach(([key, value]) => {
+          const current = this.formData.metadata[key];
+          if (value !== null && value !== undefined && (current === '' || current === null || current === undefined)) {
+            this.formData.metadata[key] = value;
+          }
+        });
+      }
       this.swhResult = null;
     },
+
+    // Resolve a metadata model field to its display value
+    resolveMetadataValue(field) {
+      if (field.source === 'form') {
+        return this.formData[field.formField] || '';
+      }
+
+      if (field.source === 'slc') {
+        const selection = this.formData.criteria[field.slc];
+        return selection ? (this.slcOptions[field.slc]?.[selection] || selection) : '';
+      }
+
+      const raw = this.formData.metadata[field.key];
+
+      // A value that matches no preset is free text and is shown verbatim
+      if (field.input === 'select' && raw) {
+        const option = (field.options || []).find(o => o.value === raw);
+        return option ? option.label : raw;
+      }
+
+      return raw || '';
+    },
+
+    // Which entry the preset dropdown should show. A stored value that matches
+    // no preset means the assessor (or SWH) supplied free text.
+    presetSelection(field) {
+      if (this.metadataOtherActive[field.key]) return OTHER_OPTION;
+      const raw = this.formData.metadata[field.key];
+      if (raw === '' || raw === null || raw === undefined) return '';
+      return (field.options || []).some(o => o.value === raw) ? raw : OTHER_OPTION;
+    },
+
+    onPresetChange(field, selected) {
+      if (selected === OTHER_OPTION) {
+        // Keep any free text already there, otherwise start with an empty box
+        if (this.presetSelection(field) !== OTHER_OPTION) {
+          this.formData.metadata[field.key] = '';
+        }
+        this.metadataOtherActive[field.key] = true;
+      } else {
+        this.formData.metadata[field.key] = selected;
+        this.metadataOtherActive[field.key] = false;
+      }
+    },
+
+    openMetadataModal() {
+      this.showMetadataModal = true;
+    },
+
+    closeMetadataModal() {
+      this.showMetadataModal = false;
+    },
+
+    openMetadataEditor() {
+      this.showMetadataEditor = true;
+    },
+
+    closeMetadataEditor() {
+      this.showMetadataEditor = false;
+      this.expandedMetadataHelp = null;
+      // Drop "Other" flags for fields left blank so they read as unset again
+      Object.keys(this.metadataOtherActive).forEach(key => {
+        if (!this.formData.metadata[key]) delete this.metadataOtherActive[key];
+      });
+    },
+
+    // Field help is hidden by default to keep the editor compact
+    toggleMetadataHelp(fieldKey) {
+      this.expandedMetadataHelp = this.expandedMetadataHelp === fieldKey ? null : fieldKey;
+    },
+
+    async exportMetadataPNG() {
+      try {
+        this.metadataPngGenerating = true;
+        this.error = null;
+
+        const source = document.getElementById('metadata-table');
+        if (!source) {
+          throw new Error('Metadata table is not open');
+        }
+
+        // Render an offscreen clone so the modal scroll position and any
+        // no-print controls do not end up in the image
+        const clone = source.cloneNode(true);
+        clone.querySelectorAll('.no-print').forEach(el => el.remove());
+
+        const tempContainer = document.createElement('div');
+        tempContainer.style.position = 'absolute';
+        tempContainer.style.left = '-9999px';
+        tempContainer.style.top = '0';
+        tempContainer.style.width = '900px';
+        tempContainer.style.padding = '24px';
+        tempContainer.style.backgroundColor = 'white';
+        tempContainer.appendChild(clone);
+        document.body.appendChild(tempContainer);
+
+        const canvas = await html2canvas(tempContainer, {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          backgroundColor: '#ffffff'
+        });
+
+        document.body.removeChild(tempContainer);
+
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${(this.formData.technologyName || 'technology').replace(/[^a-z0-9]/gi, '_').toLowerCase()}_metadata_${new Date().toISOString().split('T')[0]}.png`;
+        link.click();
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        this.error = 'Error generating image: ' + err.message;
+        console.error('Metadata PNG error:', err);
+      } finally {
+        this.metadataPngGenerating = false;
+      }
+    },
+
 
     async calculateScore() {
       this.loading = true;
@@ -296,45 +453,43 @@ const app = createApp({
     },
 
     resetForm() {
+      // Rebuild every keyed object from the server config so the shape always
+      // matches what the template binds to. mitigationDescriptions must be
+      // included: the SLC inputs bind into it and a missing object breaks render.
+      const criteria = {};
+      const mitigations = {};
+      const mitigationDescriptions = {};
+      this.slcConfigs.forEach(slc => {
+        criteria[slc.key] = '';
+        mitigations[slc.key] = false;
+        mitigationDescriptions[slc.key] = '';
+      });
+
+      const metadata = {};
+      Object.values(this.metadataModel).forEach(layer => {
+        Object.entries(layer.fields).forEach(([fieldKey, field]) => {
+          if (field.source === 'metadata') {
+            metadata[fieldKey] = '';
+          }
+        });
+      });
+
       this.formData = {
         technologyName: '',
         description: '',
-        criteria: {
-          slc1: '',
-          slc2: '',
-          slc3: '',
-          slc5: '',
-          slc33: '',
-          slc34: '',
-          slc11: '',
-          slc12: '',
-          slc13: '',
-          slc16: '',
-          slc17: '',
-          slc23: '',
-          slc24: '',
-          slc25: ''
-        },
-        mitigations: {
-          slc1: false,
-          slc2: false,
-          slc3: false,
-          slc5: false,
-          slc33: false,
-          slc34: false,
-          slc11: false,
-          slc12: false,
-          slc13: false,
-          slc16: false,
-          slc17: false,
-          slc23: false,
-          slc24: false,
-          slc25: false
-        },
+        criteria,
+        mitigations,
+        mitigationDescriptions,
+        metadata,
         selectedSC: {}
       };
       this.results = null;
       this.error = null;
+      this.currentEvaluationId = null;
+      this.metadataOtherActive = {};
+      this.swhResult = null;
+      this.swhError = null;
+      this.swhCandidates = [];
     },
     
     toggleSC(scKey, type) {
@@ -382,8 +537,9 @@ const app = createApp({
         criteria: this.formData.criteria,
         mitigations: this.formData.mitigations,
         mitigationDescriptions: this.formData.mitigationDescriptions,
+        metadata: this.formData.metadata,
         exportDate: new Date().toISOString(),
-        version: '1.0'
+        version: '1.1'
       };
       
       const dataStr = JSON.stringify(exportData, null, 2);
@@ -420,7 +576,10 @@ const app = createApp({
           if (importedData.mitigationDescriptions) {
             this.formData.mitigationDescriptions = { ...this.formData.mitigationDescriptions, ...importedData.mitigationDescriptions };
           }
-          
+          if (importedData.metadata) {
+            this.formData.metadata = { ...this.formData.metadata, ...importedData.metadata };
+          }
+
           // Reset file input
           event.target.value = '';
           
@@ -581,7 +740,8 @@ const app = createApp({
         this.formData.selectedSC = evaluation.selectedSC || {};
         this.formData.mitigations = { ...this.formData.mitigations, ...evaluation.mitigations };
         this.formData.mitigationDescriptions = { ...this.formData.mitigationDescriptions, ...evaluation.mitigationDescriptions };
-        
+        this.formData.metadata = { ...this.formData.metadata, ...(evaluation.metadata || {}) };
+
         // Set results with proper structure
         this.results = {
           technologyName: evaluation.technologyName,
@@ -719,6 +879,53 @@ const app = createApp({
   computed: {
     Math() {
       return Math;
+    },
+
+    // The 3-layer model resolved to display rows - drives the modal table
+    metadataTable() {
+      return Object.entries(this.metadataModel).map(([layerKey, layer]) => ({
+        key: layerKey,
+        code: layer.code,
+        name: layer.name,
+        rows: Object.entries(layer.fields)
+          .filter(([, field]) => !field.hideInTable)
+          .map(([fieldKey, field]) => ({
+            key: fieldKey,
+            label: field.label,
+            value: this.resolveMetadataValue({ ...field, key: fieldKey })
+          }))
+      }));
+    },
+
+    // Only the fields the assessor has to fill in, grouped by layer.
+    // Layers whose fields all come from criteria/form are omitted.
+    metadataInputLayers() {
+      return Object.entries(this.metadataModel)
+        .map(([layerKey, layer]) => ({
+          key: layerKey,
+          code: layer.code,
+          name: layer.name,
+          fields: Object.entries(layer.fields)
+            .filter(([, field]) => field.source === 'metadata')
+            .map(([fieldKey, field]) => ({ ...field, key: fieldKey }))
+        }))
+        .filter(layer => layer.fields.length > 0);
+    },
+
+    // DD.MM.YYYY for the exported table footer
+    metadataGeneratedDate() {
+      const d = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()}`;
+    },
+
+    metadataFilledCount() {
+      const values = Object.values(this.formData.metadata);
+      return values.filter(v => v !== '' && v !== null && v !== undefined).length;
+    },
+
+    metadataTotalCount() {
+      return Object.keys(this.formData.metadata).length;
     }
   },
   async mounted() {

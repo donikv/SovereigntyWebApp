@@ -6,7 +6,7 @@ const { DatabaseFactory } = require('../database');
 // POST endpoint to calculate sovereignty score and save to database
 router.post('/calculate-score', async (req, res) => {
   try {
-    const { technologyName, description, criteria, selectedSC, mitigations, mitigationDescriptions, saveToDb = true } = req.body;
+    const { technologyName, description, criteria, selectedSC, mitigations, mitigationDescriptions, metadata, saveToDb = true } = req.body;
     
     if (!criteria) {
       return res.status(400).json({ error: 'Criteria data is required' });
@@ -24,6 +24,7 @@ router.post('/calculate-score', async (req, res) => {
       selectedSC: selectedSC || {},
       mitigations: mitigations || {},
       mitigationDescriptions: mitigationDescriptions || {},
+      metadata: metadata || {},
       results: result,
       thresholds
     };

@@ -153,6 +153,23 @@
               placeholder="Brief description of the technology and its use case"
             ></textarea>
           </div>
+
+          <!-- Sovereignty Metadata Model (optional, descriptive only) -->
+          <div class="metadata-bar">
+            <div class="metadata-bar-label">
+              <span class="metadata-bar-title">Sovereignty Metadata Model</span>
+              <span class="metadata-optional-tag">Optional</span>
+              <span class="metadata-count">{{ metadataFilledCount }}/{{ metadataTotalCount }} filled</span>
+            </div>
+            <div class="metadata-bar-actions">
+              <button type="button" class="btn-metadata" @click="openMetadataEditor">
+                Edit Metadata
+              </button>
+              <button type="button" class="btn-metadata" @click="openMetadataModal">
+                View Metadata Model
+              </button>
+            </div>
+          </div>
         </section>
 
         <!-- Sovereignty Characteristics Selection -->
@@ -229,6 +246,9 @@
           </button>
           <button type="button" class="btn btn-secondary" @click="resetForm">
             Reset
+          </button>
+          <button type="button" class="btn btn-secondary" @click="openMetadataModal">
+            View Metadata Model
           </button>
         </div>
       </form>
@@ -339,6 +359,126 @@
 
       <div v-if="error" class="error-message">
         {{ error }}
+      </div>
+    </div>
+
+    <!-- Sovereignty Metadata Model - compact editor -->
+    <div v-if="showMetadataEditor" class="modal-overlay" @click="closeMetadataEditor">
+      <div class="modal-content metadata-editor" @click.stop>
+        <div class="modal-header">
+          <h2>Edit Metadata</h2>
+          <button class="btn-close" @click="closeMetadataEditor">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <div v-for="layer in metadataInputLayers" :key="layer.key" class="metadata-edit-layer">
+            <div class="metadata-edit-layer-title">{{ layer.code }}: {{ layer.name }}</div>
+
+            <div class="metadata-field" v-for="field in layer.fields" :key="field.key">
+              <div class="metadata-field-label">
+                <label :for="'meta-' + field.key">{{ field.label }}</label>
+                <button
+                  v-if="field.help"
+                  type="button"
+                  class="metadata-help-toggle"
+                  :class="{ open: expandedMetadataHelp === field.key }"
+                  @click="toggleMetadataHelp(field.key)"
+                  :aria-expanded="expandedMetadataHelp === field.key"
+                  :title="'About ' + field.label"
+                >?</button>
+                <span v-if="field.autofill" class="metadata-autofill-tag" title="Filled in by the Software Heritage lookup">SWH</span>
+              </div>
+
+              <p v-if="expandedMetadataHelp === field.key" class="metadata-help">{{ field.help }}</p>
+
+              <input
+                v-if="field.input === 'text'"
+                type="text"
+                :id="'meta-' + field.key"
+                v-model="formData.metadata[field.key]"
+                :placeholder="field.placeholder"
+              >
+
+              <template v-else-if="field.input === 'select'">
+                <select
+                  :id="'meta-' + field.key"
+                  :value="presetSelection(field)"
+                  @change="onPresetChange(field, $event.target.value)"
+                >
+                  <option value="">Select...</option>
+                  <option v-for="option in field.options" :key="option.value" :value="option.value">
+                    {{ option.label }}
+                  </option>
+                  <option v-if="field.allowOther" value="__other">Other (specify)</option>
+                </select>
+                <input
+                  v-if="field.allowOther && presetSelection(field) === '__other'"
+                  type="text"
+                  class="metadata-other-input"
+                  v-model="formData.metadata[field.key]"
+                  :placeholder="field.placeholder"
+                >
+              </template>
+
+              <textarea
+                v-else
+                :id="'meta-' + field.key"
+                v-model="formData.metadata[field.key]"
+                rows="2"
+                :placeholder="field.placeholder"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="metadata-modal-actions">
+          <button type="button" class="btn-secondary" @click="closeMetadataEditor">Done</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sovereignty Metadata Model Modal -->
+    <div v-if="showMetadataModal" class="modal-overlay" @click="closeMetadataModal">
+      <div class="modal-content metadata-modal" @click.stop>
+        <div class="modal-header no-print">
+          <h2>Sovereignty Metadata Model</h2>
+          <button class="btn-close" @click="closeMetadataModal">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <div id="metadata-table" class="metadata-table-wrapper">
+            <div class="metadata-doc-header">
+              <h3>Sovereignty Metadata Model</h3>
+              <p class="metadata-doc-subject">{{ formData.technologyName || 'Unnamed technology' }}</p>
+            </div>
+
+            <div v-for="layer in metadataTable" :key="layer.key" class="metadata-layer">
+              <div class="metadata-layer-header">{{ layer.code }}: {{ layer.name }}</div>
+              <table class="metadata-table">
+                <tbody>
+                  <tr v-for="row in layer.rows" :key="row.key">
+                    <th>{{ row.label }}</th>
+                    <td>
+                      <span v-if="row.value" class="metadata-value">{{ row.value }}</span>
+                      <span v-else class="metadata-empty">—</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p class="metadata-doc-footer">
+              Generated {{ metadataGeneratedDate }} · EICACS Digital Sovereignty Evaluation Tool
+            </p>
+          </div>
+        </div>
+
+        <div class="metadata-modal-actions no-print">
+          <button type="button" class="btn-secondary" @click="exportMetadataPNG" :disabled="metadataPngGenerating">
+            {{ metadataPngGenerating ? 'Generating...' : 'Save as PNG' }}
+          </button>
+          <button type="button" class="btn-secondary" @click="closeMetadataModal">Close</button>
+        </div>
       </div>
     </div>
 

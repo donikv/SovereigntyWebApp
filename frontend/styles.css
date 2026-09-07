@@ -885,6 +885,268 @@ footer a:hover {
   border: 1px solid var(--warning-border);
 }
 
+/* Sovereignty Metadata Model - compact entry point inside Technology Information */
+.metadata-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid var(--border-gray);
+}
+
+.metadata-bar-label {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.metadata-bar-title {
+  font-weight: 600;
+  color: var(--navy);
+  font-size: 0.95em;
+}
+
+.metadata-optional-tag {
+  padding: 1px 8px;
+  background: var(--white);
+  border: 1px solid var(--border-gray);
+  color: var(--text-light);
+  border-radius: 10px;
+  font-size: 0.7em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.metadata-count {
+  color: var(--text-lighter);
+  font-size: 0.8em;
+}
+
+.metadata-bar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Same shape as .btn-secondary, scaled down to sit inside a form section */
+.btn-metadata {
+  padding: 6px 12px;
+  background: var(--gray-btn);
+  color: var(--white);
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.3s ease;
+}
+
+.btn-metadata:hover {
+  background: var(--gray-btn-dark);
+}
+
+/* Sovereignty Metadata Model - compact editor popup */
+/* Both classes needed to override .modal-content's wider max-width */
+.modal-content.metadata-editor {
+  max-width: 520px;
+}
+
+.metadata-edit-layer + .metadata-edit-layer {
+  margin-top: 18px;
+}
+
+.metadata-edit-layer-title {
+  font-weight: 700;
+  color: var(--navy);
+  font-size: 0.8em;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding-bottom: 6px;
+  margin-bottom: 12px;
+  border-bottom: 2px solid var(--border-muted);
+}
+
+.metadata-field + .metadata-field {
+  margin-top: 12px;
+}
+
+.metadata-field-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 5px;
+}
+
+.metadata-field-label label {
+  margin: 0;
+  font-size: 0.9em;
+}
+
+.metadata-field input[type="text"],
+.metadata-field select,
+.metadata-field textarea {
+  padding: 8px 10px;
+  font-size: 0.9em;
+  border-width: 1px;
+}
+
+/* Free-text box revealed by the "Other (specify)" preset */
+.metadata-other-input {
+  margin-top: 6px;
+}
+
+.metadata-help-toggle {
+  width: 17px;
+  height: 17px;
+  flex: none;
+  padding: 0;
+  border: 1px solid var(--border-gray);
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--text-lighter);
+  font-size: 0.7em;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.metadata-help-toggle:hover,
+.metadata-help-toggle.open {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: var(--white);
+}
+
+.metadata-autofill-tag {
+  padding: 1px 7px;
+  background: var(--blue-tag-bg);
+  color: var(--blue-deep-text);
+  border-radius: 10px;
+  font-size: 0.68em;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.metadata-help {
+  margin-bottom: 6px;
+  padding: 6px 10px;
+  background: var(--blue-pale-bg);
+  border-left: 3px solid var(--blue-pale-border);
+  border-radius: 0 4px 4px 0;
+  font-size: 0.82em;
+  color: var(--text-muted);
+}
+
+/* Sovereignty Metadata Model - output table */
+.metadata-modal .modal-body {
+  background: var(--bg-light);
+}
+
+.metadata-table-wrapper {
+  background: var(--white);
+  padding: 24px;
+  border-radius: 8px;
+}
+
+.metadata-doc-header {
+  border-bottom: 3px solid var(--navy);
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+}
+
+.metadata-doc-header h3 {
+  margin: 0;
+  color: var(--navy);
+  font-size: 1.25em;
+}
+
+.metadata-doc-subject {
+  margin-top: 4px;
+  color: var(--orange);
+  font-weight: 600;
+  font-size: 1.05em;
+}
+
+.metadata-layer {
+  margin-bottom: 20px;
+}
+
+.metadata-layer:last-of-type {
+  margin-bottom: 0;
+}
+
+.metadata-layer-header {
+  background: var(--navy);
+  color: var(--white);
+  padding: 8px 14px;
+  border-radius: 6px 6px 0 0;
+  font-weight: 700;
+  font-size: 0.9em;
+  letter-spacing: 0.03em;
+}
+
+table.metadata-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border-gray);
+  border-top: none;
+  font-size: 0.9em;
+}
+
+table.metadata-table th,
+table.metadata-table td {
+  padding: 8px 14px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border-muted);
+}
+
+table.metadata-table tr:last-child th,
+table.metadata-table tr:last-child td {
+  border-bottom: none;
+}
+
+table.metadata-table th {
+  width: 34%;
+  font-weight: 600;
+  color: var(--blue-deep-text);
+  background: var(--blue-pale-bg);
+  border-right: 1px solid var(--border-muted);
+}
+
+.metadata-value {
+  color: var(--text);
+  word-break: break-word;
+}
+
+.metadata-empty {
+  color: var(--text-lighter);
+}
+
+.metadata-doc-footer {
+  margin-top: 20px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-muted);
+  color: var(--text-lighter);
+  font-size: 0.8em;
+}
+
+.metadata-modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 15px 30px;
+  border-top: 2px solid var(--border-muted);
+}
+
 /* Modal Styles */
 .modal-overlay {
   position: fixed;
@@ -1149,6 +1411,62 @@ footer a:hover {
     flex-direction: column;
     gap: 10px;
     padding: 15px;
+  }
+
+  .metadata-modal-actions {
+    padding: 15px;
+  }
+
+  .metadata-modal-actions .btn-secondary {
+    flex: 1 1 100%;
+  }
+
+  .metadata-table-wrapper {
+    padding: 15px;
+  }
+
+  /* Stack label above value so long labels stay readable on narrow screens */
+  table.metadata-table,
+  table.metadata-table tbody,
+  table.metadata-table tr,
+  table.metadata-table th,
+  table.metadata-table td {
+    display: block;
+    width: auto;
+  }
+
+  table.metadata-table tr {
+    border-bottom: 1px solid var(--border-muted);
+    padding: 4px 0;
+  }
+
+  table.metadata-table tr:last-child {
+    border-bottom: none;
+  }
+
+  table.metadata-table th {
+    border-right: none;
+    border-bottom: none;
+    background: transparent;
+    padding-bottom: 2px;
+  }
+
+  table.metadata-table td {
+    border-bottom: none;
+    padding-top: 0;
+  }
+
+  .metadata-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .metadata-bar-actions {
+    width: 100%;
+  }
+
+  .metadata-bar-actions .btn-metadata {
+    flex: 1 1 0;
   }
 
   .detail-item {

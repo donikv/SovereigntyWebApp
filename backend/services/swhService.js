@@ -110,6 +110,25 @@ function detectLicenseFromText(text) {
   return null;
 }
 
+// GitHub's primary-language name -> programmingLanguage preset in metadataModel.js.
+// Anything unlisted (e.g. "Jupyter Notebook") is passed through as free text.
+const LANGUAGE_PRESETS = {
+  'python': 'python',
+  'javascript': 'javascript',
+  'typescript': 'javascript',
+  'java': 'java',
+  'c': 'c',
+  'c++': 'cpp',
+  'c#': 'csharp',
+  'go': 'go',
+  'rust': 'rust'
+};
+
+function mapProgrammingLanguage(language) {
+  if (!language) return null;
+  return LANGUAGE_PRESETS[language.trim().toLowerCase()] || language;
+}
+
 // Map SPDX identifier or URL to SLC3/SLC34 option key
 function mapLicense(license) {
   if (!license) return null;
@@ -213,6 +232,31 @@ function mapDepCount(depData) {
 // Defense fields (mirrors Python script's derive_defense_fields)
 // --------------------------------------------------------------------------
 
+// Maintainer as "owner (Type)" — GitHub owner is the closest available proxy
+function deriveMaintainer(githubData) {
+  const owner = githubData?.owner;
+  if (!owner?.login) return null;
+  return owner.type ? `${owner.login} (${owner.type})` : owner.login;
+}
+
+// Latest published release tag, ignoring drafts
+function deriveVersion(githubData) {
+  const release = (githubData?.releases || []).find(r => r.published_at && !r.draft);
+  return release?.tag_name || null;
+}
+
+// codemeta may spell operatingSystem with or without a namespace prefix, and may
+// give either a single string or a list
+function deriveOperatingSystem(intrinsic) {
+  if (!intrinsic) return null;
+  const raw = intrinsic.operatingSystem
+    || intrinsic['schema:operatingSystem']
+    || intrinsic['codemeta:operatingSystem'];
+  if (!raw) return null;
+  const values = (Array.isArray(raw) ? raw : [raw]).filter(v => typeof v === 'string' && v.trim());
+  return values.length ? values.join(', ') : null;
+}
+
 function computeDefenseFields(visits, githubData, intrinsic, depData) {
   const fullVisits = visits.filter(v => v.status === 'full');
 
@@ -231,9 +275,13 @@ function computeDefenseFields(visits, githubData, intrinsic, depData) {
 
   const hasHistory = fullVisits.length > 0;
 
-  // LicensingStatus: best available SPDX ID (NOASSERTION is treated as unknown)
-  const rawSpdx = githubData?.license?.spdx_id;
-  const LicensingStatus = (rawSpdx && rawSpdx !== 'NOASSERTION') ? rawSpdx : null;
+  // LicensingStatus: real SPDX ID only. A text-detected licence puts our own
+  // category key in spdx_id (see fetchGithubData), which is not an SPDX ID.
+  const ghLicense = githubData?.license;
+  const rawSpdx = ghLicense?.spdx_id;
+  const LicensingStatus = (rawSpdx && rawSpdx !== 'NOASSERTION' && !ghLicense?._fromText)
+    ? rawSpdx
+    : null;
 
   // LicensingCategories: our SLC option key derived from the best license source
   const LicensingCategories = mapLicense(githubData?.license?.spdx_id) || null;
@@ -249,6 +297,12 @@ function computeDefenseFields(visits, githubData, intrinsic, depData) {
     LicensingStatus,
     LicensingCategories,
     benchmarkingAvailable:        null,
+    // Metadata model, Layer 1 & 2 descriptive fields
+    softwareMaintainer:           deriveMaintainer(githubData),
+    version:                      deriveVersion(githubData),
+    programmingLanguage:          githubData?.language || null,
+    operatingSystem:              deriveOperatingSystem(intrinsic),
+    // Left to the assessor — see metadataModel.js
     compromisingAccessibility:    null,
     _intrinsicMetadataPresent:    Boolean(intrinsic)
   };
@@ -389,6 +443,26 @@ function mapToSuggestions(rawData) {
   // External dependencies (SLC24): from Python dependency file
   const slc24 = mapDepCount(df?.pythonDependenciesRequired);
   if (slc24) suggestions.slc24 = slc24;
+
+  // Metadata model fields — namespaced so they never collide with the slcN keys
+  const metadata = {};
+  // The maintainer name carries more information than any preset would
+  if (df?.softwareMaintainer)  metadata.softwareMaintainer  = df.softwareMaintainer;
+  // A real SPDX identifier is more precise than a preset, so pass it through as
+  // free text; otherwise the detected category matches a preset value directly
+  const licensingStatus = df?.LicensingStatus || df?.LicensingCategories || null;
+  if (licensingStatus)         metadata.licensingStatus     = licensingStatus;
+  if (df?.version)             metadata.version             = df.version;
+  const language = mapProgrammingLanguage(df?.programmingLanguage);
+  if (language)                metadata.programmingLanguage = language;
+  if (df?.operatingSystem)     metadata.operatingSystem     = df.operatingSystem;
+  if (df) {
+    metadata.traceability         = df.Traceability ? 'full' : 'none';
+    metadata.auditability         = df.auditability ? 'full' : 'none';
+    // A false flag only means "no recent capture", not "no guarantee"
+    metadata.longTermAvailability = df.longTermAvailability ? 'archived' : 'unknown';
+  }
+  if (Object.keys(metadata).length) suggestions.metadata = metadata;
 
   return suggestions;
 }
