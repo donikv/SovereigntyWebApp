@@ -295,9 +295,9 @@ For each of the 14 criteria:
 
 A compact, three-layer descriptive record of the technology under evaluation. It is a **view over data the app already collects** — 18 of its 23 fields reuse existing SLC criteria, form inputs, or Software Heritage lookup results. The model is defined in `backend/services/metadataModel.js` and served to the frontend via `/api/config`.
 
-**The metadata model does not participate in scoring.** Adding or changing metadata values never changes a sovereignty score.
+**The metadata model does not participate in the numerical sovereignty scoring, it is used to provide an additional description of the evaluated technology.** Thus, the metadata not linked directly to SLCs will not influence the final numerical sovereignty score. 
 
-Fields that map onto an SLC criterion read their value straight from that criterion and are never entered twice. The remaining fields are assessor-entered and offer a **preset dropdown plus an "Other (specify)" free-text option**, so an entry that does not fit a preset can always be typed in.
+Fields that map onto an SLC criterion read their value straight from that criterion and are reused. The remaining fields are assessor-entered and offer a **preset dropdown plus an "Other (specify)" free-text option**, so an entry that does not fit a preset can always be typed in.
 
 ### Layer 1: Governance Layer
 
@@ -414,7 +414,7 @@ Calculate sovereignty score and optionally save to database.
 }
 ```
 
-`metadata` is optional and does not affect scoring — see [Sovereignty Metadata Model](#sovereignty-metadata-model).
+`metadata` is optional and does not affect numerical sovereignty scoring — see [Sovereignty Metadata Model](#sovereignty-metadata-model).
 
 **Response:**
 ```json
