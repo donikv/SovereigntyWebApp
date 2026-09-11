@@ -912,6 +912,14 @@ const app = createApp({
         .filter(layer => layer.fields.length > 0);
     },
 
+    // Tooltip shared by every database action while the database is unreachable.
+    // null removes the attribute entirely once the connection is fine.
+    dbActionTitle() {
+      return this.dbConnected
+        ? null
+        : 'Problem connecting to the database — this action is unavailable';
+    },
+
     // DD.MM.YYYY for the exported table footer
     metadataGeneratedDate() {
       const d = new Date();

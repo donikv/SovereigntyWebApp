@@ -390,6 +390,19 @@ textarea {
   box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
 }
 
+/* Database actions while the database is enabled but unreachable.
+   Selectors carry :disabled so they outrank the generic .btn-secondary:disabled
+   (which would grey them out) and the unguarded .btn-secondary:hover above. */
+.btn-secondary.db-unavailable:disabled,
+.btn-secondary.db-unavailable:disabled:hover {
+  background: var(--danger);
+  color: var(--white);
+  opacity: 1;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
 .btn-toggle {
   padding: 8px 16px;
   background: var(--navy-medium);
@@ -861,28 +874,6 @@ footer a {
 
 footer a:hover {
   text-decoration: underline;
-}
-
-/* Database Status Banner */
-.db-status-banner {
-  padding: 10px 15px;
-  margin: 10px 0 20px 0;
-  border-radius: 6px;
-  text-align: center;
-  font-weight: 600;
-  font-size: 0.9em;
-}
-
-.db-status-banner.connected {
-  background: var(--success-bg);
-  color: var(--success-text);
-  border: 1px solid var(--success-border);
-}
-
-.db-status-banner.disconnected {
-  background: var(--warning-bg);
-  color: var(--warning-text);
-  border: 1px solid var(--warning-border);
 }
 
 /* Sovereignty Metadata Model - compact entry point inside Technology Information */

@@ -31,29 +31,38 @@
           <button type="button" class="btn-secondary" @click="openThresholdsConfig">
           Thresholds
           </button>
-          <!-- Database-related buttons -->
-          <button 
-            v-if="dbEnabled && dbConnected" 
-            type="button" 
-            class="btn-secondary" 
+          <!-- Database-related buttons: shown whenever the DB is enabled, and
+               turned red and unclickable while it is unreachable -->
+          <button
+            v-if="dbEnabled"
+            type="button"
+            class="btn-secondary"
+            :class="{ 'db-unavailable': !dbConnected }"
             @click="loadEvaluations"
-            :disabled="loadingEvaluations"
+            :disabled="!dbConnected || loadingEvaluations"
+            :title="dbActionTitle"
           >
            {{ loadingEvaluations ? 'Loading...' : 'View Saved Evaluations' }}
           </button>
-          <button 
-            v-if="dbEnabled && dbConnected" 
-            type="button" 
-            class="btn-secondary" 
+          <button
+            v-if="dbEnabled"
+            type="button"
+            class="btn-secondary"
+            :class="{ 'db-unavailable': !dbConnected }"
             @click="exportAllEvaluationsJSON"
+            :disabled="!dbConnected"
+            :title="dbActionTitle"
           >
            Export All (JSON)
           </button>
-          <button 
-            v-if="dbEnabled && dbConnected" 
-            type="button" 
-            class="btn-secondary" 
+          <button
+            v-if="dbEnabled"
+            type="button"
+            class="btn-secondary"
+            :class="{ 'db-unavailable': !dbConnected }"
             @click="exportAllEvaluationsCSV"
+            :disabled="!dbConnected"
+            :title="dbActionTitle"
           >
            Export All (CSV)
           </button>
@@ -64,12 +73,6 @@
             accept=".json" 
             style="display: none;"
           >
-        </div>
-
-        <!-- Database Status Banner -->
-        <div v-if="dbEnabled" class="db-status-banner" :class="dbConnected ? 'connected' : 'disconnected'">
-          <span v-if="dbConnected">✓ Database Connected</span>
-          <span v-else>⚠ Database Disconnected</span>
         </div>
 
         <!-- Basic Information -->
@@ -257,12 +260,14 @@
         <div class="results-header">
           <h2>Evaluation Results: {{ results.technologyName }}</h2>
           <div class="results-actions">
-            <button 
-              v-if="dbEnabled && dbConnected && !currentEvaluationId" 
-              type="button" 
-              class="btn-secondary no-print" 
-              @click="saveCurrentEvaluation" 
-              :disabled="saving"
+            <button
+              v-if="dbEnabled && !currentEvaluationId"
+              type="button"
+              class="btn-secondary no-print"
+              :class="{ 'db-unavailable': !dbConnected }"
+              @click="saveCurrentEvaluation"
+              :disabled="!dbConnected || saving"
+              :title="dbActionTitle"
             >
               {{ saving ? 'Saving...' : 'Save to Database' }}
             </button>
